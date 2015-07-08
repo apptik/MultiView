@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">MultiView</string>
+
+    <string name="title_section1">Basic</string>
+    <string name="title_section2">LayoutManagers</string>
+    <string name="title_section3">Animators</string>
+    <string name="title_section4">Adapters</string>
+    <string name="title_section5">Decorations</string>
+    <string name="title_section6">Scrollers</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Coming Soon</string>
+</resources>

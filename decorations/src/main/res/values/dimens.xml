@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="paddingItemDecorationDefault">8dp</dimen>
+    <dimen name="paddingItemDecorationEdge">16dp</dimen>
+
+
+</resources>
