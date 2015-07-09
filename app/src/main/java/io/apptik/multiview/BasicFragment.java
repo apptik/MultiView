@@ -21,7 +21,6 @@ public class BasicFragment extends Fragment {
     public static BasicFragment newInstance() {
         BasicFragment fragment = new BasicFragment();
         return fragment;
-
     }
 
     @Override
@@ -30,6 +29,5 @@ public class BasicFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_recyclerview, container, false);
     }
-
 
 }

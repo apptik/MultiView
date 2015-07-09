@@ -318,7 +318,7 @@ public class BaseSmoothScroller extends RecyclerView.SmoothScroller  {
     }
 
     public PointF computeScrollVectorForPosition(int targetPosition) {
-        return PicsSmoothScroller.this
+        return BaseSmoothScroller.this
                 .computeScrollVectorForPosition(targetPosition);
     }
 }
