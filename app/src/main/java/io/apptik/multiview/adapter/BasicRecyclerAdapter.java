@@ -1,36 +1,15 @@
-/*
-* Copyright (C) 2014 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
-
 package io.apptik.multiview.adapter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewPropertyAnimator;
-import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import org.djodjo.json.JsonArray;
+
+import io.apptik.multiview.R;
 
 
 /**
@@ -38,25 +17,6 @@ import org.djodjo.json.JsonArray;
  */
 public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdapter.ViewHolder> {
     private static final String TAG = "RecyclerAdapter";
-
-    //view anim
-    protected static final long ANIM_DEFAULT_SPEED = 1000L;
-
-    protected Interpolator interpolator;
-    protected ImageListFragment.ListScrollListener scrollListener;
-    protected SparseBooleanArray positionsMapper;
-    protected int lastPosition;
-    protected int height;
-    // protected EstateResultScrollListener scrollListener;
-
-    protected double speed;
-    protected long animDuration;
-    //
-
-    private static final int ITEM_PLACE = 0;
-    private static final int ITEM_TOWN = 1;
-    private static final int ITEM_MUSEUM = 2;
-
     private JsonArray jarr;
 
 
@@ -89,17 +49,9 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
      * Initialize the dataset of the Adapter.
      *
      */
-    public BasicRecyclerAdapter(JsonArray jsonArray, Activity activity, ImageListFragment.ListScrollListener scrollListener) {
+    public BasicRecyclerAdapter(JsonArray jsonArray) {
         jarr = jsonArray;
-        this.scrollListener = scrollListener;
-        animDuration = ANIM_DEFAULT_SPEED;
-        lastPosition = -1;
-        positionsMapper = new SparseBooleanArray(jarr.size());
 
-        interpolator = new DecelerateInterpolator();
-
-        WindowManager windowManager = (WindowManager) activity.getSystemService(Context.WINDOW_SERVICE);
-        height = windowManager.getDefaultDisplay().getHeight();
     }
 
     // BEGIN_INCLUDE(recyclerViewOnCreateViewHolder)
@@ -108,7 +60,7 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.rv_card, viewGroup, false);
+                .inflate(R.layout.item_card, viewGroup, false);
 
         return new ViewHolder(v);
     }
