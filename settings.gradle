@@ -1,1 +1,1 @@
-include ':app', ':layoutmanagers', ':adapters', ':animators', ':scrollers', ':decorations'
+include ':app', ':layoutmanagers', ':adapters', ':animators', ':scrollers', ':decorations', ':galleryview'

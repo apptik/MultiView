@@ -31,17 +31,21 @@
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/action_layout_linear"
+                android:id="@+id/action_layout_snapper_basic"
                 android:orderInCategory="1"
-                android:title="Linear" />
+                android:title="Snapper" />
             <item
-                android:id="@+id/action_layout_grid"
+                android:id="@+id/action_layout_snapper_single"
                 android:orderInCategory="2"
-                android:title="Grid" />
+                android:title="Snapper Single Item" />
             <item
-                android:id="@+id/action_layout_staggered"
+                android:id="@+id/action_layout_snapper_pager_v"
                 android:orderInCategory="3"
-                android:title="Staggered" />
+                android:title="Pager Vertical" />
+            <item
+                android:id="@+id/action_layout_snapper_pager_h"
+                android:orderInCategory="4"
+                android:title="Pager Horizontal" />
         </menu>
     </item>
 </menu>

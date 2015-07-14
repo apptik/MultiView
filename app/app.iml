@@ -71,10 +71,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dependency-cache" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/dex-cache" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/appcompat-v7/22.2.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/cardview-v7/22.2.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/22.2.0/jars" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jacoco" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/javaResources" />
@@ -101,11 +97,13 @@
     <orderEntry type="library" exported="" name="support-v4-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="hamcrest-integration-1.3" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="glide-3.6.0" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-22.2.0" level="project" />
     <orderEntry type="module" module-name="decorations" exported="" />
     <orderEntry type="module" module-name="layoutmanagers" exported="" />
     <orderEntry type="module" module-name="scrollers" exported="" />
     <orderEntry type="module" module-name="adapters" exported="" />
     <orderEntry type="module" module-name="animators" exported="" />
+    <orderEntry type="module" module-name="galleryview" exported="" />
   </component>
 </module>
