@@ -10,11 +10,11 @@ import android.widget.FrameLayout;
 public class ScalableViewGroup extends FrameLayout {
 
 
-
     private float mScaleFactor = 1.f;
 
     public ScalableViewGroup(Context context) {
         super(context);
+        setWillNotDraw(false);
     }
 
     public ScalableViewGroup(Context context, AttributeSet attrs) {
@@ -25,12 +25,23 @@ public class ScalableViewGroup extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    public float getScaleFactor() {
+        return mScaleFactor;
+    }
+
+    public void setScaleFactor(float mScaleFactor) {
+        this.mScaleFactor = mScaleFactor;
+        invalidate();
+    }
 
     @Override
     public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.save();
+//        /canvas.save();
         canvas.scale(mScaleFactor, mScaleFactor);
-        canvas.restore();
+        //canvas.restore();
+        super.onDraw(canvas);
+
     }
+
+
 }

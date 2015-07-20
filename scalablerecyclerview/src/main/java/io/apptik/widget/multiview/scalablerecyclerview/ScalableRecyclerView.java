@@ -17,6 +17,9 @@ import io.apptik.widget.multiview.layoutmanagers.ViewUtils;
 public class ScalableRecyclerView extends RecyclerView {
 
     private static String TAG = ScalableRecyclerView.class.getName();
+
+    public static float DEFAULT_MAX_VIEWITEM_SCALE_FACTOR = 10f;
+    public static float DEFAULT_MAX_GRID_SCALE_FACTOR = 4f;
     private ScaleGestureDetector mScaleDetector;
     private float mOldScaleFactor = 1.f;
     private float mScaleFactor = 1.f;
@@ -115,29 +118,38 @@ public class ScalableRecyclerView extends RecyclerView {
 //        canvas.restore();
     }
 
+    protected float getMaxViewItemScaleFactor() {
+        return DEFAULT_MAX_VIEWITEM_SCALE_FACTOR;
+    }
+
+    protected float getMaxGridScaleFactor() {
+        return DEFAULT_MAX_GRID_SCALE_FACTOR;
+    }
+
+    protected float getMinGridScaleFactor() {
+        return 1/ DEFAULT_MAX_GRID_SCALE_FACTOR;
+    }
+
+    protected int getGridSpanCount(float scaleFactor) {
+        if (scaleFactor < 1) {
+           return 3 + Math.round(1/scaleFactor) ;
+        } else if (scaleFactor < 2) {
+            return 3;
+        } else if (scaleFactor < 3) {
+            return 2;
+        } else if (scaleFactor <= 4) {
+            return 1;
+        } else
+            return 1;
+    }
+
     private synchronized void doScale(int currPos) {
         Log.d(TAG, "scale before pos: " + currPos);
-        if (mScaleFactor <= 4) {
-
-            if (mScaleFactor < 1) {
-                //super.setLayoutManager(new GridLayoutManager(getContext(), 3 + Math.round((10 - mScaleFactor * 1)/2)));
-                mLayoutManagerGrid.setSpanCount(3 + Math.round((10 - mScaleFactor * 10) / 2));
-                mLayoutManagerGrid.requestLayout();
-            } else if (mScaleFactor < 2) {
-                //super.setLayoutManager(new GridLayoutManager(getContext(), 3));
-                mLayoutManagerGrid.setSpanCount(3);
-                mLayoutManagerGrid.requestLayout();
-            } else if (mScaleFactor < 3) {
-                //super.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                mLayoutManagerGrid.setSpanCount(2);
-                mLayoutManagerGrid.requestLayout();
-            } else if (mScaleFactor <= 4) {
-                //super.setLayoutManager(new LinearLayoutManager(getContext()));
-                mLayoutManagerGrid.setSpanCount(1);
-                mLayoutManagerGrid.requestLayout();
-            }
+        if (mScaleFactor <= getMaxGridScaleFactor()) {
+            mLayoutManagerGrid.setSpanCount(getGridSpanCount(mScaleFactor));
+            mLayoutManagerGrid.requestLayout();
             //check if we are not coming form single item layout
-            if (mOldScaleFactor > 4) {
+            if (mOldScaleFactor > getMaxGridScaleFactor()) {
                 super.setLayoutManager(mLayoutManagerGrid);
                 super.setAdapter(mAdapter);
                 getRecycledViewPool().clear();
@@ -146,21 +158,28 @@ public class ScalableRecyclerView extends RecyclerView {
 
         } else {
             //check if we are not coming from gridlayout
-            if (mOldScaleFactor <= 4) {
+            if (mOldScaleFactor <= getMaxGridScaleFactor()) {
                 super.setLayoutManager(mLayoutManagerSingle);
                 super.setAdapter(mScalableAdapter);
                 getRecycledViewPool().clear();
                 scrollToPosition(currPos);
+                mScaleFactor = getMaxGridScaleFactor() + 0.001f;
             }
 
-            else {
-                // zoom picture with factor mFactor -4
+            if(mScaleFactor>(getMaxGridScaleFactor() + 0.001f)) {
+                // zoom view with factor absolute mScaleFactor
+                float viewScaleFactor = mScaleFactor + 1 - getMaxGridScaleFactor();
+                ScalableViewGroup sv = (ScalableViewGroup) getChildAt(0);
+                Log.d(TAG, "scale view : " + viewScaleFactor + " /  " + sv.getScaleFactor());
+                sv.setScaleFactor(viewScaleFactor);
             }
         }
 
-        // scrollToPosition(currPos);
+
         mOldScaleFactor = mScaleFactor;
     }
+
+
 
     private class ScaleListener
             extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -175,7 +194,7 @@ public class ScalableRecyclerView extends RecyclerView {
             mScaleFactor *= detector.getScaleFactor();
             Log.d(TAG, "scale factor after: " + mScaleFactor);
             // Don't let the object get too small or too large.
-            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 10.0f));
+            mScaleFactor = Math.max(getMinGridScaleFactor(), Math.min(mScaleFactor, getMaxGridScaleFactor()+getMaxViewItemScaleFactor()));
             Log.d(TAG, "scale factor end: " + mScaleFactor);
             //invalidate();
             // doScale();
