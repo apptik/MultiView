@@ -149,9 +149,10 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     public void addView(View child, int index) {
         if (showOneItemOnly) {
             ViewGroup.LayoutParams lp = child.getLayoutParams() == null ?
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT) : child.getLayoutParams();
+                    new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT) : child.getLayoutParams();
 
-            //todo isnt it better to wrap it in a group view ?
+            //q: isn't it better to wrap it in a group view ?
+            //a: no because we need to transfer the layoutparams containing viewholder assigned from the adapter.
             lp.width = getWidth();
             lp.height = getHeight();
             child.setLayoutParams(lp);
@@ -173,7 +174,6 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     @Override
     public void onScrollStateChanged(int newState) {
         super.onScrollStateChanged(newState);
-        //if(newState != -123) return;
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
             Log.d(TAG, "onScrollStateChanged DRAGGING");
             //reset adjusted
@@ -183,8 +183,10 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             if (flingOneItemOnly) {
                 prevView = canScrollHorizontally() ? ViewUtils.getCenterXChild(mRecyclerView) :
                         ViewUtils.getCenterYChild(mRecyclerView);
-                mLeft = prevView.getLeft();
-                mTop = prevView.getTop();
+                if(prevView!=null) {
+                    mLeft = prevView.getLeft();
+                    mTop = prevView.getTop();
+                }
             }
 
         } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {

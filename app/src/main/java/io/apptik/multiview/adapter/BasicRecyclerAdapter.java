@@ -35,10 +35,10 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
                     Log.d(TAG, "Element " + getAdapterPosition() + " clicked.");
                 }
             });
-             txt1 = (TextView)v.findViewById(R.id.txt1);
-            txt2 = (TextView)v.findViewById(R.id.txt2);
-            txt3 = (TextView)v.findViewById(R.id.txt3);
-            txt4 = (TextView)v.findViewById(R.id.txt4);
+            txt1 = (TextView) v.findViewById(R.id.txt1);
+            txt2 = (TextView) v.findViewById(R.id.txt2);
+            txt3 = (TextView) v.findViewById(R.id.txt3);
+            txt4 = (TextView) v.findViewById(R.id.txt4);
         }
 
     }
@@ -46,11 +46,9 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
 
     /**
      * Initialize the dataset of the Adapter.
-     *
      */
     public BasicRecyclerAdapter(JsonArray jsonArray) {
         jarr = jsonArray;
-
     }
 
     // BEGIN_INCLUDE(recyclerViewOnCreateViewHolder)
@@ -77,7 +75,6 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
         viewHolder.txt2.setText("pos: " + position);
 
 
-
     }
     // END_INCLUDE(recyclerViewOnBindViewHolder)
 
@@ -90,6 +87,6 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
 
     @Override
     public int getItemViewType(int position) {
-        return position%2;
+        return position % 2;
     }
 }

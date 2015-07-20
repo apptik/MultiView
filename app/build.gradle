@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "23.0.0 rc2"
+    buildToolsVersion "23.0.0 rc3"
 
     defaultConfig {
         applicationId "io.apptik.multiview"
@@ -33,7 +33,9 @@ dependencies {
     compile project(':decorations')
     compile project(':layoutmanagers')
     compile project(':scrollers')
+    compile project(':scalablerecyclerview')
     compile project(':galleryview')
+
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:cardview-v7:22.2.0'

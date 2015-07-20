@@ -1,0 +1,25 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_layout"
+        android:icon="@drawable/ic_action_toggle_layout"
+        android:orderInCategory="2"
+        android:title="Layout"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_layout_linear"
+                android:orderInCategory="1"
+                android:title="Linear" />
+            <item
+                android:id="@+id/action_layout_grid"
+                android:orderInCategory="2"
+                android:title="Grid" />
+            <item
+                android:id="@+id/action_layout_staggered"
+                android:orderInCategory="3"
+                android:title="Staggered" />
+        </menu>
+    </item>
+</menu>

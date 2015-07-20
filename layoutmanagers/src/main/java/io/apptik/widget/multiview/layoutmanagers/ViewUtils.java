@@ -5,6 +5,8 @@ import android.view.View;
 
 public class ViewUtils {
 
+
+
     /**
      * Get center child in X Axes
      */

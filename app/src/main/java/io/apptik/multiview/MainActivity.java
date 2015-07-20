@@ -17,23 +17,24 @@ public class MainActivity extends AppCompatActivity
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    Toolbar toolbar;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
-    private CharSequence mTitle;
+    private CharSequence mTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("MultiView");
         setSupportActionBar(toolbar);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-        mTitle = getTitle();
+       mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity
         switch(position) {
             case 0: fragToAdd =  BasicFragment.newInstance(); break;
             case 1: fragToAdd = LayoutsFragment.newInstance(); break;
+
+            case 6: fragToAdd = GalleryFragment.newInstance(); break;
             default: fragToAdd = BlankFragment.newInstance(); break;
         }
         if(fragToAdd!=null) {
@@ -56,29 +59,37 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.container, fragToAdd)
                     .commit();
         }
+        onSectionAttached(position);
     }
+
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case 0:
                 mTitle = getString(R.string.title_section1);
                 break;
-            case 2:
+            case 1:
                 mTitle = getString(R.string.title_section2);
                 break;
-            case 3:
+            case 2:
                 mTitle = getString(R.string.title_section3);
                 break;
-            case 4:
+            case 3:
                 mTitle = getString(R.string.title_section4);
                 break;
-            case 5:
+            case 4:
                 mTitle = getString(R.string.title_section5);
                 break;
-            case 6:
+            case 5:
                 mTitle = getString(R.string.title_section6);
+            case 6:
+                mTitle = getString(R.string.title_section7);
                 break;
         }
+        if(toolbar!=null) {
+            toolbar.setTitle(mTitle);
+        }
+        //getSupportActionBar().setTitle(mTitle);
     }
 
 
