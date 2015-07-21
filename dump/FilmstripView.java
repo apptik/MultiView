@@ -43,7 +43,7 @@ public class FilmstripView extends ViewGroup
     private static final int GEOMETRY_ADJUST_TIME_MS = 400;
     private static final int SNAP_IN_CENTER_TIME_MS = 600;
     private static final float FLING_COASTING_DURATION_S = 0.05f;
-    private static final int ZOOM_ANIMATION_DURATION_MS = 200;
+    private static final int ZOOMx_ANIMATION_DURATION_MS = 200;
     private static final int CAMERA_PREVIEW_SWIPE_THRESHOLD = 300;
     private static final float FILM_STRIP_SCALE = 0.7f;
     private static final float FULL_SCREEN_SCALE = 1f;
