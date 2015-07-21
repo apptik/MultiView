@@ -241,9 +241,10 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         }
 
         mSmoothScrollTargetPosition = targetPosition;
+        if (mSmoothScrollTargetPosition != prevPos) {
+            onPositionChanging(prevPos, mSmoothScrollTargetPosition);
+        }
         smoothScrollTo(mSmoothScrollTargetPosition);
-
-
         if (mSmoothScrollTargetPosition != prevPos) {
             onPositionChanged(prevPos, mSmoothScrollTargetPosition);
         }
@@ -270,6 +271,9 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         return position;
     }
 
+    protected void onPositionChanging(int currPos, int newPos) {
+        Log.d(TAG, "onPositionChanging:" + currPos + "/" + newPos);
+    }
     protected void onPositionChanged(int prevPos, int newPos) {
         Log.d(TAG, "onPositionChanged:" + prevPos + "/" + newPos);
     }

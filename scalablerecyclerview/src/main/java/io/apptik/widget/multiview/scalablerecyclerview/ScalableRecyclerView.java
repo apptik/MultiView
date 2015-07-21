@@ -32,11 +32,11 @@ public class ScalableRecyclerView extends RecyclerView {
     private GestureDetector mGestureDetector;
     private volatile float mOldScaleFactor = 1.f;
     private volatile float mScaleFactor = 1.f;
+    private volatile boolean mWillNotScaleMore = false;
 
     private AnimatorSet mFlingAnimator;
     private AnimatorSet mPanAnimator;
     private ValueAnimator mZoomAnimator;
-
 
 
     //the point of the view that is touched for scaling
@@ -46,7 +46,7 @@ public class ScalableRecyclerView extends RecyclerView {
     private volatile boolean mIsScaling = false;
 
     private GridLayoutManager mLayoutManagerGrid;
-    private LayoutManager mLayoutManagerSingle;
+    private ViewPagerLayoutManager mLayoutManagerSingle;
 
 
     public ScalableRecyclerView(Context context) {
@@ -66,22 +66,41 @@ public class ScalableRecyclerView extends RecyclerView {
 
     @Override
     public void setLayoutManager(LayoutManager layout) {
-        if(!GridLayoutManager.class.isAssignableFrom(layout.getClass())) {
+        if (!GridLayoutManager.class.isAssignableFrom(layout.getClass())) {
             throw new RuntimeException("GridLayoutManager required.");
         }
         mLayoutManagerGrid = (GridLayoutManager) layout;
-        if(super.getLayoutManager()!=mLayoutManagerSingle) {
+        if (super.getLayoutManager() != mLayoutManagerSingle) {
             doScale(getItemPosition(-1, -1));
         }
     }
 
     private void init(Context context) {
         mLayoutManagerGrid = new GridLayoutManager(getContext(), 3);
-        mLayoutManagerSingle = new ViewPagerLayoutManager(getContext());
+        mLayoutManagerSingle = new ViewPagerLayoutManager(getContext()).withPageChangeListener(
+                new ViewPagerLayoutManager.PageChangeListener() {
+                    @Override
+                    public void onPageChanging(int currPage, int newPage) {
+                        Log.d(TAG, "page changing: " + currPage + ":" + newPage);
+                        if (currPage > -1) {
+                            View curentView = mLayoutManagerSingle.findViewByPosition(currPage);
+                            resetItemScale(curentView);
+                            mOldScaleFactor = mScaleFactor = getMaxGridScaleFactor() + 0.001f;
+                            //doScale(newPage);
+                        }
+                    }
+
+                    @Override
+                    public void onPageChange(int prevPage, int newPage) {
+
+                    }
+                }
+        );
+
         super.setLayoutManager(mLayoutManagerGrid);
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 
-        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 View curentView = getChildAt(0);
@@ -91,12 +110,11 @@ public class ScalableRecyclerView extends RecyclerView {
 
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                View curentView = getChildAt(0);
-                panAnimate(curentView, velocityX*20, velocityY*20);
-                return true;
+                //View curentView = getChildAt(0);
+                //panAnimate(curentView, velocityX*20, velocityY*20);
+                return false;
             }
         });
-
 
 
     }
@@ -119,16 +137,19 @@ public class ScalableRecyclerView extends RecyclerView {
 
         if (mIsScaling) {
             if (action == MotionEvent.ACTION_CANCEL || action == MotionEvent.ACTION_UP) {
+                doScale(getItemPosition(mFromX, mFromY));
                 // Release the scale.
                 mIsScaling = false;
-                doScale(getItemPosition(mFromX, mFromY));
+                if(mWillNotScaleMore) {
+                    mWillNotScaleMore = false;
+                }
             }
         }
 
 
         mScaleDetector.onTouchEvent(ev);
-        if(mIsScaling) return true;
-        if(isZoomedInSingle()) {
+        if (mIsScaling) return true;
+        if (isZoomedInSingle()) {
             if (mGestureDetector.onTouchEvent(ev)) return true;
         }
 
@@ -137,12 +158,12 @@ public class ScalableRecyclerView extends RecyclerView {
 
     @Override
     public void onDraw(Canvas canvas) {
-        if(!isZoomedInSingle() && mIsScaling) {
-            float newScale = mScaleFactor - mOldScaleFactor +1;
+        if (!isInViewPagerMode() && mIsScaling) {
+            float newScale = mScaleFactor - mOldScaleFactor + 1;
 
             canvas.scale(newScale, newScale);
         } else {
-            canvas.scale(1,1);
+            canvas.scale(1, 1);
         }
         super.onDraw(canvas);
     }
@@ -156,12 +177,12 @@ public class ScalableRecyclerView extends RecyclerView {
     }
 
     protected float getMinGridScaleFactor() {
-        return 1/ DEFAULT_MAX_GRID_SCALE_FACTOR;
+        return 1 / DEFAULT_MAX_GRID_SCALE_FACTOR;
     }
 
     protected int getGridSpanCount(float scaleFactor) {
         if (scaleFactor < 1) {
-            return 3 + Math.round(1/scaleFactor) ;
+            return 3 + Math.round(1 / scaleFactor);
         } else if (scaleFactor < 2) {
             return 3;
         } else if (scaleFactor < 3) {
@@ -189,16 +210,16 @@ public class ScalableRecyclerView extends RecyclerView {
 //    }
 
     private synchronized void doScale(int currPos) {
-        Log.d(TAG, "scale before pos: " + currPos);
-       resetItemScale(this);
+        Log.d(TAG, "doScale : " + currPos + " :: " + mOldScaleFactor + "/" + mScaleFactor);
+        //resetItemScale(this);
         //we are in grid
         if (mScaleFactor <= getMaxGridScaleFactor()) {
-            int newRowSpan =  getGridSpanCount(mScaleFactor);
-            if(mLayoutManagerGrid.getSpanCount()!=newRowSpan) {
+            int newRowSpan = getGridSpanCount(mScaleFactor);
+            if (mLayoutManagerGrid.getSpanCount() != newRowSpan) {
                 mLayoutManagerGrid.setSpanCount(newRowSpan);
                 mLayoutManagerGrid.requestLayout();
             }
-            //check if we are not coming form single item layout
+            //check if we are coming form single item layout
             if (mOldScaleFactor > getMaxGridScaleFactor()) {
                 super.setLayoutManager(mLayoutManagerGrid);
                 getRecycledViewPool().clear();
@@ -206,21 +227,23 @@ public class ScalableRecyclerView extends RecyclerView {
             }
 
         } else {
-            //check if we are not coming from gridlayout
+            //check if we are coming from gridlayout
             if (mOldScaleFactor <= getMaxGridScaleFactor()) {
                 super.setLayoutManager(mLayoutManagerSingle);
                 getRecycledViewPool().clear();
                 scrollToPosition(currPos);
                 mScaleFactor = getMaxGridScaleFactor() + 0.001f;
+                mWillNotScaleMore = true;
             }
 
-            if(mScaleFactor>(getMaxGridScaleFactor() + 0.001f)) {
+            if (!mWillNotScaleMore && mScaleFactor > (getMaxGridScaleFactor() + 0.001f)) {
                 // zoom view with factor absolute mScaleFactor
                 float viewScaleFactor = mScaleFactor + 1 - getMaxGridScaleFactor();
-                float viewOldScaleFacotor = mOldScaleFactor + 1- getMaxGridScaleFactor();
-                if(viewOldScaleFacotor<1) {
+                float viewOldScaleFacotor = mOldScaleFactor + 1 - getMaxGridScaleFactor();
+                if (viewOldScaleFacotor < 1) {
                     viewOldScaleFacotor = 1f;
                 }
+               // View curentView = mLayoutManagerSingle.findViewByPosition(currPos);
                 View curentView = getChildAt(0);
                 Log.d(TAG, "scale view : " + viewScaleFactor + " /  " + curentView.getScaleX() + ":" + curentView.getScaleY());
                 zoomAnimate(curentView, viewOldScaleFacotor, viewScaleFactor);
@@ -228,31 +251,32 @@ public class ScalableRecyclerView extends RecyclerView {
         }
 
 
-        if(isZoomedInSingle()) {
+        if(mWillNotScaleMore) {
+            mOldScaleFactor = mScaleFactor = getMaxGridScaleFactor() + 0.001f;
+        } else if (isZoomedInSingle()) {
             mOldScaleFactor = mScaleFactor;
-        }
-        else if(isInViewPagerMode()) {
+        } else if (isInViewPagerMode()) {
             mOldScaleFactor = getMaxGridScaleFactor() + 0.001f;
         } else {
             mOldScaleFactor = mScaleFactor;
-           // mOldScaleFactor = getScaleFactorForSpanCount(mLayoutManagerGrid.getSpanCount());
+            // mOldScaleFactor = getScaleFactorForSpanCount(mLayoutManagerGrid.getSpanCount());
         }
     }
 
     public boolean isInViewPagerMode() {
-        return mScaleFactor>getMaxGridScaleFactor();
+        return mScaleFactor > getMaxGridScaleFactor();
     }
 
     public boolean isZoomedInSingle() {
-        return mScaleFactor>(getMaxGridScaleFactor() + 0.001f);
+        return mScaleFactor > (getMaxGridScaleFactor() + 0.001f);
     }
 
-    private void panAnimate(final View currentView,float distanceX, float distanceY) {
-        if(mPanAnimator!=null) {
+    private void panAnimate(final View currentView, float distanceX, float distanceY) {
+        if (mPanAnimator != null) {
             mPanAnimator.end();
         }
-        ValueAnimator panAnimatorX = ValueAnimator.ofFloat(currentView.getTranslationX(), currentView.getTranslationX()-distanceX);
-        ValueAnimator panAnimatorY = ValueAnimator.ofFloat(currentView.getTranslationY(), currentView.getTranslationY()-distanceY);
+        ValueAnimator panAnimatorX = ValueAnimator.ofFloat(currentView.getTranslationX(), currentView.getTranslationX() - distanceX);
+        ValueAnimator panAnimatorY = ValueAnimator.ofFloat(currentView.getTranslationY(), currentView.getTranslationY() - distanceY);
         panAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -297,8 +321,8 @@ public class ScalableRecyclerView extends RecyclerView {
         mPanAnimator.start();
     }
 
-    private void zoomAnimate(final View currentView,float fromScaleFactor, float toScaleFactor) {
-        if(mZoomAnimator!=null) {
+    private void zoomAnimate(final View currentView, float fromScaleFactor, float toScaleFactor) {
+        if (mZoomAnimator != null) {
             mZoomAnimator.end();
         }
         mZoomAnimator = new ValueAnimator();
@@ -338,7 +362,7 @@ public class ScalableRecyclerView extends RecyclerView {
     }
 
     void resetItemScale(View view) {
-       //  view = getChildAt(0);
+        if (view == null) return;
         view.setScaleX(1f);
         view.setScaleY(1f);
         view.setTranslationX(0f);
@@ -368,10 +392,11 @@ public class ScalableRecyclerView extends RecyclerView {
             mScaleFactor *= detector.getScaleFactor();
             Log.d(TAG, "scale factor after: " + mScaleFactor);
             // Don't let the object get too small or too large.
-            mScaleFactor = Math.max(getMinGridScaleFactor(), Math.min(mScaleFactor, getMaxGridScaleFactor()+getMaxViewItemScaleFactor()));
+            mScaleFactor = Math.max(getMinGridScaleFactor(), Math.min(mScaleFactor, getMaxGridScaleFactor() + getMaxViewItemScaleFactor()));
             Log.d(TAG, "scale factor end: " + mScaleFactor);
 
-            if(isInViewPagerMode()) {
+            if (isInViewPagerMode()) {
+               // doScale(getItemPosition(mFromX, mFromY));
                 doScale(getItemPosition(mFromX, mFromY));
             } else {
                 if (mLayoutManagerGrid.getSpanCount() != getGridSpanCount(mScaleFactor)) {

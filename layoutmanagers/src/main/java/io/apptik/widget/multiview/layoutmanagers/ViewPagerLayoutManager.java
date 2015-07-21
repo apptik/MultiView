@@ -47,6 +47,14 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
     }
 
     @Override
+    protected void onPositionChanging(int currPos, int newPos) {
+        if(pageChangeListener!=null) {
+            pageChangeListener.onPageChanging(currPos, newPos);
+        }
+        super.onPositionChanged(currPos, newPos);
+    }
+
+    @Override
     protected void onPositionChanged(int prevPos, int newPos) {
         if(pageChangeListener!=null) {
             pageChangeListener.onPageChange(prevPos, newPos);
@@ -55,6 +63,7 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
     }
 
     public interface PageChangeListener {
+        void onPageChanging(int currPage, int newPage);
         void onPageChange(int prevPage, int newPage);
     }
 
