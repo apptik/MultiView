@@ -11,6 +11,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -28,11 +29,14 @@ public class ScalableRecyclerView extends RecyclerView {
     public static final int ZOOM_ANIMATION_DURATION_MS = 200;
 
     private ScaleGestureDetector mScaleDetector;
+    private GestureDetector mGestureDetector;
     private volatile float mOldScaleFactor = 1.f;
     private volatile float mScaleFactor = 1.f;
 
     private AnimatorSet mFlingAnimator;
+    private AnimatorSet mPanAnimator;
     private ValueAnimator mZoomAnimator;
+
 
 
     //the point of the view that is touched for scaling
@@ -73,9 +77,28 @@ public class ScalableRecyclerView extends RecyclerView {
 
     private void init(Context context) {
         mLayoutManagerGrid = new GridLayoutManager(getContext(), 3);
-        mLayoutManagerSingle =  new ViewPagerLayoutManager(getContext());
+        mLayoutManagerSingle = new ViewPagerLayoutManager(getContext());
         super.setLayoutManager(mLayoutManagerGrid);
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                View curentView = getChildAt(0);
+                panAnimate(curentView, distanceX, distanceY);
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                View curentView = getChildAt(0);
+                panAnimate(curentView, velocityX*20, velocityY*20);
+                return true;
+            }
+        });
+
+
+
     }
 
 
@@ -84,6 +107,7 @@ public class ScalableRecyclerView extends RecyclerView {
     //todo
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -101,14 +125,14 @@ public class ScalableRecyclerView extends RecyclerView {
             }
         }
 
+
         mScaleDetector.onTouchEvent(ev);
-        if (mIsScaling) {
-            return true;
-        } else {
-            return super.onTouchEvent(ev);
+        if(mIsScaling) return true;
+        if(isZoomedInSingle()) {
+            if (mGestureDetector.onTouchEvent(ev)) return true;
         }
 
-
+        return super.onTouchEvent(ev);
     }
 
     @Override
@@ -221,6 +245,56 @@ public class ScalableRecyclerView extends RecyclerView {
 
     public boolean isZoomedInSingle() {
         return mScaleFactor>(getMaxGridScaleFactor() + 0.001f);
+    }
+
+    private void panAnimate(final View currentView,float distanceX, float distanceY) {
+        if(mPanAnimator!=null) {
+            mPanAnimator.end();
+        }
+        ValueAnimator panAnimatorX = ValueAnimator.ofFloat(currentView.getTranslationX(), currentView.getTranslationX()-distanceX);
+        ValueAnimator panAnimatorY = ValueAnimator.ofFloat(currentView.getTranslationY(), currentView.getTranslationY()-distanceY);
+        panAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float translation = (Float) animation.getAnimatedValue();
+                currentView.setTranslationX(translation);
+            }
+        });
+        panAnimatorY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float translation = (Float) animation.getAnimatedValue();
+                currentView.setTranslationY(translation);
+            }
+        });
+
+        mPanAnimator = new AnimatorSet();
+        mPanAnimator.play(panAnimatorX).with(panAnimatorY);
+        mPanAnimator.setDuration(ZOOM_ANIMATION_DURATION_MS);
+        mPanAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mPanAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mPanAnimator = null;
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        mPanAnimator.start();
     }
 
     private void zoomAnimate(final View currentView,float fromScaleFactor, float toScaleFactor) {

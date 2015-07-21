@@ -54,12 +54,12 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     }
 
     private SnapperLinearLayoutManager withAdjustSmoothScroller(RecyclerView.SmoothScroller smoothScroller) {
-        this.smoothScroller =  smoothScroller;
+        this.smoothScroller = smoothScroller;
         return this;
     }
 
     private SnapperLinearLayoutManager withAdjustScrollSpeed(float millisecondsPerInch) {
-        this.millisecondsPerInch =  millisecondsPerInch;
+        this.millisecondsPerInch = millisecondsPerInch;
         return this;
     }
 
@@ -79,7 +79,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                     @Override
                     public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int
                             snapPreference) {
-                        Log.d(TAG, "calculateDtToFit " + viewStart+ " : "  + viewEnd+ " : "  + boxStart+ " : "  + boxEnd+ " : " );
+                        Log.d(TAG, "calculateDtToFit " + viewStart + " : " + viewEnd + " : " + boxStart + " : " + boxEnd + " : ");
                         switch (snapMethod) {
                             case SNAP_START:
                                 return boxStart - viewStart;
@@ -89,7 +89,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                                 int boxMid = boxStart + (boxEnd - boxStart) / 2;
                                 int viewMid = viewStart + (viewEnd - viewStart) / 2;
                                 final int dt1 = boxMid - viewMid;
-                                Log.d(TAG, "calculateDtToFit2 " + boxMid+ " : "  + viewMid+ " : "  + dt1);
+                                Log.d(TAG, "calculateDtToFit2 " + boxMid + " : " + viewMid + " : " + dt1);
                                 return dt1;
 
                             case SNAP_NONE:
@@ -183,7 +183,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             if (flingOneItemOnly) {
                 prevView = canScrollHorizontally() ? ViewUtils.getCenterXChild(mRecyclerView) :
                         ViewUtils.getCenterYChild(mRecyclerView);
-                if(prevView!=null) {
+                if (prevView != null) {
                     mLeft = prevView.getLeft();
                     mTop = prevView.getTop();
                 }
@@ -245,9 +245,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
 
         if (mSmoothScrollTargetPosition != prevPos) {
-
-            Log.d(TAG, "onPageChanged:" + mSmoothScrollTargetPosition + "/" + prevPos);
-            // TODO callback
+            onPageChanged(mSmoothScrollTargetPosition);
         }
     }
 
@@ -270,5 +268,9 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             return count - 1;
         }
         return position;
+    }
+
+    protected void onPageChanged(int page) {
+        Log.d(TAG, "onPageChanged:" + mSmoothScrollTargetPosition);
     }
 }
