@@ -16,6 +16,7 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
 
     private float tmpScale = 1.0f;
     protected int initSpanCount = -1;
+    private boolean animateItemChangedOnScaleChange = false;
 
 
     public ScalableGridLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -84,71 +85,23 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
     }
 
     @Override
-    public void onItemsAdded(RecyclerView recyclerView, int positionStart, int itemCount) {
-        super.onItemsAdded(recyclerView, positionStart, itemCount);
-    }
-
-    @Override
-    public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        super.onLayoutChildren(recycler, state);
-    }
-
-    @Override
-    public void layoutDecorated(View child, int left, int top, int right, int bottom) {
-        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-
-        super.layoutDecorated(child, left, top,
-                right, bottom);
-    }
-
-    @Override
-    public void measureChild(View child, int widthUsed, int heightUsed) {
-        super.measureChild(child, widthUsed, heightUsed);
-    }
-
-    @Override
-    public void measureChildWithMargins(View child, int widthUsed, int heightUsed) {
-        super.measureChildWithMargins(child, widthUsed, heightUsed);
-    }
-
-    @Override
-    public int getDecoratedMeasuredWidth(View child) {
-        //child.setScaleX(getScale());
-        //child.setScaleY(getScale());
-        return (int) (super.getDecoratedMeasuredWidth(child)
-                //*getScale()
-        );
-    }
-
-    @Override
-    public int getDecoratedMeasuredHeight(View child) {
-        //child.setScaleX(getScale());
-        //child.setScaleY(getScale());
+    public void addView(View child, int index) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        Log.d("getDecoratedMeasuredHeight: lp: " + lp.width + "/" + lp.height);
+        Log.d("getDecoratedMeasuredHeight: lp old: " + lp.width + "/" + lp.height);
         lp.height= (int) (lp.origHeight*getScale());
-//        lp.width*=getScale();
-//        child.setLayoutParams(lp);
-        return (int) (super.getDecoratedMeasuredHeight(child)
-                //*getScale()
-        );
+        lp.width=(int) (lp.origWidth*getScale());
+        Log.d("getDecoratedMeasuredHeight: lp new: " + lp.width + "/" + lp.height);
+        super.addView(child, index);
     }
 
     @Override
     public void setSpanCount(int spanCount) {
+        if(spanCount==getSpanCount()) return;
         super.setSpanCount(spanCount);
-//        if(mRecyclerView!=null && mRecyclerView.getAdapter()!=null) {
-//            mRecyclerView.getAdapter().notifyDataSetChanged();
-//        }
         int childCount = getChildCount();
-        if(childCount>0) {
+        if(childCount>0 && animateItemChangedOnScaleChange) {
             mRecyclerView.getAdapter()
                     .notifyItemRangeChanged(mRecyclerView.getChildAdapterPosition(getChildAt(0)), childCount * 2);
-//            for (int i = 0; i < childCount; i++) {
-//            LayoutParams lp = (LayoutParams) getChildAt(i).getLayoutParams();
-//            lp.height= (int) (lp.origHeight*getScale());
-//            getChildAt(i).invalidate();
-//            }
         }
     }
 
