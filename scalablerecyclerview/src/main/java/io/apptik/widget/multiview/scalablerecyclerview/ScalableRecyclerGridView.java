@@ -191,7 +191,18 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 newScale = 1f + currFactor - (float)initSpanCount/(float)newSpanCount;
                 newScale = Math.max(1f,newScale);
             } else {
-                //do nothing
+                //check if we were zoomed out before
+                if(newSpanCount>initSpanCount) {
+                    newScale = 1f + currFactor - (float)initSpanCount/(float)newSpanCount;
+                    newScale = Math.max(1f,newScale);
+                } else {
+                    if(initSpanCount==1) {
+                        //chnage to single LM here
+                        newScale = 1;
+                    } else {
+                        newScale = Math.min(currFactor, (float) (initSpanCount) / (float) (initSpanCount - 1));
+                    }
+                }
             }
 
             if(newSpanCount != layoutManagerGrid.getSpanCount()) {
