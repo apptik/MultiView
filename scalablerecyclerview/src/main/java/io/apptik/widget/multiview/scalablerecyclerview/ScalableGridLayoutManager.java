@@ -129,10 +129,12 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
         lp.height= (int) (lp.origHeight*getScale());
 //        lp.width*=getScale();
 //        child.setLayoutParams(lp);
-        return (int) (super.getDecoratedMeasuredHeight(child)
-                //*getScale()
+        return (super.getDecoratedMeasuredHeight(child)
         );
     }
+
+
+
 
     @Override
     public void setSpanCount(int spanCount) {
