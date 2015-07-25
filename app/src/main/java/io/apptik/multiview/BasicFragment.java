@@ -65,6 +65,7 @@ public class BasicFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(recyclerView==null ) return false;
+        //TransitionManager.beginDelayedTransition(recyclerView);
         switch (item.getItemId()) {
             case R.id.action_text_only: recyclerView.setAdapter(recyclerAdapter); break;
             case R.id.action_image_only: break;

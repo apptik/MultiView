@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity
             case 0: fragToAdd =  BasicFragment.newInstance(); break;
             case 1: fragToAdd = LayoutsFragment.newInstance(); break;
 
-            case 6: fragToAdd = GalleryFragment.newInstance(); break;
+            case 6: fragToAdd = ScalableRVFragment.newInstance(); break;
             default: fragToAdd = BlankFragment.newInstance(); break;
         }
         if(fragToAdd!=null) {

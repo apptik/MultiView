@@ -1,6 +1,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_adapter"
+        android:icon="@drawable/ic_action_toggle_adapter"
+        android:orderInCategory="1"
 
+        android:title="Adapter"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_text_only"
+                android:orderInCategory="1"
+                android:title="Text Only" />
+            <item
+                android:id="@+id/action_Image_text"
+                android:orderInCategory="2"
+                android:title="Image+Text" />
+            <item
+                android:id="@+id/action_image_only"
+                android:orderInCategory="3"
+                android:title="Image Only" />
+        </menu>
+    </item>
     <item
         android:id="@+id/action_layout"
         android:icon="@drawable/ic_action_toggle_layout"

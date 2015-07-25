@@ -12,24 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
+import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GalleryFragment extends Fragment {
+public class ScalableRVFragment extends Fragment {
 
 
     RecyclerView recyclerView = null;
+    BasicRecyclerAdapter recyclerAdapter;
+
     BasicMixedRecyclerAdapter recyclerMixedAdapter;
 
-    public GalleryFragment() {
+    public ScalableRVFragment() {
         // Required empty public constructor
     }
 
-    public static GalleryFragment newInstance() {
-        GalleryFragment fragment = new GalleryFragment();
+    public static ScalableRVFragment newInstance() {
+        ScalableRVFragment fragment = new ScalableRVFragment();
         return fragment;
     }
 
@@ -38,13 +41,13 @@ public class GalleryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.setHasOptionsMenu(true);
-        View v = inflater.inflate(R.layout.fragment_galleryview, container, false);
+        View v = inflater.inflate(R.layout.fragment_scalablerv, container, false);
          recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
 
+        recyclerAdapter = new BasicRecyclerAdapter(MockData.getMockJsonArray(333, 500));
 
-         recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
+        recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
 
-        //recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
         recyclerView.setAdapter(recyclerMixedAdapter);
         return v;
     }
@@ -52,13 +55,17 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.gallery, menu);
+        inflater.inflate(R.menu.scalable_rv, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(recyclerView==null ) return false;
         switch (item.getItemId()) {
+            case R.id.action_text_only: recyclerView.setAdapter(recyclerAdapter); break;
+            case R.id.action_image_only: break;
+            case R.id.action_Image_text: recyclerView.setAdapter(recyclerMixedAdapter); break;
+
 //            case R.id.action_layout_linear: recyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); break;
 //            case R.id.action_layout_grid: recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3)); break;
 //            case R.id.action_layout_staggered: recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)); break;
