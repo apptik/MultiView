@@ -160,13 +160,17 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         super.addView(child, index);
     }
 
-    public int getCenterPosition() {
-        int curPosition = -1;
-        if (canScrollHorizontally()) {
-            curPosition = ViewUtils.getCenterXChildPosition(mRecyclerView);
-        } else {
-            curPosition = ViewUtils.getCenterYChildPosition(mRecyclerView);
-        }
+
+    public View getCenterItem() {
+        int middleX = (int) (mRecyclerView.getX() + (mRecyclerView.getWidth() * mRecyclerView.getScaleX()) / 2);
+        int middleY = (int) (mRecyclerView.getY() + (mRecyclerView.getHeight() * mRecyclerView.getScaleY()) / 2);
+        View v = mRecyclerView.findChildViewUnder(middleX, middleY);
+        return v;
+    }
+
+    public int getCenterItemPosition() {
+        View v = getCenterItem();
+        int curPosition = mRecyclerView.getChildAdapterPosition(v);
         return curPosition;
     }
 
@@ -181,8 +185,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
             //in case of trigger we need to know where we come from
             if (flingOneItemOnly) {
-                prevView = canScrollHorizontally() ? ViewUtils.getCenterXChild(mRecyclerView) :
-                        ViewUtils.getCenterYChild(mRecyclerView);
+                prevView = getCenterItem();
                 if (prevView != null) {
                     mLeft = prevView.getLeft();
                     mTop = prevView.getTop();
@@ -216,7 +219,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
 
         //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the top in case of SNAP_START
-        int targetPosition = getCenterPosition();
+        int targetPosition = getCenterItemPosition();
 
         if (prevView != null) {
             targetPosition = getPosition(prevView);

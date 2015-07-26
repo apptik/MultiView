@@ -17,7 +17,6 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import io.apptik.widget.multiview.layoutmanagers.ViewPagerLayoutManager;
-import io.apptik.widget.multiview.layoutmanagers.ViewUtils;
 
 
 public class ScalableRecyclerViewOld extends RecyclerView {
@@ -318,11 +317,18 @@ public class ScalableRecyclerViewOld extends RecyclerView {
         if (viewOldScaleFacotor < 1) {
             viewOldScaleFacotor = 1f;
         }
-        // View curentView = mLayoutManagerSingle.findViewByPosition(currPos);
-        View curentView = ViewUtils.getCenterItem(this, mLayoutManagerSingle.canScrollHorizontally());
+        // View curentView = layoutManagerSingle.findViewByPosition(currPos);
+        View curentView = getCenterItem();
         //View curentView = this.findViewHolderForAdapterPosition(currPos).itemView;
         Log.d(TAG, "scale view : " + viewScaleFactor + " /  " + curentView.getScaleX() + ":" + curentView.getScaleY());
         zoomAnimate(curentView, viewOldScaleFacotor, viewScaleFactor);
+    }
+
+    public View getCenterItem() {
+        int middleX = (int) (this.getX() + (this.getWidth() * this.getScaleX()) / 2);
+        int middleY = (int) (this.getY() + (this.getHeight() * this.getScaleY()) / 2);
+        View v = this.findChildViewUnder(middleX, middleY);
+        return v;
     }
 
     public boolean isInViewPagerMode() {

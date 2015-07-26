@@ -14,7 +14,6 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
 
     RecyclerView mRecyclerView;
 
-    private float tmpScale = 1.0f;
     protected int initSpanCount = -1;
     private boolean animateItemChangedOnScaleChange = false;
 
@@ -38,15 +37,13 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
        initSpanCount = getSpanCount();
     }
 
-    public float getTmpScale() {
-        return tmpScale;
+    public boolean isAnimateItemChangedOnScaleChange() {
+        return animateItemChangedOnScaleChange;
     }
 
-    public void setTmpScale(float tmpScale) {
-        this.tmpScale = tmpScale;
+    public void setAnimateItemChangedOnScaleChange(boolean animateItemChangedOnScaleChange) {
+        this.animateItemChangedOnScaleChange = animateItemChangedOnScaleChange;
     }
-
-
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
@@ -106,7 +103,7 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
     }
 
     protected float getScale() {
-        return ((float)initSpanCount/(float)getSpanCount())*tmpScale;
+        return ((float)initSpanCount/(float)getSpanCount());
         //return 1f;
     }
     public static class LayoutParams extends GridLayoutManager.LayoutParams {

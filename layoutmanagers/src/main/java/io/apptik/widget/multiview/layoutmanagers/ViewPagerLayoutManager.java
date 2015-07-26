@@ -39,11 +39,11 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
     }
 
     public void goToNext() {
-        scrollToPosition(getCenterPosition() + 1);
+        scrollToPosition(getCenterItemPosition() + 1);
     }
 
     public void goToPrev() {
-        scrollToPosition(getCenterPosition() - 1);
+        scrollToPosition(getCenterItemPosition() - 1);
     }
 
     @Override

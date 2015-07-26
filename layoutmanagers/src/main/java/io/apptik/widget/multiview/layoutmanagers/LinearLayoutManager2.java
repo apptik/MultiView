@@ -9,7 +9,7 @@ import android.view.View;
 
 import java.lang.reflect.Field;
 
-public class LinearLayoutManager2 extends android.support.v7.widget.LinearLayoutManager {
+class LinearLayoutManager2 extends android.support.v7.widget.LinearLayoutManager {
 
     private static boolean canMakeInsetsDirty = true;
     private static Field insetsDirtyField = null;

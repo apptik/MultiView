@@ -1,4 +1,4 @@
-package io.apptik.widget.multiview.layoutmanagers;
+package io.apptik.widget.multiview.extras;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
