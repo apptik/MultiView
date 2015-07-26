@@ -7,14 +7,13 @@ import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import io.apptik.widget.multiview.common.Log;
+
 
 public class SnapperLinearLayoutManager extends LinearLayoutManager {
-
-    public static final String TAG = SnapperLinearLayoutManager.class.getName();
 
     public static final int SNAP_START = 1;
     public static final int SNAP_END = 2;
@@ -53,6 +52,31 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         super(context, orientation, reverseLayout);
     }
 
+
+    @Override
+    public RecyclerView.LayoutParams generateDefaultLayoutParams() {
+        LayoutParams nlp =  new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        // Log.d("generateLayoutParams: nlp: " + nlp.width + "/" + nlp.height);
+        return nlp;
+
+    }
+
+    @Override
+    public RecyclerView.LayoutParams generateLayoutParams(Context c, AttributeSet attrs) {
+        LayoutParams nlp =  new LayoutParams(c, attrs);
+        //Log.d("generateLayoutParams: nlp: " + nlp.width + "/" + nlp.height);
+        return nlp;
+    }
+
+
+    @Override
+    public RecyclerView.LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
+        LayoutParams nlp = new LayoutParams(super.generateLayoutParams(lp));
+        //Log.d("generateLayoutParams: nlp: " + nlp.width + "/" + nlp.height);
+        return nlp;
+    }
+
     private SnapperLinearLayoutManager withAdjustSmoothScroller(RecyclerView.SmoothScroller smoothScroller) {
         this.smoothScroller = smoothScroller;
         return this;
@@ -79,7 +103,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                     @Override
                     public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int
                             snapPreference) {
-                        Log.d(TAG, "calculateDtToFit " + viewStart + " : " + viewEnd + " : " + boxStart + " : " + boxEnd + " : ");
+                        Log.d("calculateDtToFit " + viewStart + " : " + viewEnd + " : " + boxStart + " : " + boxEnd + " : ");
                         switch (snapMethod) {
                             case SNAP_START:
                                 return boxStart - viewStart;
@@ -89,7 +113,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                                 int boxMid = boxStart + (boxEnd - boxStart) / 2;
                                 int viewMid = viewStart + (viewEnd - viewStart) / 2;
                                 final int dt1 = boxMid - viewMid;
-                                Log.d(TAG, "calculateDtToFit2 " + boxMid + " : " + viewMid + " : " + dt1);
+                                Log.d("calculateDtToFit2 " + boxMid + " : " + viewMid + " : " + dt1);
                                 return dt1;
 
                             case SNAP_NONE:
@@ -147,15 +171,13 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
     @Override
     public void addView(View child, int index) {
+        LayoutParams lp = (LayoutParams) child.getLayoutParams();
         if (showOneItemOnly) {
-            ViewGroup.LayoutParams lp = child.getLayoutParams() == null ?
-                    new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.MATCH_PARENT) : child.getLayoutParams();
-
-            //q: isn't it better to wrap it in a group view ?
-            //a: no because we need to transfer the layoutparams containing viewholder assigned from the adapter.
             lp.width = getWidth();
             lp.height = getHeight();
-            child.setLayoutParams(lp);
+        } else {
+            lp.width = lp.origWidth;
+            lp.height = lp.origHeight;
         }
         super.addView(child, index);
     }
@@ -179,7 +201,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     public void onScrollStateChanged(int newState) {
         super.onScrollStateChanged(newState);
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-            Log.d(TAG, "onScrollStateChanged DRAGGING");
+            Log.d("onScrollStateChanged DRAGGING");
             //reset adjusted
             adjusted = false;
 
@@ -193,14 +215,14 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             }
 
         } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
-            Log.d(TAG, "onScrollStateChanged SETTLING");
+            Log.d( "onScrollStateChanged SETTLING");
             //check if we need to settle
             if (flingOneItemOnly && !adjusted) {
                 //we need to stop here
                 adjust();
             }
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-            Log.d(TAG, "onScrollStateChanged IDLE");
+            Log.d("onScrollStateChanged IDLE");
             //check if we still need to settle
             if (!adjusted) {
                 //we did not swipe so just center
@@ -211,11 +233,11 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         }
     }
 
-    private synchronized void adjust() {
+    protected synchronized void adjust() {
         adjusted = true;
         if (smoothScroller != null && (smoothScroller.isRunning()) || isSmoothScrolling()) return;
         int prevPos = mRecyclerView.getChildLayoutPosition(prevView);
-        Log.d(TAG, "mPositionBeforeAdjust:" + prevPos);
+        Log.d("mPositionBeforeAdjust:" + prevPos);
 
 
         //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the top in case of SNAP_START
@@ -223,7 +245,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
         if (prevView != null) {
             targetPosition = getPosition(prevView);
-            Log.d(TAG, "adjust has mCurrView +");
+            Log.d("adjust has mCurrView +");
             if (canScrollHorizontally()) {
                 int spanX = prevView.getLeft() - mLeft;
                 if (spanX > prevView.getWidth() * mTriggerOffset) {
@@ -240,21 +262,21 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                 }
             }
         } else {
-            Log.d(TAG, "adjust no mCurrView just centering...");
+            Log.d("adjust no mCurrView just centering...");
         }
 
         mSmoothScrollTargetPosition = targetPosition;
         if (mSmoothScrollTargetPosition != prevPos) {
             onPositionChanging(prevPos, mSmoothScrollTargetPosition);
         }
-        smoothScrollTo(mSmoothScrollTargetPosition);
+        smoothAdjustTo(mSmoothScrollTargetPosition);
         if (mSmoothScrollTargetPosition != prevPos) {
             onPositionChanged(prevPos, mSmoothScrollTargetPosition);
         }
     }
 
 
-    private synchronized void smoothScrollTo(int targetPosition) {
+    protected synchronized void smoothAdjustTo(int targetPosition) {
         if (smoothScroller != null && (smoothScroller.isRunning()) || isSmoothScrolling()) return;
         if (smoothScroller == null) {
             smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), safeTargetPosition(targetPosition, getItemCount()));
@@ -275,9 +297,53 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     }
 
     protected void onPositionChanging(int currPos, int newPos) {
-        Log.d(TAG, "onPositionChanging:" + currPos + "/" + newPos);
+        Log.d("onPositionChanging:" + currPos + "/" + newPos);
     }
     protected void onPositionChanged(int prevPos, int newPos) {
-        Log.d(TAG, "onPositionChanged:" + prevPos + "/" + newPos);
+        Log.d("onPositionChanged:" + prevPos + "/" + newPos);
+    }
+
+    public static class LayoutParams extends RecyclerView.LayoutParams {
+
+        private int origHeight = 0;
+
+        private int origWidth = 0;
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+            origHeight = height;
+            origWidth = width;
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+            origHeight = height;
+            origWidth = width;
+        }
+
+        public LayoutParams(ViewGroup.MarginLayoutParams source) {
+            super(source);
+            origHeight = height;
+            origWidth = width;
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+            origHeight = height;
+            origWidth = width;
+        }
+
+        public LayoutParams(RecyclerView.LayoutParams source) {
+            super(source);
+            origHeight = height;
+            origWidth = width;
+        }
+
+        public int getOrigHeight() {
+            return origHeight;
+        }
+        public int getOrigWidth() {
+            return origWidth;
+        }
     }
 }
