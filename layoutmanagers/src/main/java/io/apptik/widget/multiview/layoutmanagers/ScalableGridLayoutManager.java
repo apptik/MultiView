@@ -1,4 +1,4 @@
-package io.apptik.widget.multiview.scalablerecyclerview;
+package io.apptik.widget.multiview.layoutmanagers;
 
 
 import android.content.Context;

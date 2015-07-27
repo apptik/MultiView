@@ -15,6 +15,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import io.apptik.widget.multiview.common.Log;
+import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
 import io.apptik.widget.multiview.layoutmanagers.ViewPagerLayoutManager;
 
 
@@ -145,7 +146,22 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
     @Override
     public void onDraw(Canvas c) {
-        c.scale(currScale, currScale, 0, 0);
+        //TODO why not handle it by interactionListener ??
+        if(!isInSingleMode() && interactionListener.currentView!=null) {
+            float px;
+            float py;
+
+            float dl = interactionListener.currentView.getX() - getX();
+            float dw = getWidth() - interactionListener.currentView.getWidth();
+            px = interactionListener.currentView.getX() + (dl/dw) *interactionListener.currentView.getWidth();
+
+            float dt = interactionListener.currentView.getY() - getY();
+            float dh = getHeight() - interactionListener.currentView.getHeight();
+
+            py  = interactionListener.currentView.getY() + (dt/dh) *interactionListener.currentView.getHeight();
+            //pivot for zooming depends on the ratio oft he distance of left and right(top and bottom) of the child to left and right(top and bottom) of the RV
+            c.scale(currScale, currScale, px ,py);
+        }
         super.onDraw(c);
     }
 
@@ -159,6 +175,8 @@ public class ScalableRecyclerGridView extends RecyclerView {
         volatile View currentView;
         volatile float mFromX;
         volatile float mFromY;
+
+        volatile boolean panned = false;
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -205,7 +223,17 @@ public class ScalableRecyclerGridView extends RecyclerView {
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             Log.d("onSingleTapUp: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
-            //ignore as the first tap might be part of a double tap so we use onSingleTapConfirmed only
+            if(panned && currentView.getX() > 0
+                //||
+                //currentView.getY()<getY()
+                    ) {
+                //adjust it
+                panAnimate(currentView,  currentView.getX(),
+                        //        getY()-currentView.getY()
+                        0
+                );
+                panned = false;
+            }
             return false;
         }
 
@@ -214,7 +242,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
             Log.d("onScroll: " + ((e1 == null) ? "e1==null" : e1.getX() + "/" + e1.getY()) + " - " + ((e2 == null) ? "e2==null" : e2.getX() + "/" + e2.getY()) + " :: " + distanceX + "/" + distanceY);
             if (isInSingleMode()) {
                 panAnimate(currentView, distanceX, distanceY);
-                return true;
+                //return true;
             }
             return false;
         }
@@ -296,6 +324,9 @@ public class ScalableRecyclerGridView extends RecyclerView {
             } else {
                 setSpanCount(initSpanCount + 1);
             }
+            if(initSpanCount!=layoutManagerGrid.getSpanCount() ) {
+               //layoutManagerGrid.scrollToPosition(getChildAdapterPosition(currentView));
+            }
             layoutManagerGrid.requestLayout();
             currScale = 1f;
             initSpanCount = 0;
@@ -349,6 +380,9 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
             if (newSpanCount != layoutManagerGrid.getSpanCount()) {
                 setSpanCount(newSpanCount);
+                if(initSpanCount!=layoutManagerGrid.getSpanCount() ) {
+                    layoutManagerGrid.scrollToPosition(getChildAdapterPosition(currentView));
+                }
                 layoutManagerGrid.requestLayout();
             }
             {
@@ -370,8 +404,9 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 //set new scale for view
                 zoomAnimate(currentView, currentView.getScaleX(), currFactor);
             } else {
-                setGridMode();
                 resetItemScale(currentView);
+                setGridMode();
+                scrollToPosition(getChildAdapterPosition(currentView));
             }
         }
 
@@ -381,6 +416,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
         }
 
         private void panAnimate(final View currentView, float distanceX, float distanceY) {
+           panned = true;
             if (mPanAnimator != null) {
                 mPanAnimator.end();
             }

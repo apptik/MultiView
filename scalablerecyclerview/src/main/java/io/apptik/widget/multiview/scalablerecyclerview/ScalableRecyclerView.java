@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 
-public class ScalableRecyclerView extends RecyclerView {
+class ScalableRecyclerView extends RecyclerView {
 
     private static String TAG = ScalableRecyclerView.class.getName();
 
@@ -30,11 +30,6 @@ public class ScalableRecyclerView extends RecyclerView {
     private void init() {
 
     }
-
-
-
-
-
 
     private class InteractionListener implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
 

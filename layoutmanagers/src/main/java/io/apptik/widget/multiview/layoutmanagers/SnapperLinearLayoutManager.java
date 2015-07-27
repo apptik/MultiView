@@ -171,13 +171,19 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
     @Override
     public void addView(View child, int index) {
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
+        RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) child.getLayoutParams();
         if (showOneItemOnly) {
             lp.width = getWidth();
             lp.height = getHeight();
         } else {
-            lp.width = lp.origWidth;
-            lp.height = lp.origHeight;
+            if(lp instanceof LayoutParams) {
+                lp.width = ((LayoutParams)lp).origWidth;
+                lp.height = ((LayoutParams)lp).origHeight;
+            } else if(lp instanceof ScalableGridLayoutManager.LayoutParams) {
+                lp.width = ((ScalableGridLayoutManager.LayoutParams)lp).getOrigWidth();
+                lp.height = ((ScalableGridLayoutManager.LayoutParams)lp).getOrigHeight();
+            }
+
         }
         super.addView(child, index);
     }
