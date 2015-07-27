@@ -55,7 +55,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
-        LayoutParams nlp =  new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        LayoutParams nlp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         // Log.d("generateLayoutParams: nlp: " + nlp.width + "/" + nlp.height);
         return nlp;
@@ -64,7 +64,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
     @Override
     public RecyclerView.LayoutParams generateLayoutParams(Context c, AttributeSet attrs) {
-        LayoutParams nlp =  new LayoutParams(c, attrs);
+        LayoutParams nlp = new LayoutParams(c, attrs);
         //Log.d("generateLayoutParams: nlp: " + nlp.width + "/" + nlp.height);
         return nlp;
     }
@@ -173,15 +173,20 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     public void addView(View child, int index) {
         RecyclerView.LayoutParams lp = (RecyclerView.LayoutParams) child.getLayoutParams();
         if (showOneItemOnly) {
-            lp.width = getWidth();
-            lp.height = getHeight();
+            if (canScrollHorizontally()) {
+                lp.width = getWidth();
+            } else {
+                lp.height = getHeight();
+            }
+
+
         } else {
-            if(lp instanceof LayoutParams) {
-                lp.width = ((LayoutParams)lp).origWidth;
-                lp.height = ((LayoutParams)lp).origHeight;
-            } else if(lp instanceof ScalableGridLayoutManager.LayoutParams) {
-                lp.width = ((ScalableGridLayoutManager.LayoutParams)lp).getOrigWidth();
-                lp.height = ((ScalableGridLayoutManager.LayoutParams)lp).getOrigHeight();
+            if (lp instanceof LayoutParams) {
+                lp.width = ((LayoutParams) lp).origWidth;
+                lp.height = ((LayoutParams) lp).origHeight;
+            } else if (lp instanceof ScalableGridLayoutManager.LayoutParams) {
+                lp.width = ((ScalableGridLayoutManager.LayoutParams) lp).getOrigWidth();
+                lp.height = ((ScalableGridLayoutManager.LayoutParams) lp).getOrigHeight();
             }
 
         }
@@ -221,7 +226,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             }
 
         } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
-            Log.d( "onScrollStateChanged SETTLING");
+            Log.d("onScrollStateChanged SETTLING");
             //check if we need to settle
             if (flingOneItemOnly && !adjusted) {
                 //we need to stop here
@@ -305,6 +310,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     protected void onPositionChanging(int currPos, int newPos) {
         Log.d("onPositionChanging:" + currPos + "/" + newPos);
     }
+
     protected void onPositionChanged(int prevPos, int newPos) {
         Log.d("onPositionChanged:" + prevPos + "/" + newPos);
     }
@@ -348,6 +354,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         public int getOrigHeight() {
             return origHeight;
         }
+
         public int getOrigWidth() {
             return origWidth;
         }

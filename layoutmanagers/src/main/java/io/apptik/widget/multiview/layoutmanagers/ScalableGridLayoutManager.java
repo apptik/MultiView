@@ -84,12 +84,18 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
     @Override
     public void addView(View child, int index) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        Log.d("getDecoratedMeasuredHeight: lp old: " + lp.width + "/" + lp.height);
-        lp.height= (int) (lp.origHeight*getScale());
-        lp.width=(int) (lp.origWidth*getScale());
-        Log.d("getDecoratedMeasuredHeight: lp new: " + lp.width + "/" + lp.height);
+        Log.d("addView: lp old: " + lp.width + "/" + lp.height);
+        if(lp.origHeight>0) {
+            lp.height = (int) (lp.origHeight * getScale());
+        }
+        if(lp.origWidth>0) {
+            lp.width = (int) (lp.origWidth * getScale());
+        }
+        Log.d("addView: lp new: " + lp.width + "/" + lp.height);
         super.addView(child, index);
     }
+
+
 
     @Override
     public void setSpanCount(int spanCount) {
