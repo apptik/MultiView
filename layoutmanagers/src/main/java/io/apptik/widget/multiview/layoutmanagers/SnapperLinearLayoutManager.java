@@ -245,8 +245,10 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     }
 
     protected synchronized void adjust() {
+        if (smoothScroller != null && (smoothScroller.isRunning()) || isSmoothScrolling()) {
+            return;
+        }
         adjusted = true;
-        if (smoothScroller != null && (smoothScroller.isRunning()) || isSmoothScrolling()) return;
         int prevPos = mRecyclerView.getChildLayoutPosition(prevView);
         Log.d("mPositionBeforeAdjust:" + prevPos);
 
