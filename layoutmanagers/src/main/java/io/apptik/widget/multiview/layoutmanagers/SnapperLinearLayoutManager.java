@@ -175,8 +175,14 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         if (showOneItemOnly) {
             if (canScrollHorizontally()) {
                 lp.width = getWidth();
+                if(lp.height>0) {
+                    lp.height = getHeight();
+                }
             } else {
                 lp.height = getHeight();
+                if(lp.width>0) {
+                    lp.width = getWidth();
+                }
             }
 
 
@@ -333,6 +339,12 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             super(width, height);
             origHeight = height;
             origWidth = width;
+        }
+
+        public LayoutParams(ScalableGridLayoutManager.LayoutParams source) {
+            super(source);
+            height = origHeight = source.getOrigHeight();
+            width = origWidth = source.getOrigWidth();
         }
 
         public LayoutParams(ViewGroup.MarginLayoutParams source) {

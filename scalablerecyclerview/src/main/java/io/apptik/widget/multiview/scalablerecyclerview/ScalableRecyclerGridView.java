@@ -526,7 +526,9 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 scalableRecyclerGridView.setGridMode();
                 scalableRecyclerGridView.setSpanCount(scalableRecyclerGridView.minSpan);
                 scalableRecyclerGridView.layoutManagerGrid.scrollToPosition(pos);
-                scalableRecyclerGridView.layoutManagerGrid.requestLayout();
+                scalableRecyclerGridView.invalidate();
+                //scalableRecyclerGridView.layoutManagerGrid.requestLayout();
+                //scalableRecyclerGridView.requestLayout();
             }
         }
 

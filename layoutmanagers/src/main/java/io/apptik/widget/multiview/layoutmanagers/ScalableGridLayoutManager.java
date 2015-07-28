@@ -64,8 +64,16 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
 
     @Override
     public RecyclerView.LayoutParams generateLayoutParams(ViewGroup.LayoutParams lp) {
-        LayoutParams nlp = new LayoutParams(super.generateLayoutParams(lp));
-        //Log.d("generateLayoutParams: nlp: " + nlp.width + "/" + nlp.height);
+        Log.d("generateLayoutParams: lp: " + lp.toString() + ":: " + lp.width + "/" + lp.height);
+        LayoutParams nlp;
+        if (lp instanceof LayoutParams) {
+            nlp = new LayoutParams((LayoutParams)lp);
+        } else if (lp instanceof SnapperLinearLayoutManager.LayoutParams) {
+            nlp = new LayoutParams((SnapperLinearLayoutManager.LayoutParams)lp);
+        } else {
+            nlp = new LayoutParams(lp);
+        }
+        Log.d("generateLayoutParams: nlp: " + nlp.width + "/" + nlp.height);
         return nlp;
     }
 
@@ -84,14 +92,15 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
     @Override
     public void addView(View child, int index) {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        Log.d("addView: lp old: " + lp.width + "/" + lp.height);
+        Log.d("addView: lp old: " + lp.width + "/" + lp.height + " :: " + lp.origWidth + "/" + lp.origHeight);
+
         if(lp.origHeight>0) {
             lp.height = (int) (lp.origHeight * getScale());
         }
         if(lp.origWidth>0) {
             lp.width = (int) (lp.origWidth * getScale());
         }
-        Log.d("addView: lp new: " + lp.width + "/" + lp.height);
+        Log.d("addView: lp new: " + lp.width + "/" + lp.height + " :: " + lp.origWidth + "/" + lp.origHeight);
         super.addView(child, index);
     }
 
@@ -128,6 +137,12 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
             super(width, height);
             origHeight = height;
             origWidth = width;
+        }
+
+        public LayoutParams(SnapperLinearLayoutManager.LayoutParams source) {
+            super(source);
+            height = origHeight = source.getOrigHeight();
+            width = origWidth = source.getOrigWidth();
         }
 
         public LayoutParams(ViewGroup.MarginLayoutParams source) {
