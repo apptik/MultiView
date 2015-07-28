@@ -133,16 +133,6 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!isAttachedToWindow() || getAdapter()==null || getLayoutManager()==null
-                || getLayoutManagerGrid()==null || getLayoutManagerSingle()==null) {
-            return super.onInterceptTouchEvent(ev);
-        }
-
         scaleGestureDetector.onTouchEvent(ev);
         //if were in scale ignore the rest
         if (scaleGestureDetector.isInProgress()) {
@@ -153,9 +143,20 @@ public class ScalableRecyclerGridView extends RecyclerView {
             return true;
         } else {
             return gestureDetector.onTouchEvent(ev)
-                    || super.onInterceptTouchEvent(ev);
+                    || super.onTouchEvent(ev);
         }
         //return true;
+
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (!isAttachedToWindow() || getAdapter()==null || getLayoutManager()==null
+                || getLayoutManagerGrid()==null || getLayoutManagerSingle()==null) {
+            return super.onInterceptTouchEvent(ev);
+        }
+
+        return true;
     }
 
     @Override
@@ -220,7 +221,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 if (v != null) {
                     setSingleMode();
                     layoutManagerSingle.scrollToPosition(getChildAdapterPosition(v));
-                    return true;
+                    return false;
                 }
             }
             return false;
@@ -245,7 +246,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
         @Override
         public boolean onDown(MotionEvent e) {
             Log.d("onDown: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
-            return true;
+            return false;
         }
 
         @Override
@@ -269,7 +270,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 );
                 panned = false;
             }
-            return true;
+            return false;
         }
 
         @Override
