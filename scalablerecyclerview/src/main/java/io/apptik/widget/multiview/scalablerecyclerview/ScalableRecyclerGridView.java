@@ -429,18 +429,26 @@ public class ScalableRecyclerGridView extends RecyclerView {
             //now set the final span;
             float currFactor = detector.getScaleFactor();
 
+float tt = 1f -( 1f/(float)(initSpanCount+1))/2f;
+            Log.d("handleOnScaleEndGrid: test: " + currFactor + " : " + tt);
 
             //int newSpanCount = layoutManagerGrid.getSpanCount();
-            if (currFactor > 1f) {
+            if (currFactor > 1f + (1f/(float) (initSpanCount - 1))/2f) {
                 if (initSpanCount == scalableRecyclerGridView.minSpan) {
                     scalableRecyclerGridView.setSingleMode();
                     scalableRecyclerGridView.layoutManagerSingle.scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(currentView));
                 } else {
                     scalableRecyclerGridView.setSpanCount(initSpanCount - 1);
                 }
-            } else {
+            } else if(currFactor < 1f -( 1f/(float)(initSpanCount+1))/2f) {
                 scalableRecyclerGridView.setSpanCount(initSpanCount + 1);
+            } else {
+                if(scalableRecyclerGridView.getLayoutManagerGrid().getSpanCount()!=initSpanCount) {
+                    scalableRecyclerGridView.setSpanCount(initSpanCount);
+                }
             }
+
+
             if (initSpanCount != scalableRecyclerGridView.layoutManagerGrid.getSpanCount()) {
                 scalableRecyclerGridView.layoutManagerGrid.scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(currentView));
             }
@@ -480,7 +488,8 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 newScale = 1f + currFactor - (float) initSpanCount / (float) newSpanCount;
                 newScale = Math.max(1f, newScale);
             } else {
-                //check if we were zoomed out before
+                //in between dont change span count
+                //check if we were zoomed out before so we have overflowing items
                 if (newSpanCount > initSpanCount) {
                     newScale = 1f + currFactor - (float) initSpanCount / (float) newSpanCount;
                     newScale = Math.max(1f, newScale);
