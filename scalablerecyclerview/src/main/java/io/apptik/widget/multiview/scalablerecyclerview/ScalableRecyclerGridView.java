@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -265,46 +266,54 @@ public class ScalableRecyclerGridView extends RecyclerView {
         public boolean onSingleTapConfirmed(MotionEvent e) {
             Log.d("onSingleTapConfirmed: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
             if (scaleGestureDetector.isInProgress()) return true;
-            View v = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
-            if (v != null) {
-                v.callOnClick();
+            currentView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
+            if (currentView != null) {
+                currentView.callOnClick();
                 //in case of grid mode if pointer on a view item go to single mode scrolling to this item
                 //otherwise ignore
                 if (!scalableRecyclerGridView.isInSingleMode()) {
 
                     scalableRecyclerGridView.setSingleMode();
-                    scalableRecyclerGridView.layoutManagerSingle.scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(v));
-                    return false;
+                    scalableRecyclerGridView.layoutManagerSingle.scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(currentView));
+                    return true;
                 }
             }
-            return false;
+            return true;
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            Log.d("onDoubleTap: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
+            Log.d("onDoubleTap: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()) + " v: " + currentView);
             if (scaleGestureDetector.isInProgress()) return true;
             //toggle zoom 10x/1x for single mode min/max col span for grid mode
-            if(scalableRecyclerGridView.isInSingleMode()) {
-                if(currentView!=null) {
-                    if(currentView.getScaleX()<10) {
-                        panAnimate(currentView, currentView.getTranslationX()-e.getX(), currentView.getTranslationY() - e.getY());
-                        zoomAnimate(currentView, currentView.getScaleX(), 10);
+            if (scalableRecyclerGridView.isInSingleMode()) {
+                currentView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
+                if (currentView != null) {
+                    Log.d("onDoubleTap: initscale : " + currentView.getScaleX());
+                    if (currentView.getScaleX() < 10) {
+                        Log.d("onDoubleTap: initscale : so what next ?");
+                        currentView.setPivotX(e.getX() - currentView.getTranslationX());
+                        currentView.setPivotY(e.getY() - currentView.getTranslationY());
+                        ViewCompat.animate(currentView)
+                                .scaleX(10).scaleY(10)
+                                .start();
                     } else {
-                        panAnimate(currentView,currentView.getTranslationX(), currentView.getTranslationY());
-                        zoomAnimate(currentView, currentView.getScaleX(), 1);
+                        ViewCompat.animate(currentView)
+                                .scaleX(1).scaleY(1).translationX(0).translationY(0)
+                                .start();
+
                     }
                 }
             } else {
                 View tmpView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
 
-                if(scalableRecyclerGridView.getLayoutManagerGrid().getSpanCount() >
+                if (scalableRecyclerGridView.getLayoutManagerGrid().getSpanCount() >
                         scalableRecyclerGridView.getMinSpan()) {
                     scalableRecyclerGridView.setSpanCount(scalableRecyclerGridView.getMinSpan());
                 } else {
                     scalableRecyclerGridView.setSpanCount(scalableRecyclerGridView.getMaxSpan());
                 }
-                if(tmpView != null) {
+                if (tmpView != null) {
                     scalableRecyclerGridView.scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(tmpView));
                 }
                 scalableRecyclerGridView.requestLayout();
@@ -342,10 +351,10 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 //currentView.getY()<getY()
                     ) {
                 //adjust it
-                panAnimate(currentView, currentView.getX(),
-                        //        getY()-currentView.getY()
-                        0
-                );
+                //panAnimate(currentView, currentView.getX(),
+                //        getY()-currentView.getY()
+                //        0
+                //);
                 panned = false;
             }
             return false;
@@ -429,21 +438,21 @@ public class ScalableRecyclerGridView extends RecyclerView {
             //now set the final span;
             float currFactor = detector.getScaleFactor();
 
-float tt = 1f -( 1f/(float)(initSpanCount+1))/2f;
+            float tt = 1f - (1f / (float) (initSpanCount + 1)) / 2f;
             Log.d("handleOnScaleEndGrid: test: " + currFactor + " : " + tt);
 
             //int newSpanCount = layoutManagerGrid.getSpanCount();
-            if (currFactor > 1f + (1f/(float) (initSpanCount - 1))/2f) {
+            if (currFactor > 1f + (1f / (float) (initSpanCount - 1)) / 2f) {
                 if (initSpanCount == scalableRecyclerGridView.minSpan) {
                     scalableRecyclerGridView.setSingleMode();
                     scalableRecyclerGridView.layoutManagerSingle.scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(currentView));
                 } else {
                     scalableRecyclerGridView.setSpanCount(initSpanCount - 1);
                 }
-            } else if(currFactor < 1f -( 1f/(float)(initSpanCount+1))/2f) {
+            } else if (currFactor < 1f - (1f / (float) (initSpanCount + 1)) / 2f) {
                 scalableRecyclerGridView.setSpanCount(initSpanCount + 1);
             } else {
-                if(scalableRecyclerGridView.getLayoutManagerGrid().getSpanCount()!=initSpanCount) {
+                if (scalableRecyclerGridView.getLayoutManagerGrid().getSpanCount() != initSpanCount) {
                     scalableRecyclerGridView.setSpanCount(initSpanCount);
                 }
             }
@@ -516,7 +525,16 @@ float tt = 1f -( 1f/(float)(initSpanCount+1))/2f;
         }
 
         private void handleOnScaleBeginSingle(ScaleGestureDetector detector) {
+            Log.d("handleOnScaleBeginSingle: " + detector.getFocusX() + "/" + detector.getFocusY() + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor());
             initialItemScale = currentView.getScaleX();
+
+//            currentView.setPivotX(mFromX - currentView.getTranslationX());
+//            currentView.setPivotY(mFromY - currentView.getTranslationY());
+            currentView.setTranslationX(currentView.getTranslationX() + (currentView.getPivotX() - detector.getFocusX()) * (1 - initialItemScale));
+            currentView.setTranslationY(currentView.getTranslationY() + (currentView.getPivotY() - detector.getFocusY()) * (1 - initialItemScale));
+            currentView.setPivotX(detector.getFocusX());
+            currentView.setPivotY(detector.getFocusY());
+            currentView.invalidate();
         }
 
         private void handleOnScaleEndSingle(ScaleGestureDetector detector) {
@@ -525,30 +543,33 @@ float tt = 1f -( 1f/(float)(initSpanCount+1))/2f;
             Log.d("handleOnScaleEndSingle - currFactor: " + currFactor);
             if (currFactor >= 1f) {
                 //set new scale for view
-                zoomAnimate(currentView, currentView.getScaleX(), currFactor);
+                //zoomAnimate(currentView, currentView.getScaleX(), currFactor);
+                //currentView.setPivotX(mFromX + currentView.getTranslationX());
+                //currentView.setPivotY(mFromY + currentView.getTranslationY());
+                ViewCompat.animate(currentView)
+                        .scaleX(currFactor).scaleY(currFactor)
+                        .start();
             } else {
                 Log.d("handleOnScaleEndSingle - going to grid mode");
                 resetItemScale(currentView);
                 int pos = scalableRecyclerGridView.getChildAdapterPosition(currentView);
-                currentView = null;
+                //currentView = null;
                 currScale = 1f;
                 scalableRecyclerGridView.setGridMode();
                 scalableRecyclerGridView.setSpanCount(scalableRecyclerGridView.minSpan);
                 scalableRecyclerGridView.layoutManagerGrid.scrollToPosition(pos);
                 scalableRecyclerGridView.invalidate();
-                //scalableRecyclerGridView.layoutManagerGrid.requestLayout();
-                //scalableRecyclerGridView.requestLayout();
             }
         }
 
         private void handleOnScaleSingle(ScaleGestureDetector detector) {
             Log.d("handleOnScaleSingle: " + detector.getFocusX() + "/" + detector.getFocusY() + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor());
             float currFactor = initialItemScale * detector.getScaleFactor();
-            currentView.setPivotX(mFromX + currentView.getTranslationX());
-            currentView.setPivotY(mFromY + currentView.getTranslationY());
             currentView.setScaleX(currFactor);
             currentView.setScaleY(currFactor);
             currentView.invalidate();
+
+//            ViewCompat.animate(currentView).scaleX(currFactor).scaleY(currFactor).start();
 //          zoomAnimate(currentView, currentView.getScaleX(), currFactor);
         }
 
@@ -608,51 +629,51 @@ float tt = 1f -( 1f/(float)(initSpanCount+1))/2f;
 
             mPanAnimator.start();
         }
-
-        private void zoomAnimate(final View currentView, float fromScaleFactor, float toScaleFactor) {
-            Log.d("zoomAnimate: " + fromScaleFactor + "/" + toScaleFactor + " :: " + currentView);
-            if (mZoomAnimator != null) {
-                mZoomAnimator.end();
-            }
-            mZoomAnimator = new ValueAnimator();
-            mZoomAnimator.setFloatValues(fromScaleFactor, toScaleFactor);
-            mZoomAnimator.setDuration(ZOOM_ANIMATION_DURATION_MS);
-            mZoomAnimator.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mZoomAnimator = null;
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                    mZoomAnimator = null;
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
-            mZoomAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float newScaleFactor = (Float) animation.getAnimatedValue();
-                    currentView.setPivotX(mFromX + currentView.getTranslationX());
-                    currentView.setPivotY(mFromY + currentView.getTranslationY());
-                    currentView.setScaleX(newScaleFactor);
-                    currentView.setScaleY(newScaleFactor);
-                    currentView.invalidate();
-
-                }
-            });
-            mZoomAnimator.start();
-        }
+//
+//        private void zoomAnimate(final View currentView, float fromScaleFactor, float toScaleFactor) {
+//            Log.d("zoomAnimate: " + fromScaleFactor + "/" + toScaleFactor + " :: " + currentView);
+//            if (mZoomAnimator != null) {
+//                mZoomAnimator.end();
+//            }
+//            mZoomAnimator = new ValueAnimator();
+//            mZoomAnimator.setFloatValues(fromScaleFactor, toScaleFactor);
+//            mZoomAnimator.setDuration(ZOOM_ANIMATION_DURATION_MS);
+//            mZoomAnimator.addListener(new Animator.AnimatorListener() {
+//                @Override
+//                public void onAnimationStart(Animator animation) {
+//
+//                }
+//
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    mZoomAnimator = null;
+//                }
+//
+//                @Override
+//                public void onAnimationCancel(Animator animation) {
+//                    mZoomAnimator = null;
+//
+//                }
+//
+//                @Override
+//                public void onAnimationRepeat(Animator animation) {
+//
+//                }
+//            });
+//            mZoomAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//                @Override
+//                public void onAnimationUpdate(ValueAnimator animation) {
+//                    float newScaleFactor = (Float) animation.getAnimatedValue();
+//                    currentView.setPivotX(mFromX + currentView.getTranslationX());
+//                    currentView.setPivotY(mFromY + currentView.getTranslationY());
+//                    currentView.setScaleX(newScaleFactor);
+//                    currentView.setScaleY(newScaleFactor);
+//                    currentView.invalidate();
+//
+//                }
+//            });
+//            mZoomAnimator.start();
+//        }
 
         void resetItemScale(View view) {
             if (view == null) return;

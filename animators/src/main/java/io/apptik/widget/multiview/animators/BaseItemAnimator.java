@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 public class BaseItemAnimator extends RecyclerView.ItemAnimator {
     @Override
     public void runPendingAnimations() {
-
     }
 
     @Override
