@@ -3,9 +3,12 @@ package io.apptik.widget.multiview.scalablerecyclerview;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.RectF;
+import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +17,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Scroller;
 
 import io.apptik.widget.multiview.common.Log;
 import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
@@ -229,8 +233,6 @@ public class ScalableRecyclerGridView extends RecyclerView {
         //initial item scale when scaling in single mode started
         volatile float initialItemScale = 1f;
         volatile View currentView;
-        volatile float mFromX;
-        volatile float mFromY;
 
         volatile boolean panned = false;
 
@@ -303,6 +305,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
                                 .start();
 
                     }
+                    currentView.invalidate();
                 }
             } else {
                 View tmpView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
@@ -402,13 +405,12 @@ public class ScalableRecyclerGridView extends RecyclerView {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             Log.d("onScaleBegin: " + detector.getFocusX() + "/" + detector.getFocusY() + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor());
-            mFromX = detector.getFocusX();
-            mFromY = detector.getFocusY();
-            View newView = scalableRecyclerGridView.findChildViewUnder(mFromX, mFromY);
+
+            View newView = scalableRecyclerGridView.findChildViewUnder(detector.getFocusX(), detector.getFocusY());
             if (newView != null) {
                 currentView = newView;
             } else {
-                Log.e("onScaleBegin view under x,y is null should not allow user to do that");
+                Log.e("onScaleBegin view under x,y is null should not allow user to do that: " + detector.getFocusX() + "/" + detector.getFocusY());
             }
             if (scalableRecyclerGridView.isInSingleMode()) {
                 handleOnScaleBeginSingle(detector);
@@ -437,9 +439,6 @@ public class ScalableRecyclerGridView extends RecyclerView {
             Log.d("handleOnScaleEndGrid: " + detector.getFocusX() + "/" + detector.getFocusY() + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor());
             //now set the final span;
             float currFactor = detector.getScaleFactor();
-
-            float tt = 1f - (1f / (float) (initSpanCount + 1)) / 2f;
-            Log.d("handleOnScaleEndGrid: test: " + currFactor + " : " + tt);
 
             //int newSpanCount = layoutManagerGrid.getSpanCount();
             if (currFactor > 1f + (1f / (float) (initSpanCount - 1)) / 2f) {
@@ -530,11 +529,26 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
 //            currentView.setPivotX(mFromX - currentView.getTranslationX());
 //            currentView.setPivotY(mFromY - currentView.getTranslationY());
-            currentView.setTranslationX(currentView.getTranslationX() + (currentView.getPivotX() - detector.getFocusX()) * (1 - initialItemScale));
-            currentView.setTranslationY(currentView.getTranslationY() + (currentView.getPivotY() - detector.getFocusY()) * (1 - initialItemScale));
-            currentView.setPivotX(detector.getFocusX());
-            currentView.setPivotY(detector.getFocusY());
-            currentView.invalidate();
+//        currentView.setTranslationX(currentView.getTranslationX() + (currentView.getPivotX() - detector.getFocusX()) * (1 - initialItemScale));
+//            currentView.setTranslationY(currentView.getTranslationY() + (currentView.getPivotY() - detector.getFocusY()) * (1 - initialItemScale));
+            Log.d("handleOnScaleBeginSingle: translation before: " + currentView.getTranslationX() + "/" +  currentView.getTranslationY() );
+//            float transX = currentView.getTranslationX();
+//            float transY = currentView.getTranslationY();
+//            // Pivot point is top left of the view, so we need to translate
+//            // to scale around focus point
+//            transX -= (detector.getFocusX() - currentView.getX()) * (initialItemScale - 1f);
+//            transY -= (detector.getFocusY() -currentView.getY()) * (initialItemScale - 1f);
+//            currentView.setTranslationX(transX);
+//            currentView.setTranslationY(transY);
+            //in case pivot is not in x/y
+//            currentView.setTranslationX(currentView.getTranslationX() + (currentView.getPivotX() - detector.getFocusX()) * (1f - initialItemScale));
+//            currentView.setTranslationY(currentView.getTranslationY() + (currentView.getPivotY() - detector.getFocusY()) * (1f - initialItemScale));
+
+            Log.d("handleOnScaleBeginSingle: translation after: " + currentView.getTranslationX() + "/" + currentView.getTranslationY());
+//            currentView.setPivotX(detector.getFocusX());
+//            currentView.setPivotY(detector.getFocusY());
+
+//            currentView.invalidate();
         }
 
         private void handleOnScaleEndSingle(ScaleGestureDetector detector) {
@@ -546,9 +560,9 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 //zoomAnimate(currentView, currentView.getScaleX(), currFactor);
                 //currentView.setPivotX(mFromX + currentView.getTranslationX());
                 //currentView.setPivotY(mFromY + currentView.getTranslationY());
-                ViewCompat.animate(currentView)
-                        .scaleX(currFactor).scaleY(currFactor)
-                        .start();
+//                ViewCompat.animate(currentView)
+//                        .scaleX(currFactor).scaleY(currFactor)
+//                        .start();
             } else {
                 Log.d("handleOnScaleEndSingle - going to grid mode");
                 resetItemScale(currentView);
@@ -564,30 +578,107 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
         private void handleOnScaleSingle(ScaleGestureDetector detector) {
             Log.d("handleOnScaleSingle: " + detector.getFocusX() + "/" + detector.getFocusY() + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor());
+            Log.d("handleOnScaleSingle: pivot: " + currentView.getPivotX() + "/" + currentView.getPivotY());
             float currFactor = initialItemScale * detector.getScaleFactor();
-            currentView.setScaleX(currFactor);
-            currentView.setScaleY(currFactor);
+
+//            currentView.setScaleX(currFactor);
+//            currentView.setScaleY(currFactor);
+
+            postScale(detector.getFocusX(), detector.getFocusY(), currFactor / currentView.getScaleX(), scalableRecyclerGridView.getWidth(), scalableRecyclerGridView.getHeight());
             currentView.invalidate();
 
 //            ViewCompat.animate(currentView).scaleX(currFactor).scaleY(currFactor).start();
 //          zoomAnimate(currentView, currentView.getScaleX(), currFactor);
         }
 
+        void postScale(float focusX, float focusY, float postScale, int viewportWidth,
+                       int viewportHeight) {
+            float transX = currentView.getTranslationX();
+            float transY = currentView.getTranslationY();
+            // Pivot point is top left of the view, so we need to translate
+            // to scale around focus point
+            transX -= (focusX - scalableRecyclerGridView.getX()) * (postScale - 1f);
+            transY -= (focusY - scalableRecyclerGridView.getY()) * (postScale - 1f);
+            float scaleX = currentView.getScaleX() * postScale;
+            float scaleY = currentView.getScaleY() * postScale;
+            updateTransform(transX, transY, scaleX, scaleY, viewportWidth,
+                    viewportHeight);
+        }
+
+        void updateTransform(float transX, float transY, float scaleX, float scaleY,
+                             int viewportWidth, int viewportHeight) {
+            float left = transX + currentView.getLeft();
+            float top = transY + currentView.getTop();
+            RectF r = adjustToFitInBounds(new RectF(left, top,
+                            left + currentView.getWidth() * scaleX,
+                            top + currentView.getHeight() * scaleY),
+                    viewportWidth, viewportHeight);
+            currentView.setScaleX(scaleX);
+            currentView.setScaleY(scaleY);
+            transX = r.left - currentView.getLeft();
+            transY = r.top - currentView.getTop();
+            currentView.setTranslationX(transX);
+            currentView.setTranslationY(transY);
+        }
+
+        public static RectF adjustToFitInBounds(RectF rect, int viewportWidth, int viewportHeight) {
+            float dx = 0, dy = 0;
+            RectF newRect = new RectF(rect);
+            if (newRect.width() < viewportWidth) {
+                dx = viewportWidth / 2 - (newRect.left + newRect.right) / 2;
+            } else {
+                if (newRect.left > 0) {
+                    dx = -newRect.left;
+                } else if (newRect.right < viewportWidth) {
+                    dx = viewportWidth - newRect.right;
+                }
+            }
+            if (newRect.height() < viewportHeight) {
+                dy = viewportHeight / 2 - (newRect.top + newRect.bottom) / 2;
+            } else {
+                if (newRect.top > 0) {
+                    dy = -newRect.top;
+                } else if (newRect.bottom < viewportHeight) {
+                    dy = viewportHeight - newRect.bottom;
+                }
+            }
+            if (dx != 0 || dy != 0) {
+                newRect.offset(dx, dy);
+            }
+            return newRect;
+        }
+
         private void panAnimate(final View currentView, float distanceX, float distanceY) {
-            Log.d("panAnimate: " + distanceX + "/" + distanceY + " :: " + currentView);
+            Log.d("panAnimate: " + distanceX + "/" + distanceY);
+            Log.d("panAnimate: translation: " + currentView.getTranslationX() + "/" + currentView.getTranslationY());
             panned = true;
             if (mPanAnimator != null) {
                 mPanAnimator.end();
             }
-            ValueAnimator panAnimatorX = ValueAnimator.ofFloat(currentView.getTranslationX(), currentView.getTranslationX() - distanceX);
-            ValueAnimator panAnimatorY = ValueAnimator.ofFloat(currentView.getTranslationY(), currentView.getTranslationY() - distanceY);
+            float transX = currentView.getTranslationX() - distanceX;
+            float transY = currentView.getTranslationY() - distanceY;
+
+            float right = (currentView.getWidth()*currentView.getScaleX() - scalableRecyclerGridView.getWidth())/2;
+            float left = -right;
+            float bottom = (currentView.getHeight()*currentView.getScaleY() - scalableRecyclerGridView.getHeight())/2;
+            float top = -bottom;
+
+            Log.d("panAnimate lr-tb : " +left+ ":" +right+ "  - " +top+ ":" +bottom );
+
+           transX = Math.min(transX, right);
+            transX = Math.max(transX, left);
+         transY = Math.min(transY, bottom);
+            transY = Math.max(transY, top);
+            Log.d("panAnimate: new translation: " + transX + "/" + transY);
+            ValueAnimator panAnimatorX = ValueAnimator.ofFloat(currentView.getTranslationX(), transX);
+            ValueAnimator panAnimatorY = ValueAnimator.ofFloat(currentView.getTranslationY(), transY);
             panAnimatorX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float translation = (Float) animation.getAnimatedValue();
                     currentView.setTranslationX(translation);
                     currentView.invalidate();
-                    //  currentView.setScrollX((int) translation);
+
 
                 }
             });
@@ -597,7 +688,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
                     float translation = (Float) animation.getAnimatedValue();
                     currentView.setTranslationY(translation);
                     currentView.invalidate();
-                    //currentView.setScrollX((int) translation);
+
                 }
             });
 
@@ -721,6 +812,101 @@ public class ScalableRecyclerGridView extends RecyclerView {
         @Override
         public void onModeChange(boolean isSingle) {
 
+        }
+    }
+
+    private static class MyScroller {
+        public interface Listener {
+            public void onScrollUpdate(int currX, int currY);
+            public void onScrollEnd();
+        }
+        private final Handler mHandler;
+        private final Listener mListener;
+        private final Scroller mScroller;
+        private final ValueAnimator mXScrollAnimator;
+        private final Runnable mScrollChecker = new Runnable() {
+            @Override
+            public void run() {
+                boolean newPosition = mScroller.computeScrollOffset();
+                if (!newPosition) {
+                    mListener.onScrollEnd();
+                    return;
+                }
+                mListener.onScrollUpdate(mScroller.getCurrX(), mScroller.getCurrY());
+                mHandler.removeCallbacks(this);
+                mHandler.post(this);
+            }
+        };
+        private final ValueAnimator.AnimatorUpdateListener mXScrollAnimatorUpdateListener =
+                new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mListener.onScrollUpdate((Integer) animation.getAnimatedValue(), 0);
+                    }
+                };
+        private final Animator.AnimatorListener mXScrollAnimatorListener =
+                new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        // Do nothing.
+                    }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mListener.onScrollEnd();
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+                        // Do nothing.
+                    }
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        // Do nothing.
+                    }
+                };
+        public MyScroller(Context ctx, Handler handler, Listener listener,
+                          TimeInterpolator interpolator) {
+            mHandler = handler;
+            mListener = listener;
+            mScroller = new Scroller(ctx);
+            mXScrollAnimator = new ValueAnimator();
+            mXScrollAnimator.addUpdateListener(mXScrollAnimatorUpdateListener);
+            mXScrollAnimator.addListener(mXScrollAnimatorListener);
+            mXScrollAnimator.setInterpolator(interpolator);
+        }
+        public void fling(
+                int startX, int startY,
+                int velocityX, int velocityY,
+                int minX, int maxX,
+                int minY, int maxY) {
+            mScroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
+            runChecker();
+        }
+        public void startScroll(int startX, int startY, int dx, int dy) {
+            mScroller.startScroll(startX, startY, dx, dy);
+            runChecker();
+        }
+        /** Only starts and updates scroll in x-axis. */
+        public void startScroll(int startX, int startY, int dx, int dy, int duration) {
+            mXScrollAnimator.cancel();
+            mXScrollAnimator.setDuration(duration);
+            mXScrollAnimator.setIntValues(startX, startX + dx);
+            mXScrollAnimator.start();
+        }
+        public boolean isFinished() {
+            return (mScroller.isFinished() && !mXScrollAnimator.isRunning());
+        }
+        public void forceFinished(boolean finished) {
+            mScroller.forceFinished(finished);
+            if (finished) {
+                mXScrollAnimator.cancel();
+            }
+        }
+        private void runChecker() {
+            if (mHandler == null || mListener == null) {
+                return;
+            }
+            mHandler.removeCallbacks(mScrollChecker);
+            mHandler.post(mScrollChecker);
         }
     }
 }
