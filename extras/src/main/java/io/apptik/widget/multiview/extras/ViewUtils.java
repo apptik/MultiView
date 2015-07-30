@@ -1,5 +1,6 @@
 package io.apptik.widget.multiview.extras;
 
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -48,6 +49,21 @@ public class ViewUtils {
             for (int i = 0; i < childCount; i++) {
                 View child = recyclerView.getChildAt(i);
                 if (isChildInCenterY(recyclerView, child)) {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static View getFirstIntersectsChild(RecyclerView recyclerView) {
+        int childCount = recyclerView.getChildCount();
+        if (childCount > 0) {
+            for (int i = 0; i < childCount; i++) {
+                View child = recyclerView.getChildAt(i);
+                Rect rect1=new Rect(recyclerView.getLeft(),recyclerView.getTop(), recyclerView.getRight(), recyclerView.getBottom());
+                Rect rect2=new Rect(child.getLeft(),child.getTop(), child.getRight(), child.getBottom());
+                if (Rect.intersects(rect1, rect2)) {
                     return child;
                 }
             }

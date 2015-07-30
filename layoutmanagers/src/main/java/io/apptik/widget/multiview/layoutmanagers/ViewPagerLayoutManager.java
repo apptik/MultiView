@@ -3,6 +3,7 @@ package io.apptik.widget.multiview.layoutmanagers;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 
 public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
 
@@ -44,6 +45,18 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
 
     public void goToPrev() {
         scrollToPosition(getCenterItemPosition() - 1);
+    }
+
+    public int getCurrentPage() {
+        return getCenterItemPosition();
+    }
+
+    public View getCurrentPageView() {
+        if(getChildCount()==1) {
+            return getChildAt(0);
+        } else {
+            return getCenterItem();
+        }
     }
 
     @Override

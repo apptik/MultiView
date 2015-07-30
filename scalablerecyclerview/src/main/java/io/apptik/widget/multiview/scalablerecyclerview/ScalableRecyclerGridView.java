@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Scroller;
 
 import io.apptik.widget.multiview.common.Log;
+import io.apptik.widget.multiview.extras.ViewUtils;
 import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
 import io.apptik.widget.multiview.layoutmanagers.ViewPagerLayoutManager;
 
@@ -35,6 +36,9 @@ public class ScalableRecyclerGridView extends RecyclerView {
     protected ViewPagerLayoutManager layoutManagerSingle;
     private int minSpan = 2;
     private int maxSpan = 5;
+    private boolean allowSingleZoom = true;
+    private float maxSingleZoom = 10f;
+    private float zoomStep = 3f;
 
     InteractionListener interactionListener;
 
@@ -66,6 +70,30 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
     }
 
+    public float getMaxSingleZoom() {
+        return maxSingleZoom;
+    }
+
+    public void setMaxSingleZoom(float maxSingleZoom) {
+        this.maxSingleZoom = maxSingleZoom;
+    }
+
+    public boolean isAllowSingleZoom() {
+        return allowSingleZoom;
+    }
+
+    public void setAllowSingleZoom(boolean allowSingleZoom) {
+        this.allowSingleZoom = allowSingleZoom;
+    }
+
+    public float getZoomStep() {
+        return zoomStep;
+    }
+
+    public void setZoomStep(float zoomStep) {
+        this.zoomStep = zoomStep;
+    }
+
     public ScaleListener getScaleListener() {
         return scaleListener;
     }
@@ -73,6 +101,8 @@ public class ScalableRecyclerGridView extends RecyclerView {
     public void setScaleListener(ScaleListener scaleListener) {
         this.scaleListener = scaleListener;
     }
+
+
 
     public int getMaxSpan() {
         return maxSpan;
@@ -154,6 +184,16 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
     public boolean isInSingleMode() {
         return getLayoutManager().equals(layoutManagerSingle);
+    }
+
+    @Override
+    public View findChildViewUnder(float x, float y) {
+        if(isInSingleMode()) {
+            int middleX = (int) (getX() + (getWidth() * getScaleX()) / 2);
+            int middleY = (int) (getY() + (getHeight() * getScaleY()) / 2);
+            return super.findChildViewUnder(middleX, middleY);
+        }
+        return super.findChildViewUnder(x, y);
     }
 
     @Override
@@ -292,12 +332,16 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 currentView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
                 if (currentView != null) {
                     Log.d("onDoubleTap: initscale : " + currentView.getScaleX());
-                    if (currentView.getScaleX() < 10) {
+
+
+                    if (currentView.getScaleX() < scalableRecyclerGridView.getMaxSingleZoom()) {
                         Log.d("onDoubleTap: initscale : so what next ?");
                         currentView.setPivotX(e.getX() - currentView.getTranslationX());
                         currentView.setPivotY(e.getY() - currentView.getTranslationY());
+                        float nextScale =  Math.min(scalableRecyclerGridView.getMaxSingleZoom(),
+                                currentView.getScaleX() + scalableRecyclerGridView.getZoomStep());
                         ViewCompat.animate(currentView)
-                                .scaleX(10).scaleY(10)
+                                .scaleX(nextScale).scaleY(nextScale)
                                 .start();
                     } else {
                         ViewCompat.animate(currentView)
@@ -525,6 +569,11 @@ public class ScalableRecyclerGridView extends RecyclerView {
 
         private void handleOnScaleBeginSingle(ScaleGestureDetector detector) {
             Log.d("handleOnScaleBeginSingle: " + detector.getFocusX() + "/" + detector.getFocusY() + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor());
+            //it might happen that we zoomed and current view is not really under the pointer
+            //it is still fine as we know we have only one view here anyway
+            if(currentView==null) {
+                currentView = ViewUtils.getFirstIntersectsChild(scalableRecyclerGridView);
+            }
             initialItemScale = currentView.getScaleX();
 
 //            currentView.setPivotX(mFromX - currentView.getTranslationX());
@@ -556,13 +605,16 @@ public class ScalableRecyclerGridView extends RecyclerView {
             float currFactor = initialItemScale * detector.getScaleFactor();
             Log.d("handleOnScaleEndSingle - currFactor: " + currFactor);
             if (currFactor >= 1f) {
+                currFactor = Math.min(scalableRecyclerGridView.getMaxSingleZoom(),
+                        currFactor);
                 //set new scale for view
                 //zoomAnimate(currentView, currentView.getScaleX(), currFactor);
                 //currentView.setPivotX(mFromX + currentView.getTranslationX());
                 //currentView.setPivotY(mFromY + currentView.getTranslationY());
-//                ViewCompat.animate(currentView)
-//                        .scaleX(currFactor).scaleY(currFactor)
-//                        .start();
+
+                ViewCompat.animate(currentView)
+                        .scaleX(currFactor).scaleY(currFactor)
+                        .start();
             } else {
                 Log.d("handleOnScaleEndSingle - going to grid mode");
                 resetItemScale(currentView);
