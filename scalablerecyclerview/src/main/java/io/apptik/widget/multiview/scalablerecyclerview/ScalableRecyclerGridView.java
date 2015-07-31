@@ -332,12 +332,10 @@ public class ScalableRecyclerGridView extends RecyclerView {
             if (scalableRecyclerGridView.isInSingleMode()) {
                 currentView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
                 if (currentView != null) {
-                    Rect globalRect = new Rect();
-                    Rect localRect = new Rect();
-                    currentView.getGlobalVisibleRect(globalRect);
+                    Rect localRect = new Rect();;
                     currentView.getLocalVisibleRect(localRect);
                     Log.d("onDoubleTap: initscale : " + currentView.getScaleX() + ", translation: " + currentView.getTranslationX()+"/"+
-                            currentView.getTranslationY() + "l/t: " + localRect.left + " ||||>>><<<|||| " + globalRect.left);
+                            currentView.getTranslationY() + "l/t: " + localRect.left  + "/" + localRect.top);
 
 
                     if (currentView.getScaleX() < scalableRecyclerGridView.getMaxSingleZoom()) {
