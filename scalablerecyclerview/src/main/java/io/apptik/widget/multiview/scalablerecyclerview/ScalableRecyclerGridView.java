@@ -7,6 +7,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.support.v4.view.GestureDetectorCompat;
@@ -331,13 +332,19 @@ public class ScalableRecyclerGridView extends RecyclerView {
             if (scalableRecyclerGridView.isInSingleMode()) {
                 currentView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
                 if (currentView != null) {
-                    Log.d("onDoubleTap: initscale : " + currentView.getScaleX());
+                    Rect globalRect = new Rect();
+                    Rect localRect = new Rect();
+                    currentView.getGlobalVisibleRect(globalRect);
+                    currentView.getLocalVisibleRect(localRect);
+                    Log.d("onDoubleTap: initscale : " + currentView.getScaleX() + ", translation: " + currentView.getTranslationX()+"/"+
+                            currentView.getTranslationY() + "l/t: " + localRect.left + " ||||>>><<<|||| " + globalRect.left);
 
 
                     if (currentView.getScaleX() < scalableRecyclerGridView.getMaxSingleZoom()) {
-                        Log.d("onDoubleTap: initscale : so what next ?");
-                        currentView.setPivotX(e.getX() - currentView.getTranslationX());
-                        currentView.setPivotY(e.getY() - currentView.getTranslationY());
+
+                        currentView.setPivotX((e.getX()+localRect.left)/currentView.getScaleX() - currentView.getTranslationX());
+                        currentView.setPivotY((e.getY() + localRect.top) / currentView.getScaleY() - currentView.getTranslationY());
+                        Log.d("onDoubleTap: new pivot: " + currentView.getPivotX() + "/" +  currentView.getPivotY());
                         float nextScale =  Math.min(scalableRecyclerGridView.getMaxSingleZoom(),
                                 currentView.getScaleX() + scalableRecyclerGridView.getZoomStep());
                         ViewCompat.animate(currentView)
