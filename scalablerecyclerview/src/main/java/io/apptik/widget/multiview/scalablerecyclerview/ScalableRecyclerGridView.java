@@ -609,9 +609,10 @@ public class ScalableRecyclerGridView extends RecyclerView {
             Log.d("handleOnScaleEndSingle: " + detector.getFocusX() + "/" + detector.getFocusY() + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor());
             float currFactor = initialItemScale * detector.getScaleFactor();
             Log.d("handleOnScaleEndSingle - currFactor: " + currFactor);
-            if (currFactor >= 1f) {
+            if (currFactor >= .85f) {
                 currFactor = Math.min(scalableRecyclerGridView.getMaxSingleZoom(),
                         currFactor);
+                currFactor = Math.max(currFactor, 1f);
                 //set new scale for view
                 //zoomAnimate(currentView, currentView.getScaleX(), currFactor);
                 //currentView.setPivotX(mFromX + currentView.getTranslationX());
@@ -620,6 +621,12 @@ public class ScalableRecyclerGridView extends RecyclerView {
                 ViewCompat.animate(currentView)
                         .scaleX(currFactor).scaleY(currFactor)
                         .start();
+
+                if(currFactor==1f){
+                    ViewCompat.animate(currentView)
+                            .translationX(0).translationY(0)
+                            .start();
+                }
             } else {
                 Log.d("handleOnScaleEndSingle - going to grid mode");
                 resetItemScale(currentView);
