@@ -4,6 +4,8 @@ package io.apptik.widget.multiview.animators;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 
 public class Anims {
 
@@ -98,6 +100,48 @@ public class Anims {
     }
 
 
+    /////
 
+    public static ViewPropertyAnimatorCompat flipDownIn(final View view) {
+        return ViewCompat.animate(view).withStartAction(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setTranslationX(view, - (view.getMeasuredWidth() / 2));
+                        ViewCompat.setRotationY(view, -90);
+                    }
+                })
+                .rotationY(0)
+                .translationX(0)
+                .setInterpolator(new BounceInterpolator());
+    }
+
+    public static ViewPropertyAnimatorCompat flipDownOut(final View view) {
+        return ViewCompat.animate(view)
+                .rotationY(90)
+                .translationX(-(view.getMeasuredWidth() / 4))
+                .scaleX(0.5F)
+                .scaleY(0.5F)
+                .setInterpolator(new AccelerateInterpolator());
+    }
+
+    public static ViewPropertyAnimatorCompat garageDoorClose(final View view) {
+        return ViewCompat.animate(view).withStartAction(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setRotationX(view, 90);
+                        ViewCompat.setTranslationY(view, - (view.getMeasuredHeight() / 2));
+                    }
+                })
+                .rotationX(0)
+                .translationY(0);
+    }
+
+    public static ViewPropertyAnimatorCompat garageDoorOpen(final View view) {
+        return ViewCompat.animate(view)
+                .rotationX(90)
+                .translationY( - (view.getMeasuredHeight() / 2));
+    }
 
 }
