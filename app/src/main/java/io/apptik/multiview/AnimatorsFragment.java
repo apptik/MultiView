@@ -19,20 +19,19 @@ import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
 
 
-
-public class BasicFragment extends Fragment {
+public class AnimatorsFragment extends Fragment {
 
 
     RecyclerView recyclerView = null;
     BasicRecyclerAdapter recyclerAdapter;
     BasicMixedRecyclerAdapter recyclerMixedAdapter;
 
-    public BasicFragment() {
+    public AnimatorsFragment() {
         // Required empty public constructor
     }
 
-    public static BasicFragment newInstance() {
-        BasicFragment fragment = new BasicFragment();
+    public static AnimatorsFragment newInstance() {
+        AnimatorsFragment fragment = new AnimatorsFragment();
         return fragment;
     }
 
@@ -55,8 +54,8 @@ public class BasicFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.basic, menu);
+        //menu.clear();
+        inflater.inflate(R.menu.animators, menu);
 
     }
 
@@ -71,6 +70,27 @@ public class BasicFragment extends Fragment {
             case R.id.action_layout_linear: recyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); break;
             case R.id.action_layout_grid: recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2)); break;
             case R.id.action_layout_staggered: recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)); break;
+
+            case R.id.action_rv_add: recyclerView.getAdapter().notifyItemInserted(1); break;
+            case R.id.action_rv_remove: recyclerView.getAdapter().notifyItemRemoved(1); break;
+            case R.id.action_rv_move: recyclerView.getAdapter().notifyItemMoved(1,2); break;
+            case R.id.action_rv_change: recyclerView.getAdapter().notifyItemChanged(1); break;
+
+            case R.id.action_add_animation_1:
+                if(item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                }
+                break;
+            case R.id.action_add_animation_2:
+                if(item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                }
+                break;
+
         }
         return true;
     }

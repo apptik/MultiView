@@ -91,7 +91,7 @@ public class ScalableRecyclerViewOld extends RecyclerView {
                     }
 
                     @Override
-                    public void onPageChange(int prevPage, int newPage) {
+                    public void onPageChanged(int prevPage, int newPage) {
 
                     }
                 }

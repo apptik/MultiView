@@ -1,0 +1,75 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_rv_start"
+        android:icon="@drawable/ic_action_animation_start"
+        android:orderInCategory="1"
+        android:title="Perform Action"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_rv_add"
+                android:orderInCategory="1"
+                android:title="Add"/>
+            <item
+                android:id="@+id/action_rv_remove"
+                android:orderInCategory="2"
+                android:title="Remove"/>
+            <item
+                android:id="@+id/action_rv_move"
+                android:orderInCategory="3"
+                android:title="Move"/>
+            <item
+                android:id="@+id/action_rv_change"
+                android:orderInCategory="4"
+                android:title="Change"/>
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/action_animation_option"
+        android:icon="@drawable/ic_action_animation"
+        android:orderInCategory="2"
+
+        android:title="Set Animation"
+        app:showAsAction="always"
+        >
+        <menu>
+
+            <item
+                android:id="@+id/action_setanim_add"
+                android:orderInCategory="1"
+                android:title="Add">
+                <menu>
+                    <group android:checkableBehavior="single">
+                        <item
+                            android:id="@+id/action_add_animation_1"
+                            android:orderInCategory="1"
+                            android:title="Anim 1"
+                            />
+                        <item
+                            android:id="@+id/action_add_animation_2"
+                            android:orderInCategory="1"
+                            android:title="Anim 2"
+                            />
+                    </group>
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_setanim_remove"
+                android:orderInCategory="2"
+                android:title="Remove"/>
+            <item
+                android:id="@+id/action_setanim_move"
+                android:orderInCategory="3"
+                android:title="Move"/>
+            <item
+                android:id="@+id/action_setanim_change"
+                android:orderInCategory="4"
+                android:title="Change"/>
+
+        </menu>
+
+    </item>
+</menu>
