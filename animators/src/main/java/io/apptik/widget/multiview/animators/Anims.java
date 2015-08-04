@@ -45,4 +45,59 @@ public class Anims {
         return newViewAnim;
     }
 
+    public static ViewPropertyAnimatorCompat slideInRight(final View view) {
+        return  ViewCompat.animate(view).withStartAction(new Runnable() {
+            @Override
+            public void run() {
+                ViewCompat.setTranslationX(view, view.getRootView().getWidth());
+            }
+        }).translationX(0);
+    }
+
+    public static ViewPropertyAnimatorCompat slideOutRight(final View view) {
+        return  ViewCompat.animate(view).translationX(view.getRootView().getWidth());
+    }
+
+    public static ViewPropertyAnimatorCompat slideInLeft(final View view) {
+        return  ViewCompat.animate(view).withStartAction(new Runnable() {
+            @Override
+            public void run() {
+                ViewCompat.setTranslationX(view, -view.getRootView().getWidth());
+            }
+        }).translationX(0);
+    }
+
+    public static ViewPropertyAnimatorCompat slideOutLeft(final View view) {
+        return  ViewCompat.animate(view).translationX(-view.getRootView().getWidth());
+    }
+
+    public static ViewPropertyAnimatorCompat slideInTop(final View view) {
+        return  ViewCompat.animate(view).withStartAction(new Runnable() {
+            @Override
+            public void run() {
+                ViewCompat.setTranslationY(view, view.getRootView().getHeight());
+            }
+        }).translationY(0);
+    }
+
+    public static ViewPropertyAnimatorCompat slideOutTop(final View view) {
+        return  ViewCompat.animate(view).translationY(view.getRootView().getHeight());
+    }
+
+    public static ViewPropertyAnimatorCompat slideInBottom(final View view) {
+        return  ViewCompat.animate(view).withStartAction(new Runnable() {
+            @Override
+            public void run() {
+                ViewCompat.setTranslationY(view, -view.getRootView().getHeight());
+            }
+        }).translationY(0);
+    }
+
+    public static ViewPropertyAnimatorCompat slideOutBottom(final View view) {
+        return  ViewCompat.animate(view).translationY(-view.getRootView().getHeight());
+    }
+
+
+
+
 }
