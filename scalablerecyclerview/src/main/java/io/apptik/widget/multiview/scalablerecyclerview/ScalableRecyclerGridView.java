@@ -311,7 +311,9 @@ public class ScalableRecyclerGridView extends RecyclerView {
             if (scaleGestureDetector.isInProgress()) return true;
             currentView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
             if (currentView != null) {
-                currentView.callOnClick();
+                if(!currentView.callOnClick()) {
+                    scalableRecyclerGridView.callOnClick();
+                }
                 //in case of grid mode if pointer on a view item go to single mode scrolling to this item
                 //otherwise ignore
                 if (!scalableRecyclerGridView.isInSingleMode()) {

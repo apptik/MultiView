@@ -104,8 +104,6 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
         super.addView(child, index);
     }
 
-
-
     @Override
     public void setSpanCount(int spanCount) {
         if(spanCount==getSpanCount()) return;
