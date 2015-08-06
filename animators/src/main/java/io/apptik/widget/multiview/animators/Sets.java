@@ -6,31 +6,61 @@ public class Sets {
         throw new IllegalStateException("no instances");
     }
 
-    public static AnimationSetProvider defaultAnimationrSet() {
-        return new AnimationSetProvider() {
+    public static AnimatorSetProvider defaultItemAnimatorSet() {
+        return new AnimatorSetProvider() {
             @Override
-            public AnimationProvider getAddAnimProvider() {
+            public AnimatorProvider getAddAnimProvider() {
                 return Providers.defaultAddAnimProvider();
             }
 
             @Override
-            public AnimationProvider getRemoveAnimProvider() {
+            public AnimatorProvider getRemoveAnimProvider() {
                 return Providers.defaultRemoveAnimProvider();
             }
 
             @Override
-            public AnimationProvider getMoveAnimProvider() {
+            public AnimatorProvider getMoveAnimProvider() {
                 return Providers.defaultMoveAnimProvider();
             }
 
             @Override
-            public AnimationProvider getChangeOldItemAnimProvider() {
+            public AnimatorProvider getChangeOldItemAnimProvider() {
                 return Providers.defaultChangeOldViewAnimProvider();
             }
 
             @Override
-            public AnimationProvider getChangeNewItemAnimProvider() {
-                return Providers.defaultChangeNewViewAnimeProvider();
+            public AnimatorProvider getChangeNewItemAnimProvider() {
+                return Providers.defaultChangeNewViewAnimProvider();
+            }
+        };
+    }
+
+    public static AnimatorSetProvider garageDoorSet() {
+        return new AnimatorSetProvider() {
+            @Override
+            public AnimatorProvider getAddAnimProvider() {
+                return Providers.garageDoorAddProvider();
+            }
+
+            @Override
+            public AnimatorProvider getRemoveAnimProvider() {
+                return Providers.garageDoorRemoveProvider();
+            }
+
+            @Override
+            public AnimatorProvider getMoveAnimProvider() {
+                return null;
+            }
+
+            @Override
+            public AnimatorProvider getChangeOldItemAnimProvider() {
+                return Providers.defaultChangeOldViewAnimProvider();
+            }
+
+            @Override
+            public AnimatorProvider getChangeNewItemAnimProvider() {
+                return Providers.defaultChangeNewViewAnimProvider();
+
             }
         };
     }

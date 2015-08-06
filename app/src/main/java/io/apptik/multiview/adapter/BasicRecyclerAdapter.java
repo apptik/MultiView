@@ -17,7 +17,7 @@ import io.apptik.multiview.R;
  */
 public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdapter.ViewHolder> {
     private static final String TAG = "RecyclerAdapter";
-    private JsonArray jarr;
+    public final JsonArray jarr;
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,8 +71,11 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
 
-        viewHolder.txt1.setText("title");
-        viewHolder.txt2.setText("pos: " + position);
+        viewHolder.txt1.setText(jarr.getJsonObject(position).getString("title"));
+        viewHolder.txt3.setText(jarr.getJsonObject(position).getString("info") + "/" +
+                jarr.getJsonObject(position).getString("info2"));
+        viewHolder.txt4.setText(jarr.getJsonObject(position).getString("info3"));
+        viewHolder.txt2.setText("pos: " + position + ", id: " + jarr.getJsonObject(position).getInt("id"));
 
 
     }
@@ -84,9 +87,13 @@ public class BasicRecyclerAdapter extends RecyclerView.Adapter<BasicRecyclerAdap
         return jarr.size();
     }
 
-
-    @Override
-    public int getItemViewType(int position) {
-        return position % 2;
-    }
+//    @Override
+//    public long getItemId(int position) {
+//        return jarr.getJsonObject(position).getLong("id");
+//    }
+//
+//    @Override
+//    public int getItemViewType(int position) {
+//        return position % 2;
+//    }
 }

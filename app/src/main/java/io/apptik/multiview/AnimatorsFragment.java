@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
+import io.apptik.widget.multiview.animators.AnimatorProvider;
+import io.apptik.widget.multiview.animators.FlexiItemAnimator;
+import io.apptik.widget.multiview.animators.Providers;
 
 
 public class AnimatorsFragment extends Fragment {
@@ -25,6 +28,12 @@ public class AnimatorsFragment extends Fragment {
     RecyclerView recyclerView = null;
     BasicRecyclerAdapter recyclerAdapter;
     BasicMixedRecyclerAdapter recyclerMixedAdapter;
+
+    private AnimatorProvider addProvider = Providers.defaultAddAnimProvider();
+    private AnimatorProvider removeProvider = Providers.defaultRemoveAnimProvider();
+    private AnimatorProvider moveProvider = Providers.defaultMoveAnimProvider();
+    private AnimatorProvider changeOldVHProvider = Providers.defaultChangeOldViewAnimProvider();
+    private AnimatorProvider changeNewVHProvider = Providers.defaultChangeNewViewAnimProvider();
 
     public AnimatorsFragment() {
         // Required empty public constructor
@@ -41,14 +50,16 @@ public class AnimatorsFragment extends Fragment {
         // Inflate the layout for this fragment
         this.setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_recyclerview, container, false);
-         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
 
-         recyclerAdapter = new BasicRecyclerAdapter(MockData.getMockJsonArray(333, 500));
-         recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
-
+        recyclerAdapter = new BasicRecyclerAdapter(MockData.getMockJsonArray(333, 500));
+        recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
+        //recyclerAdapter.setHasStableIds(true);
+        recyclerMixedAdapter.setHasStableIds(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recyclerAdapter);
         //recyclerView.setAdapter(recyclerMixedAdapter);
+
         return v;
     }
 
@@ -61,37 +72,99 @@ public class AnimatorsFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(recyclerView==null ) return false;
+        if (recyclerView == null) return false;
         switch (item.getItemId()) {
-            case R.id.action_text_only: recyclerView.setAdapter(recyclerAdapter); break;
-            case R.id.action_image_only: break;
-            case R.id.action_Image_text: recyclerView.setAdapter(recyclerMixedAdapter); break;
+            case R.id.action_text_only:
+                recyclerView.setAdapter(recyclerAdapter);
+                break;
+            case R.id.action_image_only:
+                break;
+            case R.id.action_Image_text:
+                recyclerView.setAdapter(recyclerMixedAdapter);
+                break;
 
-            case R.id.action_layout_linear: recyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); break;
-            case R.id.action_layout_grid: recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2)); break;
-            case R.id.action_layout_staggered: recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)); break;
+            case R.id.action_layout_linear:
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                break;
+            case R.id.action_layout_grid:
+                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                break;
+            case R.id.action_layout_staggered:
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                break;
 
-            case R.id.action_rv_add: recyclerView.getAdapter().notifyItemInserted(1); break;
-            case R.id.action_rv_remove: recyclerView.getAdapter().notifyItemRemoved(1); break;
-            case R.id.action_rv_move: recyclerView.getAdapter().notifyItemMoved(1,2); break;
-            case R.id.action_rv_change: recyclerView.getAdapter().notifyItemChanged(1); break;
+            case R.id.action_rv_add:
+                resetItemAnimator();
+                recyclerAdapter.jarr.put(1, MockData.getRandomEntry(1, 500));
+                recyclerView.getAdapter().notifyItemInserted(1);
+                break;
+            case R.id.action_rv_remove:
+                resetItemAnimator();
+                recyclerAdapter.jarr.remove(1);
+                recyclerView.getAdapter().notifyItemRemoved(1);
+                break;
+            case R.id.action_rv_move:
+                resetItemAnimator();
+                recyclerAdapter.jarr.put(2, recyclerAdapter.jarr.get(1));
+                recyclerAdapter.jarr.put(1, MockData.getRandomEntry(1, 500));
+                recyclerView.getAdapter().notifyItemMoved(1, 2);
+                break;
+            case R.id.action_rv_change:
+                resetItemAnimator();
+                recyclerAdapter.jarr.put(1, MockData.getRandomEntry(1, 500));
+                recyclerView.getAdapter().notifyItemChanged(1);
+                break;
 
-            case R.id.action_add_animation_1:
-                if(item.isChecked()) {
+            case R.id.action_add_animation_default:
+                if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
+                    addProvider = Providers.defaultAddAnimProvider();
                 }
                 break;
-            case R.id.action_add_animation_2:
-                if(item.isChecked()) {
+            case R.id.action_add_animation_garagedoor:
+                if (item.isChecked()) {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
+                    addProvider = Providers.garageDoorAddProvider();
+                }
+                break;
+
+            case R.id.action_remove_animation_default:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.defaultRemoveAnimProvider();
+                }
+                break;
+            case R.id.action_remove_animation_garagedoor:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.garageDoorRemoveProvider();
                 }
                 break;
 
         }
         return true;
+    }
+
+    private void resetItemAnimator() {
+        RecyclerView.ItemAnimator itemAnimator = new FlexiItemAnimator(
+                addProvider,
+                changeOldVHProvider,
+                changeNewVHProvider,
+                moveProvider,
+                removeProvider);
+        itemAnimator.setMoveDuration(1000);
+        itemAnimator.setRemoveDuration(1000);
+        itemAnimator.setChangeDuration(1000);
+        itemAnimator.setAddDuration(1000);
+        itemAnimator.setSupportsChangeAnimations(true);
+        recyclerView.setItemAnimator(itemAnimator);
     }
 }

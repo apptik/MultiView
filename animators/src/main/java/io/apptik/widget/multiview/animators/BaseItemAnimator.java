@@ -2,7 +2,6 @@ package io.apptik.widget.multiview.animators;
 
 
 import android.support.v4.view.ViewCompat;
-
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
@@ -10,6 +9,8 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.apptik.widget.multiview.common.Log;
 
 public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
     private static final boolean DEBUG = false;
@@ -194,6 +195,7 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
             dispatchMoveFinished(holder);
             return false;
         }
+        // pre-translate here while waiting for the other(remove) to finish
         if (deltaX != 0) {
             ViewCompat.setTranslationX(view, -deltaX);
         }
@@ -251,6 +253,7 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
             endChangeAnimationIfNecessary(changeInfo, changeInfo.newHolder);
         }
     }
+
     private boolean endChangeAnimationIfNecessary(ChangeInfo changeInfo, ViewHolder item) {
         boolean oldItem = false;
         if (changeInfo.newHolder == item) {
@@ -261,9 +264,10 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         } else {
             return false;
         }
-        ViewCompat.setAlpha(item.itemView, 1);
-        ViewCompat.setTranslationX(item.itemView, 0);
-        ViewCompat.setTranslationY(item.itemView, 0);
+//        ViewCompat.setAlpha(item.itemView, 1);
+//        ViewCompat.setTranslationX(item.itemView, 0);
+//        ViewCompat.setTranslationY(item.itemView, 0);
+        resetView(item.itemView);
         dispatchChangeFinished(item, oldItem);
         return true;
     }
@@ -277,19 +281,22 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         for (int i = mPendingMoves.size() - 1; i >= 0; i--) {
             MoveInfo moveInfo = mPendingMoves.get(i);
             if (moveInfo.holder == item) {
-                ViewCompat.setTranslationY(view, 0);
-                ViewCompat.setTranslationX(view, 0);
+//                ViewCompat.setTranslationY(view, 0);
+//                ViewCompat.setTranslationX(view, 0);
+                resetView(view);
                 dispatchMoveFinished(item);
                 mPendingMoves.remove(i);
             }
         }
         endChangeAnimation(mPendingChanges, item);
         if (mPendingRemovals.remove(item)) {
-            ViewCompat.setAlpha(view, 1);
+            //ViewCompat.setAlpha(view, 1);
+            resetView(view);
             dispatchRemoveFinished(item);
         }
         if (mPendingAdditions.remove(item)) {
-            ViewCompat.setAlpha(view, 1);
+            //ViewCompat.setAlpha(view, 1);
+            resetView(view);
             dispatchAddFinished(item);
         }
 
@@ -305,8 +312,9 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
             for (int j = moves.size() - 1; j >= 0; j--) {
                 MoveInfo moveInfo = moves.get(j);
                 if (moveInfo.holder == item) {
-                    ViewCompat.setTranslationY(view, 0);
-                    ViewCompat.setTranslationX(view, 0);
+//                    ViewCompat.setTranslationY(view, 0);
+//                    ViewCompat.setTranslationX(view, 0);
+                    resetView(view);
                     dispatchMoveFinished(item);
                     moves.remove(j);
                     if (moves.isEmpty()) {
@@ -319,7 +327,8 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         for (int i = mAdditionsList.size() - 1; i >= 0; i--) {
             ArrayList<ViewHolder> additions = mAdditionsList.get(i);
             if (additions.remove(item)) {
-                ViewCompat.setAlpha(view, 1);
+//                ViewCompat.setAlpha(view, 1);
+                resetView(view);
                 dispatchAddFinished(item);
                 if (additions.isEmpty()) {
                     mAdditionsList.remove(i);
@@ -329,21 +338,29 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
 
         // animations should be ended by the cancel above.
         if (mRemoveAnimations.remove(item) && DEBUG) {
+            Log.e("after animation is cancelled, item should not be in "
+                    + "mRemoveAnimations list");
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mRemoveAnimations list");
         }
 
         if (mAddAnimations.remove(item) && DEBUG) {
+            Log.e("after animation is cancelled, item should not be in "
+                    + "mAddAnimations list");
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mAddAnimations list");
         }
 
         if (mChangeAnimations.remove(item) && DEBUG) {
+            Log.e("after animation is cancelled, item should not be in "
+                    + "mAddAnimations list");
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mChangeAnimations list");
         }
 
         if (mMoveAnimations.remove(item) && DEBUG) {
+            Log.e("after animation is cancelled, item should not be in "
+                    + "mAddAnimations list");
             throw new IllegalStateException("after animation is cancelled, item should not be in "
                     + "mMoveAnimations list");
         }
@@ -468,14 +485,34 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         }
     }
 
-    protected static class VpaListenerAdapter implements ViewPropertyAnimatorListener {
+    protected void resetView(View view) {
+        ViewCompat.setAlpha(view, 1);
+        ViewCompat.setTranslationX(view, 0);
+        ViewCompat.setTranslationY(view, 0);
+        ViewCompat.setTranslationZ(view, 0);
+        ViewCompat.setRotation(view, 0);
+        ViewCompat.setRotationX(view, 0);
+        ViewCompat.setRotationY(view, 0);
+        ViewCompat.setScaleX(view, 1);
+        ViewCompat.setScaleY(view, 1);
+        view.invalidate();
+
+    }
+
+    protected static class VoidVpaListener implements ViewPropertyAnimatorListener {
         @Override
-        public void onAnimationStart(View view) {}
+        public void onAnimationStart(View view) {
+        }
 
         @Override
-        public void onAnimationEnd(View view) {}
+        public void onAnimationEnd(View view) {
+        }
 
         @Override
-        public void onAnimationCancel(View view) {}
-    };
+        public void onAnimationCancel(View view) {
+        }
+
+    }
+
+    ;
 }

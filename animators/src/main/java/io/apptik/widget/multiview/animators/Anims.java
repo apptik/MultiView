@@ -21,16 +21,8 @@ public class Anims {
         return ViewCompat.animate(view).alpha(1);
     }
 
-    public static ViewPropertyAnimatorCompat defaultMoveAnim(View view, int dX, int dY) {
-        ViewPropertyAnimatorCompat res = ViewCompat.animate(view);
-
-        if (dX != 0) {
-            ViewCompat.setTranslationX(view, 0);
-        }
-        if (dY != 0) {
-            ViewCompat.setTranslationY(view, 0);
-        }
-        return res;
+    public static ViewPropertyAnimatorCompat defaultMoveAnim(View view) {
+        return ViewCompat.animate(view).translationX(0).translationY(0);
     }
 
     public static ViewPropertyAnimatorCompat defaultChangeOldViewAnim(View view, final BaseItemAnimator.ChangeInfo changeInfo) {
@@ -126,14 +118,8 @@ public class Anims {
     }
 
     public static ViewPropertyAnimatorCompat garageDoorClose(final View view) {
-        return ViewCompat.animate(view).withStartAction(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewCompat.setRotationX(view, 90);
-                        ViewCompat.setTranslationY(view, -(view.getMeasuredHeight() / 2));
-                    }
-                })
+
+        return ViewCompat.animate(view)
                 .rotationX(0)
                 .translationY(0);
     }

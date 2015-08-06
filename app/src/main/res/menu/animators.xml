@@ -44,14 +44,14 @@
                 <menu>
                     <group android:checkableBehavior="single">
                         <item
-                            android:id="@+id/action_add_animation_1"
+                            android:id="@+id/action_add_animation_default"
                             android:orderInCategory="1"
-                            android:title="Anim 1"
+                            android:title="Default Add"
                             />
                         <item
-                            android:id="@+id/action_add_animation_2"
+                            android:id="@+id/action_add_animation_garagedoor"
                             android:orderInCategory="1"
-                            android:title="Anim 2"
+                            android:title="Garage Door"
                             />
                     </group>
                 </menu>
@@ -59,7 +59,22 @@
             <item
                 android:id="@+id/action_setanim_remove"
                 android:orderInCategory="2"
-                android:title="Remove"/>
+                android:title="Remove">
+                <menu>
+                    <group android:checkableBehavior="single">
+                        <item
+                            android:id="@+id/action_remove_animation_default"
+                            android:orderInCategory="1"
+                            android:title="Default Remove"
+                            />
+                        <item
+                            android:id="@+id/action_remove_animation_garagedoor"
+                            android:orderInCategory="1"
+                            android:title="Garage Door"
+                            />
+                    </group>
+                </menu>
+                </item>
             <item
                 android:id="@+id/action_setanim_move"
                 android:orderInCategory="3"
