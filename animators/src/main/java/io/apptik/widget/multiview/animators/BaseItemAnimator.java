@@ -511,8 +511,14 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         ViewCompat.setRotationY(view, 0);
         ViewCompat.setScaleX(view, 1);
         ViewCompat.setScaleY(view, 1);
-        view.invalidate();
+//        TODO https://code.google.com/p/android/issues/detail?id=80863
+//        ViewCompat.setPivotY(view, view.getMeasuredHeight() / 2);
+        view.setPivotY(view.getMeasuredHeight() / 2);
+        ViewCompat.setPivotX(view, view.getMeasuredWidth() / 2);
+        ViewCompat.animate(view).setInterpolator(null);
 
+        //do we need it at all ?
+        view.invalidate();
     }
 
     protected static class VoidVpaListener implements ViewPropertyAnimatorListener {

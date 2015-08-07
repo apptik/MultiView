@@ -146,9 +146,6 @@ public class FlexiItemAnimator extends BaseItemAnimator {
         final int deltaX = moveInfo.toX - moveInfo.fromX;
         final int deltaY = moveInfo.toY - moveInfo.fromY;
 
-        // TODO: make EndActions end listeners instead, since end actions aren't called when
-        // vpas are canceled (and can't end them. why?)
-        // need listener functionality in VPACompat for this. Ick.
         mMoveAnimations.add(holder);
         Runnable beforeAction = vpaMove.getBeforeAction(holder, moveInfo);
         if(beforeAction!=null) {
@@ -165,12 +162,6 @@ public class FlexiItemAnimator extends BaseItemAnimator {
             @Override
             public void onAnimationCancel(View view) {
                 Log.v("cancel move anim: " + view);
-//                if (deltaX != 0) {
-//                    ViewCompat.setTranslationX(view, 0);
-//                }
-//                if (deltaY != 0) {
-//                    ViewCompat.setTranslationY(view, 0);
-//                }
                 resetView(view);
             }
 
