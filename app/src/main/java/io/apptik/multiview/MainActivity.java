@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity
             case 0: fragToAdd =  BasicFragment.newInstance(); break;
             case 1: fragToAdd = LayoutsFragment.newInstance(); break;
             case 2: fragToAdd = AnimatorsFragment.newInstance(); break;
+            case 5: fragToAdd = ScrollersFragment.newInstance(); break;
             case 6: fragToAdd = ScalableRVFragment.newInstance(); break;
             default: fragToAdd = BlankFragment.newInstance(); break;
         }
