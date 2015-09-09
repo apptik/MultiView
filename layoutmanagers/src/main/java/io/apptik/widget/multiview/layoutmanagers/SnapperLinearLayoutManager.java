@@ -312,12 +312,22 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
 
     protected synchronized void smoothAdjustTo(int targetPosition) {
-        if (smoothScroller != null && (smoothScroller.isRunning()) || isSmoothScrolling()) return;
+        Log.d("smoothAdjustTo position: " + targetPosition);
+        int safeTargetPosition = safeTargetPosition(targetPosition, getItemCount());
+        Log.d("smoothAdjustTo safe position: " + safeTargetPosition);
+        if ((smoothScroller != null && smoothScroller.isRunning()) || isSmoothScrolling()) return;
         if (smoothScroller == null) {
-            smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), safeTargetPosition(targetPosition, getItemCount()));
+            Log.d("smoothAdjustTo smoothScroller is null so we use default smooth scrolling");
+            smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), safeTargetPosition);
         } else {
-            smoothScroller.setTargetPosition(safeTargetPosition(targetPosition, getItemCount()));
-            startSmoothScroll(smoothScroller);
+            if(smoothScroller.getTargetPosition() != safeTargetPosition) {
+                Log.d("smoothAdjustTo smoothScroller will start: " + smoothScroller);
+                setDefaultSmoothScroller();
+                smoothScroller.setTargetPosition(safeTargetPosition);
+                startSmoothScroll(smoothScroller);
+            } else {
+                Log.d("smoothAdjustTo smoothScroller already targeting position: " + safeTargetPosition);
+            }
         }
     }
 
