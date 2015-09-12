@@ -104,18 +104,6 @@ public class Anims {
         return ViewCompat.animate(view).scaleX(10).scaleY(10).alpha(0);
     }
 
-    public static ViewPropertyAnimatorCompat zoomExitLeft(final View view) {
-        return ViewCompat.animate(view).translationX(-view.getRootView().getWidth());
-    }
-
-    public static ViewPropertyAnimatorCompat zoomExitTop(final View view) {
-        return ViewCompat.animate(view).translationY(view.getRootView().getHeight());
-    }
-
-    public static ViewPropertyAnimatorCompat zoomExitBottom(final View view) {
-        return ViewCompat.animate(view).translationY(-view.getRootView().getHeight());
-    }
-
 
     /////
 

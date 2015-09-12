@@ -234,7 +234,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    addProvider = Providers.zoomEnterRightProvider();
+                    addProvider = Providers.zoomInEnterRightProvider();
                 }
                 break;
             case R.id.action_remove_animation_zoom_to_left:
@@ -242,7 +242,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    removeProvider = Providers.zoomExitLeftProvider();
+                    removeProvider = Providers.zoomOutExitLeftProvider();
                 }
                 break;
             case R.id.action_add_animation_zoom_to_right:
@@ -250,7 +250,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    addProvider = Providers.zoomEnterLeftProvider();
+                    addProvider = Providers.zoomInEnterLeftProvider();
                 }
                 break;
             case R.id.action_remove_animation_zoom_to_right:
@@ -258,7 +258,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    removeProvider = Providers.zoomExitRightProvider();
+                    removeProvider = Providers.zoomOutExitRightProvider();
                 }
                 break;
 
@@ -267,7 +267,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    addProvider = Providers.zoomEnterBottomProvider();
+                    addProvider = Providers.zoomInEnterBottomProvider();
                 }
                 break;
             case R.id.action_remove_animation_zoom_to_top:
@@ -275,7 +275,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    removeProvider = Providers.zoomExitTopProvider();
+                    removeProvider = Providers.zoomOutExitTopProvider();
                 }
                 break;
             case R.id.action_add_animation_zoom_to_bottom:
@@ -283,7 +283,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    addProvider = Providers.zoomEnterTopProvider();
+                    addProvider = Providers.zoomInEnterTopProvider();
                 }
                 break;
             case R.id.action_remove_animation_zoom_to_bottom:
@@ -291,7 +291,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    removeProvider = Providers.zoomExitBottomProvider();
+                    removeProvider = Providers.zoomOutExitBottomProvider();
                 }
                 break;
 

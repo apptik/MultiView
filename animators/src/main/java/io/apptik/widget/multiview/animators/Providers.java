@@ -361,7 +361,7 @@ public class Providers {
         };
     }
 
-    public static AnimatorProvider zoomEnterRightProvider() {
+    public static AnimatorProvider zoomInEnterRightProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
@@ -392,7 +392,7 @@ public class Providers {
 
     }
 
-    public static AnimatorProvider zoomExitRightProvider() {
+    public static AnimatorProvider zoomOutExitRightProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
@@ -419,7 +419,34 @@ public class Providers {
         };
     }
 
-    public static AnimatorProvider zoomEnterLeftProvider() {
+    public static AnimatorProvider zoomInExitRightProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomIn(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth());
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight()/2);
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() / 2);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider zoomInEnterLeftProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
@@ -449,7 +476,7 @@ public class Providers {
         };
     }
 
-    public static AnimatorProvider zoomExitLeftProvider() {
+    public static AnimatorProvider zoomOutExitLeftProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
@@ -477,7 +504,35 @@ public class Providers {
     }
 
 
-    public static AnimatorProvider zoomEnterTopProvider() {
+    public static AnimatorProvider zoomInExitLeftProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomIn(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setPivotX(viewHolder.itemView, 0);
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight()/2);
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() / 2);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+
+    public static AnimatorProvider zoomInEnterTopProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
@@ -508,7 +563,7 @@ public class Providers {
 
     }
 
-    public static AnimatorProvider zoomExitTopProvider() {
+    public static AnimatorProvider zoomOutExitTopProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
@@ -520,7 +575,7 @@ public class Providers {
                 return new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()/2);
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() / 2);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, 0);
                         viewHolder.itemView.setPivotY(0);
@@ -535,7 +590,34 @@ public class Providers {
         };
     }
 
-    public static AnimatorProvider zoomEnterBottomProvider() {
+    public static AnimatorProvider zoomInExitTopProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomIn(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() / 2);
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, 0);
+                        viewHolder.itemView.setPivotY(0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider zoomInEnterBottomProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
@@ -565,11 +647,39 @@ public class Providers {
         };
     }
 
-    public static AnimatorProvider zoomExitBottomProvider() {
+    public static AnimatorProvider zoomOutExitBottomProvider() {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
                 return Anims.zoomOut(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() / 2);
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight());
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+
+    public static AnimatorProvider zoomInExitBottomProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomIn(viewHolder.itemView);
             }
 
             @Override
