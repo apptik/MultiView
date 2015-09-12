@@ -361,4 +361,219 @@ public class Providers {
         };
     }
 
+    public static AnimatorProvider zoomEnterRightProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoom2Normal(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth());
+                        ViewCompat.setScaleX(viewHolder.itemView, 0);
+                        ViewCompat.setScaleY(viewHolder.itemView, 0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+
+    }
+
+    public static AnimatorProvider zoomExitRightProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomOut(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth());
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider zoomEnterLeftProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoom2Normal(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setPivotX(viewHolder.itemView, 0);
+                        ViewCompat.setScaleX(viewHolder.itemView, 0);
+                        ViewCompat.setScaleY(viewHolder.itemView, 0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider zoomExitLeftProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomOut(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setPivotX(viewHolder.itemView, 0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+
+    public static AnimatorProvider zoomEnterTopProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoom2Normal(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, 0);
+                        viewHolder.itemView.setPivotY(0);
+                        ViewCompat.setScaleX(viewHolder.itemView, 0);
+                        ViewCompat.setScaleY(viewHolder.itemView, 0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+
+    }
+
+    public static AnimatorProvider zoomExitTopProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomOut(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, 0);
+                        viewHolder.itemView.setPivotY(0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider zoomEnterBottomProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoom2Normal(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight());
+                        ViewCompat.setScaleX(viewHolder.itemView, 0);
+                        ViewCompat.setScaleY(viewHolder.itemView, 0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider zoomExitBottomProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.zoomOut(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        //TODO https://code.google.com/p/android/issues/detail?id=80863
+                        //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight());
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
 }
