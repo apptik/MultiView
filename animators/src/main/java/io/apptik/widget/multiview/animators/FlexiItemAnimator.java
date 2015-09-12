@@ -30,7 +30,7 @@ public class FlexiItemAnimator extends BaseItemAnimator {
     private AnimatorProvider vpaRemove;
     private AnimatorProvider vpaAdd;
     private AnimatorProvider vpaChnageOld;
-    private AnimatorProvider vpaChnageNew;
+    private AnimatorProvider vpaChangeNew;
     private AnimatorProvider vpaMove;
 
     private Interpolator ipRemove;
@@ -41,18 +41,18 @@ public class FlexiItemAnimator extends BaseItemAnimator {
 
     public FlexiItemAnimator(AnimatorProvider vpaAdd,
                              AnimatorProvider vpaChnageOld,
-                             AnimatorProvider vpaChnageNew,
+                             AnimatorProvider vpaChangeNew,
                              AnimatorProvider vpaMove,
                              AnimatorProvider vpaRemove) {
         this.vpaAdd = vpaAdd;
         this.vpaChnageOld = vpaChnageOld;
-        this.vpaChnageNew = vpaChnageNew;
+        this.vpaChangeNew = vpaChangeNew;
         this.vpaMove = vpaMove;
         this.vpaRemove = vpaRemove;
 
         Log.v("add: " + vpaAdd);
         Log.v("change old: " + vpaChnageOld);
-        Log.v("change new: " + vpaChnageNew);
+        Log.v("change new: " + vpaChangeNew);
         Log.v("move: " + vpaMove);
         Log.v("remove: " + vpaRemove);
     }
@@ -100,7 +100,7 @@ public class FlexiItemAnimator extends BaseItemAnimator {
     public FlexiItemAnimator(AnimatorSetProvider animatorSetProvider) {
         this.vpaAdd = animatorSetProvider.getAddAnimProvider();
         this.vpaChnageOld = animatorSetProvider.getChangeOldItemAnimProvider();
-        this.vpaChnageNew = animatorSetProvider.getChangeNewItemAnimProvider();
+        this.vpaChangeNew = animatorSetProvider.getChangeNewItemAnimProvider();
         this.vpaMove = animatorSetProvider.getMoveAnimProvider();
         this.vpaRemove = animatorSetProvider.getRemoveAnimProvider();
     }
@@ -277,13 +277,13 @@ public class FlexiItemAnimator extends BaseItemAnimator {
             dispatchChangeFinished(changeInfo.oldHolder, true);
             dispatchFinishedWhenDone();
         }
-        if (newView != null && vpaChnageNew != null) {
+        if (newView != null && vpaChangeNew != null) {
             mChangeAnimations.add(changeInfo.newHolder);
-            Runnable beforeAction = vpaChnageNew.getBeforeAction(holder, changeInfo);
+            Runnable beforeAction = vpaChangeNew.getBeforeAction(holder, changeInfo);
             if(beforeAction!=null) {
                 beforeAction.run();
             }
-            final ViewPropertyAnimatorCompat newViewAnimation = vpaChnageNew.getAnim(changeInfo.newHolder, changeInfo);
+            final ViewPropertyAnimatorCompat newViewAnimation = vpaChangeNew.getAnim(changeInfo.newHolder, changeInfo);
             if(ipChangeNew!=null) {
                 newViewAnimation.setInterpolator(ipChangeNew);
             }
