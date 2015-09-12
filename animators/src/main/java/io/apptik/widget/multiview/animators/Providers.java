@@ -431,7 +431,7 @@ public class Providers {
                 return new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()*-.1f);
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() * -.1f);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight()/2);
                         viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() / 2);
@@ -605,7 +605,7 @@ public class Providers {
                         ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() / 2);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, 0);
-                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight()*1.1f);
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() * 1.1f);
                     }
                 };
             }
@@ -687,12 +687,191 @@ public class Providers {
                 return new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()/2);
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() / 2);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
-                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight()*-.1f);
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() * -.1f);
                     }
                 };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider flipEnterRightProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipEnterHorizontal(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setRotationY(viewHolder.itemView, -90);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+
+    }
+
+    public static AnimatorProvider flipExitRightProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipExitRight(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider flipEnterLeftProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipEnterHorizontal(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setRotationY(viewHolder.itemView, 90);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider flipExitLeftProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipExitLeft(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+
+    public static AnimatorProvider flipEnterTopProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipEnterVertical(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setRotationX(viewHolder.itemView, 90);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+
+    }
+
+    public static AnimatorProvider flipExitTopProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipExitTop(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider flipEnterBottomProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipEnterVertical(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setRotationX(viewHolder.itemView, -90);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider flipExitBottomProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.flipExitBottom(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
             }
 
             @Override

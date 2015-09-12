@@ -106,8 +106,6 @@ public class Anims {
 
 
     /////
-
-
     public static ViewPropertyAnimatorCompat flipDownIn(final View view) {
         return ViewCompat.animate(view).withStartAction(
                 new Runnable() {
@@ -132,89 +130,32 @@ public class Anims {
     }
 
 
-    public static ViewPropertyAnimatorCompat flipOutBottom(final View view) {
+    public static ViewPropertyAnimatorCompat flipExitBottom(final View view) {
         return ViewCompat.animate(view)
                 .rotationX(-90);
     }
 
-    public static ViewPropertyAnimatorCompat flipInBottom(final View view) {
-        return ViewCompat.animate(view)
-                .withStartAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewCompat.setRotationX(view, -90);
-                    }
-                })
-                .rotationX(0);
+    public static ViewPropertyAnimatorCompat flipEnterVertical(final View view) {
+        return ViewCompat.animate(view).rotationX(0);
     }
 
-    public static ViewPropertyAnimatorCompat flipOutTop(final View view) {
+    public static ViewPropertyAnimatorCompat flipExitTop(final View view) {
         return ViewCompat.animate(view)
                 .rotationX(90);
     }
 
-    public static ViewPropertyAnimatorCompat flipInTop(final View view) {
-        return ViewCompat.animate(view)
-                .withStartAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewCompat.setRotationX(view, 90);
-                    }
-                })
-                .rotationX(0);
-    }
-
-    public static ViewPropertyAnimatorCompat flipOutRight(final View view) {
+    public static ViewPropertyAnimatorCompat flipExitRight(final View view) {
         return ViewCompat.animate(view)
                 .rotationY(-90);
     }
 
-    public static ViewPropertyAnimatorCompat flipInRight(final View view) {
-        return ViewCompat.animate(view)
-                .withStartAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewCompat.setRotationY(view, -90);
-                    }
-                })
-                .rotationY(0);
+    public static ViewPropertyAnimatorCompat flipEnterHorizontal(final View view) {
+        return ViewCompat.animate(view).rotationY(0);
     }
 
-    public static ViewPropertyAnimatorCompat flipOutLeft(final View view) {
+    public static ViewPropertyAnimatorCompat flipExitLeft(final View view) {
         return ViewCompat.animate(view)
                 .rotationY(90);
-    }
-
-    public static ViewPropertyAnimatorCompat flipInLeft(final View view) {
-        return ViewCompat.animate(view)
-                .withStartAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewCompat.setRotationY(view, 90);
-                    }
-                })
-                .rotationY(0);
-    }
-
-
-    public static ViewPropertyAnimatorCompat zoomedOut2Normal(final View view) {
-        return ViewCompat.animate(view).withStartAction(new Runnable() {
-            @Override
-            public void run() {
-                ViewCompat.setScaleX(view, 0);
-                ViewCompat.setScaleY(view, 0);
-            }
-        }).scaleX(1).scaleY(1);
-    }
-
-    public static ViewPropertyAnimatorCompat zoomedIn2Normal(final View view) {
-        return ViewCompat.animate(view).withStartAction(new Runnable() {
-            @Override
-            public void run() {
-                ViewCompat.setScaleX(view, 10);
-                ViewCompat.setScaleY(view, 10);
-            }
-        }).scaleX(1).scaleY(1);
     }
 
     public static ViewPropertyAnimatorCompat fadeOut(final View view) {

@@ -295,6 +295,72 @@ public class AnimatorsFragment extends Fragment {
                 }
                 break;
 
+            case R.id.action_add_animation_flip_to_left:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.flipEnterRightProvider();
+                }
+                break;
+            case R.id.action_remove_animation_flip_to_left:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.flipExitLeftProvider();
+                }
+                break;
+            case R.id.action_add_animation_flip_to_right:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.flipEnterLeftProvider();
+                }
+                break;
+            case R.id.action_remove_animation_flip_to_right:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.flipExitRightProvider();
+                }
+                break;
+
+            case R.id.action_add_animation_flip_to_top:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.flipEnterBottomProvider();
+                }
+                break;
+            case R.id.action_remove_animation_flip_to_top:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.flipExitTopProvider();
+                }
+                break;
+            case R.id.action_add_animation_flip_to_bottom:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.flipEnterTopProvider();
+                }
+                break;
+            case R.id.action_remove_animation_flip_to_bottom:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.flipExitBottomProvider();
+                }
+                break;
+
         }
         return true;
     }

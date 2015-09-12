@@ -98,6 +98,22 @@
                             android:id="@+id/action_add_animation_zoom_to_bottom"
                             android:orderInCategory="1"
                             android:title="Zoom to bottom" />
+                        <item
+                            android:id="@+id/action_add_animation_flip_to_left"
+                            android:orderInCategory="1"
+                            android:title="Flip to left" />
+                        <item
+                            android:id="@+id/action_add_animation_flip_to_right"
+                            android:orderInCategory="1"
+                            android:title="Flip to right" />
+                        <item
+                            android:id="@+id/action_add_animation_flip_to_top"
+                            android:orderInCategory="1"
+                            android:title="Flip to top" />
+                        <item
+                            android:id="@+id/action_add_animation_flip_to_bottom"
+                            android:orderInCategory="1"
+                            android:title="Flip to bottom" />
                     </group>
                 </menu>
             </item>
@@ -147,6 +163,22 @@
                             android:id="@+id/action_remove_animation_zoom_to_bottom"
                             android:orderInCategory="1"
                             android:title="Zoom to bottom" />
+                        <item
+                            android:id="@+id/action_remove_animation_flip_to_left"
+                            android:orderInCategory="1"
+                            android:title="Flip to left" />
+                        <item
+                            android:id="@+id/action_remove_animation_flip_to_right"
+                            android:orderInCategory="1"
+                            android:title="Flip to right" />
+                        <item
+                            android:id="@+id/action_remove_animation_flip_to_top"
+                            android:orderInCategory="1"
+                            android:title="Flip to top" />
+                        <item
+                            android:id="@+id/action_remove_animation_flip_to_bottom"
+                            android:orderInCategory="1"
+                            android:title="Flip to bottom" />
                     </group>
                 </menu>
             </item>
