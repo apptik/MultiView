@@ -79,6 +79,16 @@
                             android:orderInCategory="1"
                             android:title="Slide to right"
                             />
+                        <item
+                            android:id="@+id/action_add_animation_slide_to_top"
+                            android:orderInCategory="1"
+                            android:title="Slide to top"
+                            />
+                        <item
+                            android:id="@+id/action_add_animation_slide_to_bottom"
+                            android:orderInCategory="1"
+                            android:title="Slide to bottom"
+                            />
                     </group>
                 </menu>
             </item>
@@ -108,9 +118,19 @@
                             android:orderInCategory="1"
                             android:title="Slide to right"
                             />
+                        <item
+                            android:id="@+id/action_remove_animation_slide_to_top"
+                            android:orderInCategory="1"
+                            android:title="Slide to top"
+                            />
+                        <item
+                            android:id="@+id/action_remove_animation_slide_to_bottom"
+                            android:orderInCategory="1"
+                            android:title="Slide to bottom"
+                            />
                     </group>
                 </menu>
-                </item>
+            </item>
             <item
                 android:id="@+id/action_setanim_move"
                 android:orderInCategory="3"

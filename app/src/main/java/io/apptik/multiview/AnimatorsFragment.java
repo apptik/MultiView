@@ -197,6 +197,39 @@ public class AnimatorsFragment extends Fragment {
                 }
                 break;
 
+            case R.id.action_add_animation_slide_to_top:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.slideInBottomProvider();
+                }
+                break;
+            case R.id.action_remove_animation_slide_to_top:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.slideOutTopProvider();
+                }
+                break;
+            case R.id.action_add_animation_slide_to_bottom:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.slideInTopProvider();
+                }
+                break;
+            case R.id.action_remove_animation_slide_to_bottom:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.slideOutBottomProvider();
+                }
+                break;
+
         }
         return true;
     }

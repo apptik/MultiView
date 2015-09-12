@@ -182,12 +182,19 @@ public class Providers {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
-                return Anims.slideInRight(viewHolder.itemView);
+                return Anims.slideInHorisontal(viewHolder.itemView);
             }
 
             @Override
             public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
-                return null;
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setTranslationX(viewHolder.itemView,
+                                viewHolder.itemView.getRootView().getWidth());
+                    }
+                };
             }
 
             @Override
@@ -221,12 +228,19 @@ public class Providers {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
-                return Anims.slideInLeft(viewHolder.itemView);
+                return Anims.slideInHorisontal(viewHolder.itemView);
             }
 
             @Override
-            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
-                return null;
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setTranslationX(viewHolder.itemView,
+                                -viewHolder.itemView.getRootView().getWidth());
+                    }
+                };
             }
 
             @Override
@@ -241,6 +255,98 @@ public class Providers {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
                 return Anims.slideOutLeft(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+
+    public static AnimatorProvider slideInTopProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideInVertical(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setTranslationY(viewHolder.itemView,
+                                viewHolder.itemView.getRootView().getHeight());
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+
+    }
+
+    public static AnimatorProvider slideOutTopProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideOutTop(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider slideInBottomProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideInVertical(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setTranslationY(viewHolder.itemView,
+                                -viewHolder.itemView.getRootView().getHeight());
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider slideOutBottomProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideOutBottom(viewHolder.itemView);
             }
 
             @Override

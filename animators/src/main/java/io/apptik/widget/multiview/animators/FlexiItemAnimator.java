@@ -20,6 +20,7 @@ package io.apptik.widget.multiview.animators;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Interpolator;
 
 import io.apptik.widget.multiview.common.Log;
 
@@ -31,6 +32,12 @@ public class FlexiItemAnimator extends BaseItemAnimator {
     private AnimatorProvider vpaChnageOld;
     private AnimatorProvider vpaChnageNew;
     private AnimatorProvider vpaMove;
+
+    private Interpolator ipRemove;
+    private Interpolator ipAdd;
+    private Interpolator ipChangeOld;
+    private Interpolator ipChangeNew;
+    private Interpolator ipMove;
 
     public FlexiItemAnimator(AnimatorProvider vpaAdd,
                              AnimatorProvider vpaChnageOld,
