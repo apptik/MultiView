@@ -80,4 +80,8 @@ public class Sets {
             }
         };
     }
+
+//    public static AnimatorSetProvider slideToRightSet() {
+//
+//    }
 }

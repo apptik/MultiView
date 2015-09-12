@@ -178,4 +178,81 @@ public class Providers {
         };
     }
 
+    public static AnimatorProvider slideInRightProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideInRight(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+
+    }
+
+    public static AnimatorProvider slideOutRightProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideOutRight(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider slideInLeftProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideInLeft(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider slideOutLeftProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return Anims.slideOutLeft(viewHolder.itemView);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
 }

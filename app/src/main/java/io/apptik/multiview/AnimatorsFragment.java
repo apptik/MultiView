@@ -164,6 +164,38 @@ public class AnimatorsFragment extends Fragment {
                     removeProvider = Providers.garageDoorRemoveProvider();
                 }
                 break;
+            case R.id.action_add_animation_slide_to_left:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.slideInRightProvider();
+                }
+                break;
+            case R.id.action_remove_animation_slide_to_left:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.slideOutLeftProvider();
+                }
+                break;
+            case R.id.action_add_animation_slide_to_right:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.slideInLeftProvider();
+                }
+                break;
+            case R.id.action_remove_animation_slide_to_right:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.slideOutRightProvider();
+                }
+                break;
 
         }
         return true;

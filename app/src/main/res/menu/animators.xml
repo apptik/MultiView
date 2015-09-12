@@ -69,6 +69,16 @@
                             android:orderInCategory="1"
                             android:title="Garage Door"
                             />
+                        <item
+                            android:id="@+id/action_add_animation_slide_to_left"
+                            android:orderInCategory="1"
+                            android:title="Slide to left"
+                            />
+                        <item
+                            android:id="@+id/action_add_animation_slide_to_right"
+                            android:orderInCategory="1"
+                            android:title="Slide to right"
+                            />
                     </group>
                 </menu>
             </item>
@@ -87,6 +97,16 @@
                             android:id="@+id/action_remove_animation_garagedoor"
                             android:orderInCategory="1"
                             android:title="Garage Door"
+                            />
+                        <item
+                            android:id="@+id/action_remove_animation_slide_to_left"
+                            android:orderInCategory="1"
+                            android:title="Slide to left"
+                            />
+                        <item
+                            android:id="@+id/action_remove_animation_slide_to_right"
+                            android:orderInCategory="1"
+                            android:title="Slide to right"
                             />
                     </group>
                 </menu>
