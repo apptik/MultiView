@@ -29,11 +29,11 @@ public class Anims {
         throw new IllegalStateException("no instances");
     }
 
-    public static ViewPropertyAnimatorCompat defaultRemoveAnim(View view) {
+    public static ViewPropertyAnimatorCompat fadeOut(View view) {
         return ViewCompat.animate(view).alpha(0);
     }
 
-    public static ViewPropertyAnimatorCompat defaultAddAnim(View view) {
+    public static ViewPropertyAnimatorCompat fadeIn(View view) {
         return ViewCompat.animate(view).alpha(1);
     }
 
@@ -156,41 +156,6 @@ public class Anims {
     public static ViewPropertyAnimatorCompat flipExitLeft(final View view) {
         return ViewCompat.animate(view)
                 .rotationY(90);
-    }
-
-    public static ViewPropertyAnimatorCompat fadeOut(final View view) {
-        return ViewCompat.animate(view).alpha(0);
-    }
-
-    public static ViewPropertyAnimatorCompat fadeIn(final View view) {
-        return ViewCompat.animate(view).withStartAction(new Runnable() {
-            @Override
-            public void run() {
-                ViewCompat.setAlpha(view, 0);
-            }
-        }).alpha(1);
-    }
-
-    public static ViewPropertyAnimatorCompat landing(final View view) {
-        return ViewCompat.animate(view)
-                .withStartAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewCompat.setAlpha(view, 0);
-                        ViewCompat.setScaleX(view, 1.5f);
-                        ViewCompat.setScaleY(view, 1.5f);
-                    }
-                })
-                .alpha(1)
-                .scaleX(1)
-                .scaleY(1);
-    }
-
-    public static ViewPropertyAnimatorCompat takeoff(final View view) {
-        return ViewCompat.animate(view)
-                .alpha(0)
-                .scaleX(1.5f)
-                .scaleY(1.5f);
     }
 
 

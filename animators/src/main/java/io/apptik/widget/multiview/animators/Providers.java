@@ -31,7 +31,7 @@ public class Providers {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... ags) {
-                return Anims.defaultRemoveAnim(viewHolder.itemView);
+                return Anims.fadeOut(viewHolder.itemView);
             }
 
             @Override
@@ -50,7 +50,7 @@ public class Providers {
         return new AnimatorProvider() {
             @Override
             public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... ags) {
-                return Anims.defaultAddAnim(viewHolder.itemView);
+                return Anims.fadeIn(viewHolder.itemView);
             }
 
             @Override
@@ -377,7 +377,7 @@ public class Providers {
                         ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth());
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight()/2);
-                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight()/2);
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() / 2);
                         ViewCompat.setScaleX(viewHolder.itemView, 0);
                         ViewCompat.setScaleY(viewHolder.itemView, 0);
                     }
@@ -516,7 +516,7 @@ public class Providers {
                 return new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()*1.1f);
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() * 1.1f);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight()/2);
                         viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() / 2);
@@ -545,7 +545,7 @@ public class Providers {
                     @Override
                     public void run() {
                         ViewCompat.setAlpha(viewHolder.itemView, 1);
-                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()/2);
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() / 2);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, 0);
                         viewHolder.itemView.setPivotY(0);
@@ -880,5 +880,4 @@ public class Providers {
             }
         };
     }
-
 }
