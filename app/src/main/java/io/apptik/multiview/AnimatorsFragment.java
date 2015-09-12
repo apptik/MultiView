@@ -229,6 +229,71 @@ public class AnimatorsFragment extends Fragment {
                     removeProvider = Providers.slideOutBottomProvider();
                 }
                 break;
+            case R.id.action_add_animation_zoom_to_left:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.zoomEnterRightProvider();
+                }
+                break;
+            case R.id.action_remove_animation_zoom_to_left:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.zoomExitLeftProvider();
+                }
+                break;
+            case R.id.action_add_animation_zoom_to_right:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.zoomEnterLeftProvider();
+                }
+                break;
+            case R.id.action_remove_animation_zoom_to_right:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.zoomExitRightProvider();
+                }
+                break;
+
+            case R.id.action_add_animation_zoom_to_top:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.zoomEnterBottomProvider();
+                }
+                break;
+            case R.id.action_remove_animation_zoom_to_top:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.zoomExitTopProvider();
+                }
+                break;
+            case R.id.action_add_animation_zoom_to_bottom:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    addProvider = Providers.zoomEnterTopProvider();
+                }
+                break;
+            case R.id.action_remove_animation_zoom_to_bottom:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                    removeProvider = Providers.zoomExitBottomProvider();
+                }
+                break;
 
         }
         return true;

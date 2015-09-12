@@ -15,7 +15,7 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_rv_start"
@@ -27,19 +27,19 @@
             <item
                 android:id="@+id/action_rv_add"
                 android:orderInCategory="1"
-                android:title="Add"/>
+                android:title="Add" />
             <item
                 android:id="@+id/action_rv_remove"
                 android:orderInCategory="2"
-                android:title="Remove"/>
+                android:title="Remove" />
             <item
                 android:id="@+id/action_rv_move"
                 android:orderInCategory="3"
-                android:title="Move"/>
+                android:title="Move" />
             <item
                 android:id="@+id/action_rv_change"
                 android:orderInCategory="4"
-                android:title="Change"/>
+                android:title="Change" />
         </menu>
     </item>
 
@@ -49,8 +49,7 @@
         android:orderInCategory="2"
 
         android:title="Set Animation"
-        app:showAsAction="always"
-        >
+        app:showAsAction="always">
         <menu>
 
             <item
@@ -62,33 +61,43 @@
                         <item
                             android:id="@+id/action_add_animation_default"
                             android:orderInCategory="1"
-                            android:title="Default Add"
-                            />
+                            android:title="Default Add" />
                         <item
                             android:id="@+id/action_add_animation_garagedoor"
                             android:orderInCategory="1"
-                            android:title="Garage Door"
-                            />
+                            android:title="Garage Door" />
                         <item
                             android:id="@+id/action_add_animation_slide_to_left"
                             android:orderInCategory="1"
-                            android:title="Slide to left"
-                            />
+                            android:title="Slide to left" />
                         <item
                             android:id="@+id/action_add_animation_slide_to_right"
                             android:orderInCategory="1"
-                            android:title="Slide to right"
-                            />
+                            android:title="Slide to right" />
                         <item
                             android:id="@+id/action_add_animation_slide_to_top"
                             android:orderInCategory="1"
-                            android:title="Slide to top"
-                            />
+                            android:title="Slide to top" />
                         <item
                             android:id="@+id/action_add_animation_slide_to_bottom"
                             android:orderInCategory="1"
-                            android:title="Slide to bottom"
-                            />
+                            android:title="Slide to bottom" />
+                        <item
+                            android:id="@+id/action_add_animation_zoom_to_left"
+                            android:orderInCategory="1"
+                            android:title="Zoom to left" />
+                        <item
+                            android:id="@+id/action_add_animation_zoom_to_right"
+                            android:orderInCategory="1"
+                            android:title="Zoom to right" />
+                        <item
+                            android:id="@+id/action_add_animation_zoom_to_top"
+                            android:orderInCategory="1"
+                            android:title="Zoom to top" />
+                        <item
+                            android:id="@+id/action_add_animation_zoom_to_bottom"
+                            android:orderInCategory="1"
+                            android:title="Zoom to bottom" />
                     </group>
                 </menu>
             </item>
@@ -101,44 +110,54 @@
                         <item
                             android:id="@+id/action_remove_animation_default"
                             android:orderInCategory="1"
-                            android:title="Default Remove"
-                            />
+                            android:title="Default Remove" />
                         <item
                             android:id="@+id/action_remove_animation_garagedoor"
                             android:orderInCategory="1"
-                            android:title="Garage Door"
-                            />
+                            android:title="Garage Door" />
                         <item
                             android:id="@+id/action_remove_animation_slide_to_left"
                             android:orderInCategory="1"
-                            android:title="Slide to left"
-                            />
+                            android:title="Slide to left" />
                         <item
                             android:id="@+id/action_remove_animation_slide_to_right"
                             android:orderInCategory="1"
-                            android:title="Slide to right"
-                            />
+                            android:title="Slide to right" />
                         <item
                             android:id="@+id/action_remove_animation_slide_to_top"
                             android:orderInCategory="1"
-                            android:title="Slide to top"
-                            />
+                            android:title="Slide to top" />
                         <item
                             android:id="@+id/action_remove_animation_slide_to_bottom"
                             android:orderInCategory="1"
-                            android:title="Slide to bottom"
-                            />
+                            android:title="Slide to bottom" />
+                        <item
+                            android:id="@+id/action_remove_animation_zoom_to_left"
+                            android:orderInCategory="1"
+                            android:title="Zoom to left" />
+                        <item
+                            android:id="@+id/action_remove_animation_zoom_to_right"
+                            android:orderInCategory="1"
+                            android:title="Zoom to right" />
+                        <item
+                            android:id="@+id/action_remove_animation_zoom_to_top"
+                            android:orderInCategory="1"
+                            android:title="Zoom to top" />
+                        <item
+                            android:id="@+id/action_remove_animation_zoom_to_bottom"
+                            android:orderInCategory="1"
+                            android:title="Zoom to bottom" />
                     </group>
                 </menu>
             </item>
             <item
                 android:id="@+id/action_setanim_move"
                 android:orderInCategory="3"
-                android:title="Move"/>
+                android:title="Move" />
             <item
                 android:id="@+id/action_setanim_change"
                 android:orderInCategory="4"
-                android:title="Change"/>
+                android:title="Change" />
 
         </menu>
 
