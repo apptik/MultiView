@@ -431,7 +431,7 @@ public class Providers {
                 return new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth());
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()*-.1f);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight()/2);
                         viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() / 2);
@@ -516,7 +516,7 @@ public class Providers {
                 return new Runnable() {
                     @Override
                     public void run() {
-                        ViewCompat.setPivotX(viewHolder.itemView, 0);
+                        ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()*1.1f);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight()/2);
                         viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight() / 2);
@@ -605,7 +605,7 @@ public class Providers {
                         ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth() / 2);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, 0);
-                        viewHolder.itemView.setPivotY(0);
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight()*1.1f);
                     }
                 };
             }
@@ -690,7 +690,7 @@ public class Providers {
                         ViewCompat.setPivotX(viewHolder.itemView, viewHolder.itemView.getWidth()/2);
                         //TODO https://code.google.com/p/android/issues/detail?id=80863
                         //ViewCompat.setPivotY(holder.itemView, holder.itemView.getHeight());
-                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight());
+                        viewHolder.itemView.setPivotY(viewHolder.itemView.getHeight()*-.1f);
                     }
                 };
             }

@@ -242,7 +242,7 @@ public class AnimatorsFragment extends Fragment {
                     item.setChecked(false);
                 } else {
                     item.setChecked(true);
-                    removeProvider = Providers.zoomOutExitLeftProvider();
+                    removeProvider = Providers.zoomInExitLeftProvider();
                 }
                 break;
             case R.id.action_add_animation_zoom_to_right:
