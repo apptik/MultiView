@@ -57,6 +57,46 @@ public class FlexiItemAnimator extends BaseItemAnimator {
         Log.v("remove: " + vpaRemove);
     }
 
+    public Interpolator getIpAdd() {
+        return ipAdd;
+    }
+
+    public void setIpAdd(Interpolator ipAdd) {
+        this.ipAdd = ipAdd;
+    }
+
+    public Interpolator getIpChangeNew() {
+        return ipChangeNew;
+    }
+
+    public void setIpChangeNew(Interpolator ipChangeNew) {
+        this.ipChangeNew = ipChangeNew;
+    }
+
+    public Interpolator getIpChangeOld() {
+        return ipChangeOld;
+    }
+
+    public void setIpChangeOld(Interpolator ipChangeOld) {
+        this.ipChangeOld = ipChangeOld;
+    }
+
+    public Interpolator getIpMove() {
+        return ipMove;
+    }
+
+    public void setIpMove(Interpolator ipMove) {
+        this.ipMove = ipMove;
+    }
+
+    public Interpolator getIpRemove() {
+        return ipRemove;
+    }
+
+    public void setIpRemove(Interpolator ipRemove) {
+        this.ipRemove = ipRemove;
+    }
+
     public FlexiItemAnimator(AnimatorSetProvider animatorSetProvider) {
         this.vpaAdd = animatorSetProvider.getAddAnimProvider();
         this.vpaChnageOld = animatorSetProvider.getChangeOldItemAnimProvider();
@@ -76,6 +116,9 @@ public class FlexiItemAnimator extends BaseItemAnimator {
             beforeAction.run();
         }
         final ViewPropertyAnimatorCompat animation = vpaRemove.getAnim(holder);
+        if(ipRemove!=null) {
+            animation.setInterpolator(ipRemove);
+        }
         animation.setDuration(getRemoveDuration())
                 .setListener(new VoidVpaListener() {
                     @Override
@@ -117,6 +160,9 @@ public class FlexiItemAnimator extends BaseItemAnimator {
             beforeAction.run();
         }
         final ViewPropertyAnimatorCompat animation = vpaAdd.getAnim(holder);
+        if(ipAdd!=null) {
+            animation.setInterpolator(ipAdd);
+        }
         animation.setDuration(getAddDuration()).
                 setListener(new VoidVpaListener() {
                     @Override
@@ -159,6 +205,9 @@ public class FlexiItemAnimator extends BaseItemAnimator {
             beforeAction.run();
         }
         final ViewPropertyAnimatorCompat animation = vpaMove.getAnim(holder, moveInfo);
+        if(ipMove!=null) {
+            animation.setInterpolator(ipMove);
+        }
         animation.setDuration(getMoveDuration()).setListener(new VoidVpaListener() {
             @Override
             public void onAnimationStart(View view) {
@@ -198,6 +247,9 @@ public class FlexiItemAnimator extends BaseItemAnimator {
             }
             final ViewPropertyAnimatorCompat oldViewAnim = vpaChnageOld.getAnim(changeInfo.oldHolder, changeInfo).setDuration(
                     getChangeDuration());
+            if(ipChangeOld!=null) {
+                oldViewAnim.setInterpolator(ipChangeOld);
+            }
             oldViewAnim.setListener(new VoidVpaListener() {
                 @Override
                 public void onAnimationStart(View view) {
@@ -232,6 +284,9 @@ public class FlexiItemAnimator extends BaseItemAnimator {
                 beforeAction.run();
             }
             final ViewPropertyAnimatorCompat newViewAnimation = vpaChnageNew.getAnim(changeInfo.newHolder, changeInfo);
+            if(ipChangeNew!=null) {
+                newViewAnimation.setInterpolator(ipChangeNew);
+            }
             newViewAnimation.setDuration(getChangeDuration())
                     .setListener(new VoidVpaListener() {
                         @Override
