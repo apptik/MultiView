@@ -60,4 +60,34 @@
                 android:title="Staggered" />
         </menu>
     </item>
+
+    <item
+        android:id="@+id/action_scroll_option"
+        android:icon="@drawable/ic_action_scroll_option"
+        android:orderInCategory="3"
+        android:title="Scroll Option"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_scroll_slow"
+                android:orderInCategory="1"
+                android:title="scroll slow" />
+            <item
+                android:id="@+id/action_scroll_fast"
+                android:orderInCategory="2"
+                android:title="scroll fast" />
+            <item
+                android:id="@+id/action_scroll_snap_center"
+                android:orderInCategory="3"
+                android:title="snap center" />
+            <item
+                android:id="@+id/action_scroll_overshoot"
+                android:orderInCategory="4"
+                android:title="overshoot" />
+            <item
+                android:id="@+id/action_scroll_bounce"
+                android:orderInCategory="5"
+                android:title="bounce" />
+        </menu>
+    </item>
 </menu>

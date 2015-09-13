@@ -23,6 +23,6 @@ public class SnapperSmoothScroller extends FlexiSmoothScroller {
 
     public SnapperSmoothScroller(Context context) {
         super(context);
-        setMillisecondsPerInch(50f);
+        setMillisecondsPerInchFoundTarget(50f);
     }
 }

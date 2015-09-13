@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.support.v7.widget.RecyclerView;
 
-public abstract class FlexiSmoothScroller extends BaseSmoothScroller {
+import io.apptik.widget.multiview.common.Log;
+
+public class FlexiSmoothScroller extends BaseSmoothScroller {
 
     private Runnable beforeScrollAction;
     private Runnable afterScrollAction;
@@ -48,13 +50,20 @@ public abstract class FlexiSmoothScroller extends BaseSmoothScroller {
 
     @Override
     public PointF computeScrollVectorForPosition(int targetPosition) {
+        Log.d("computeScrollVectorForPosition");
+        boolean mShouldReverseLayout = false;
         RecyclerView.LayoutManager lm = getLayoutManager();
+        Log.d("computeScrollVectorForPosition lm: " + lm + " : " + getChildCount());
         if (getChildCount() == 0) {
             return null;
         }
         final int firstChildPos = lm.getPosition(lm.getChildAt(0));
-        final int direction = targetPosition < firstChildPos != false ? -1 : 1;
-
-        return new PointF(direction, 0);
+        final int direction = targetPosition < firstChildPos != mShouldReverseLayout ? -1 : 1;
+        Log.d("computeScrollVectorForPosition firstChildPos: " + firstChildPos + ", direction: " + direction);
+        if (lm.canScrollHorizontally()) {
+            return new PointF(direction, 0);
+        } else {
+            return new PointF(0, direction);
+        }
     }
 }

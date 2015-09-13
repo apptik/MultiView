@@ -99,11 +99,21 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
     /**
      * milliseconds per pixel
      */
-    private float msppx;
+    private float msppxSearchingTarget;
     /**
      * milliseconds per inch
      */
-    private float mspin;
+    private float mspinSearchingTarget;
+
+
+    /**
+     * milliseconds per pixel
+     */
+    private float msppxFoundTarget;
+    /**
+     * milliseconds per inch
+     */
+    private float mspinFoundTarget;
 
     private int mHorizontalSnapPreference = SNAP_AUTOMATIC;
     private int mVerticalSnapPreference = SNAP_AUTOMATIC;
@@ -115,43 +125,84 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
 
     public BaseSmoothScroller(Context context) {
         mDensityDpi = context.getResources().getDisplayMetrics().densityDpi;
-        mspin = DEFAULT_MILLISECONDS_PER_INCH;
-        msppx = calculateSpeedPerPixel(mspin);
+        mspinFoundTarget = mspinSearchingTarget = DEFAULT_MILLISECONDS_PER_INCH;
+        msppxFoundTarget = msppxSearchingTarget = calculateSpeedPerPixel(mspinSearchingTarget);
         mSearchingTargetInterpolator = new LinearInterpolator();
         mFoundTargetInterpolator = new DecelerateInterpolator();
     }
 
-    public float getMillisecondsPerInch() {
-        return mspin;
+    public float getMillisecondsPerInchSearchingTarget() {
+        return mspinSearchingTarget;
     }
 
-    public void setMillisecondsPerInch(float mspin) {
-        this.mspin = mspin;
-        this.msppx = calculateSpeedPerPixel(mspin);
+    public BaseSmoothScroller setMillisecondsPerInchSearchingTarget(float mspin) {
+        this.mspinSearchingTarget = mspin;
+        this.msppxSearchingTarget = calculateSpeedPerPixel(mspin);
+        return this;
     }
 
-    public float getMillisecondsPerPixel() {
-        return msppx;
+    public float getMillisecondsPerPixelSearchingTarget() {
+        return msppxSearchingTarget;
     }
 
-    public void setMillisecondsPerPixel(float msppx) {
-        this.msppx = msppx;
+    public BaseSmoothScroller setMillisecondsPerPixelSearchingTarget(float msppx) {
+        this.msppxSearchingTarget = msppx;
+        return this;
+    }
+
+    public float getMillisecondsPerInchFoundTarget() {
+        return mspinFoundTarget;
+    }
+
+    public BaseSmoothScroller setMillisecondsPerInchFoundTarget(float mspin) {
+        this.mspinFoundTarget = mspin;
+        this.msppxFoundTarget = calculateSpeedPerPixel(mspin);
+        return this;
+    }
+
+    public float getMillisecondsPerPixelFoundTarget() {
+        return msppxFoundTarget;
+    }
+
+    public BaseSmoothScroller setMillisecondsPerPixelFoundTarget(float msppx) {
+        this.msppxFoundTarget = msppx;
+        return this;
     }
 
     public int getHorizontalSnapPreference() {
         return mHorizontalSnapPreference;
     }
 
-    public void setHorizontalSnapPreference(int horizontalSnapPreference) {
+    public BaseSmoothScroller setHorizontalSnapPreference(int horizontalSnapPreference) {
         this.mHorizontalSnapPreference = horizontalSnapPreference;
+        return this;
     }
 
     public int getVerticalSnapPreference() {
         return mVerticalSnapPreference;
     }
 
-    public void setVerticalSnapPreference(int verticalSnapPreference) {
+    public BaseSmoothScroller setVerticalSnapPreference(int verticalSnapPreference) {
         this.mVerticalSnapPreference = verticalSnapPreference;
+        return this;
+    }
+
+    public Interpolator getSearchingTargetInterpolator() {
+        return mSearchingTargetInterpolator;
+    }
+
+    public BaseSmoothScroller setSearchingTargetInterpolator(Interpolator searchingTargetInterpolator) {
+        this.mSearchingTargetInterpolator = searchingTargetInterpolator;
+        return this;
+    }
+
+    public Interpolator getFoundTargetInterpolator() {
+        return mFoundTargetInterpolator;
+    }
+
+    public BaseSmoothScroller setFoundTargetInterpolator(Interpolator foundTargetInterpolator) {
+        this.mFoundTargetInterpolator = foundTargetInterpolator;
+        return this;
     }
 
     /**
@@ -159,7 +210,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      */
     @Override
     protected void onStart() {
-
+        Log.d("onStart");
     }
 
     /**
@@ -167,6 +218,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      */
     @Override
     protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
+        Log.d("onTargetFound");
         final int dx = calculateDxToMakeVisible(targetView, getFinalHorizontalSnapPreference());
         final int dy = calculateDyToMakeVisible(targetView, getFinalVerticalSnapPreference());
         final int distance = (int) Math.sqrt(dx * dx + dy * dy);
@@ -181,6 +233,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      */
     @Override
     protected void onSeekTargetStep(int dx, int dy, RecyclerView.State state, Action action) {
+        Log.d("onSeekTargetStep");
         if (getChildCount() == 0) {
             stop();
             return;
@@ -204,6 +257,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      */
     @Override
     protected void onStop() {
+        Log.d("onStop");
         mInterimTargetDx = mInterimTargetDy = 0;
         mTargetVector = null;
     }
@@ -232,7 +286,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
         // area under curve (1-(1-x)^2) can be calculated as (1 - x/3) * x * x
         // which gives 0.100028 when x = .3356
         // this is why we divide linear scrolling time with .3356
-        return (int) Math.ceil(calculateTimeForScrolling(dx) / .3356);
+        return (int) Math.ceil(calculateTimeForScrolling(dx, true) / .3356);
     }
 
     /**
@@ -242,7 +296,13 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      * @return Time in milliseconds
      * @see #calculateSpeedPerPixel(float)
      */
-    protected int calculateTimeForScrolling(int dx) {
+    protected int calculateTimeForScrolling(int dx, boolean found) {
+        float msppx;
+        if(found) {
+            msppx = msppxFoundTarget;
+        } else {
+            msppx = msppxSearchingTarget;
+        }
         // In a case where dx is very small, rounding may return 0 although dx > 0.
         // To avoid that issue, ceil the result so that if dx > 0, we'll always return positive
         // time.
@@ -316,7 +376,8 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
 
         mInterimTargetDx = (int) (TARGET_SEEK_SCROLL_DISTANCE_PX * scrollVector.x);
         mInterimTargetDy = (int) (TARGET_SEEK_SCROLL_DISTANCE_PX * scrollVector.y);
-        final int time = calculateTimeForScrolling(TARGET_SEEK_SCROLL_DISTANCE_PX);
+        final int time = calculateTimeForScrolling(TARGET_SEEK_SCROLL_DISTANCE_PX, false);
+        Log.d("updateActionForInterimTarget : " + time + " : " + mInterimTargetDx + "/" + mInterimTargetDy);
         // To avoid UI hiccups, trigger a smooth scroll to a distance little further than the
         // interim target. Since we track the distance travelled in onSeekTargetStep callback, it
         // won't actually scroll more than what we need.
