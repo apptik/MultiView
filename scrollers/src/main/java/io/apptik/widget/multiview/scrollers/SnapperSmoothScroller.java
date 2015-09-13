@@ -19,9 +19,10 @@ package io.apptik.widget.multiview.scrollers;
 
 import android.content.Context;
 
-public class SnapperSmoothScroller extends DefaultSmoothScroller {
+public class SnapperSmoothScroller extends FlexiSmoothScroller {
 
     public SnapperSmoothScroller(Context context) {
         super(context);
+        setMillisecondsPerInch(50f);
     }
 }

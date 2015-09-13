@@ -21,20 +21,23 @@ import android.content.Context;
 import android.graphics.PointF;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+
+import io.apptik.widget.multiview.common.Log;
 
 public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
 
-    private static final String TAG = "LinearSmoothScroller";
+    public static final float DEFAULT_MILLISECONDS_PER_INCH = 25f;
 
-    private static final boolean DEBUG = false;
+    public static final int TARGET_SEEK_SCROLL_DISTANCE_PX = 10000;
 
-    private static final float MILLISECONDS_PER_INCH = 25f;
-
-    private static final int TARGET_SEEK_SCROLL_DISTANCE_PX = 10000;
+    /**
+     * Automatically chooses the best SNAP method depending on the target vector
+     */
+    public static final int SNAP_AUTOMATIC = -99;
 
     /**
      * Align child view's left or top with parent view's left or top
@@ -61,7 +64,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      * @see #calculateDxToMakeVisible(android.view.View, int)
      * @see #calculateDyToMakeVisible(android.view.View, int)
      */
-    public static final int SNAP_TO_CENTER = 1;
+    public static final int SNAP_TO_CENTER = 2;
 
     /**
      * <p>Decides if the child should be snapped from start or end, depending on where it
@@ -80,20 +83,75 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
     // scrolling slows down and reschedule another interim target scroll
     private static final float TARGET_SEEK_EXTRA_SCROLL_RATIO = 1.2f;
 
-    protected final LinearInterpolator mLinearInterpolator = new LinearInterpolator();
+    /**
+     * The screen density expressed as dots-per-inch.  May be either
+     * {@link DisplayMetrics#DENSITY_LOW}, {@link DisplayMetrics#DENSITY_MEDIUM},
+     * or {@link DisplayMetrics#DENSITY_HIGH}.
+     */
+    protected int mDensityDpi;
 
-    protected final DecelerateInterpolator mDecelerateInterpolator = new DecelerateInterpolator();
+    protected Interpolator mSearchingTargetInterpolator;
+
+    protected Interpolator mFoundTargetInterpolator;
 
     protected PointF mTargetVector;
 
-    private final float MILLISECONDS_PER_PX;
+    /**
+     * milliseconds per pixel
+     */
+    private float msppx;
+    /**
+     * milliseconds per inch
+     */
+    private float mspin;
+
+    private int mHorizontalSnapPreference = SNAP_AUTOMATIC;
+    private int mVerticalSnapPreference = SNAP_AUTOMATIC;
+
 
     // Temporary variables to keep track of the interim scroll target. These values do not
     // point to a real item position, rather point to an estimated location pixels.
     protected int mInterimTargetDx = 0, mInterimTargetDy = 0;
 
     public BaseSmoothScroller(Context context) {
-        MILLISECONDS_PER_PX = calculateSpeedPerPixel(context.getResources().getDisplayMetrics());
+        mDensityDpi = context.getResources().getDisplayMetrics().densityDpi;
+        mspin = DEFAULT_MILLISECONDS_PER_INCH;
+        msppx = calculateSpeedPerPixel(mspin);
+        mSearchingTargetInterpolator = new LinearInterpolator();
+        mFoundTargetInterpolator = new DecelerateInterpolator();
+    }
+
+    public float getMillisecondsPerInch() {
+        return mspin;
+    }
+
+    public void setMillisecondsPerInch(float mspin) {
+        this.mspin = mspin;
+        this.msppx = calculateSpeedPerPixel(mspin);
+    }
+
+    public float getMillisecondsPerPixel() {
+        return msppx;
+    }
+
+    public void setMillisecondsPerPixel(float msppx) {
+        this.msppx = msppx;
+    }
+
+    public int getHorizontalSnapPreference() {
+        return mHorizontalSnapPreference;
+    }
+
+    public void setHorizontalSnapPreference(int horizontalSnapPreference) {
+        this.mHorizontalSnapPreference = horizontalSnapPreference;
+    }
+
+    public int getVerticalSnapPreference() {
+        return mVerticalSnapPreference;
+    }
+
+    public void setVerticalSnapPreference(int verticalSnapPreference) {
+        this.mVerticalSnapPreference = verticalSnapPreference;
     }
 
     /**
@@ -109,12 +167,12 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      */
     @Override
     protected void onTargetFound(View targetView, RecyclerView.State state, Action action) {
-        final int dx = calculateDxToMakeVisible(targetView, getHorizontalSnapPreference());
-        final int dy = calculateDyToMakeVisible(targetView, getVerticalSnapPreference());
+        final int dx = calculateDxToMakeVisible(targetView, getFinalHorizontalSnapPreference());
+        final int dy = calculateDyToMakeVisible(targetView, getFinalVerticalSnapPreference());
         final int distance = (int) Math.sqrt(dx * dx + dy * dy);
         final int time = calculateTimeForDeceleration(distance);
         if (time > 0) {
-            action.update(-dx, -dy, time, mDecelerateInterpolator);
+            action.update(-dx, -dy, time, mFoundTargetInterpolator);
         }
     }
 
@@ -127,9 +185,9 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
             stop();
             return;
         }
-        if (DEBUG && mTargetVector != null
+        if (mTargetVector != null
                 && ((mTargetVector.x * dx < 0 || mTargetVector.y * dy < 0))) {
-            throw new IllegalStateException("Scroll happened in the opposite direction"
+            Log.e("Scroll happened in the opposite direction"
                     + " of the target. Some calculations are wrong");
         }
         mInterimTargetDx = clampApplyScroll(mInterimTargetDx, dx);
@@ -153,12 +211,11 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
     /**
      * Calculates the scroll speed.
      *
-     * @param displayMetrics DisplayMetrics to be used for real dimension calculations
      * @return The time (in ms) it should take for each pixel. For instance, if returned value is
      * 2 ms, it means scrolling 1000 pixels with LinearInterpolation should take 2 seconds.
      */
-    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-        return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
+    protected float calculateSpeedPerPixel(float millisecondsPerInch) {
+        return millisecondsPerInch / mDensityDpi;
     }
 
     /**
@@ -175,7 +232,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
         // area under curve (1-(1-x)^2) can be calculated as (1 - x/3) * x * x
         // which gives 0.100028 when x = .3356
         // this is why we divide linear scrolling time with .3356
-        return  (int) Math.ceil(calculateTimeForScrolling(dx) / .3356);
+        return (int) Math.ceil(calculateTimeForScrolling(dx) / .3356);
     }
 
     /**
@@ -183,13 +240,13 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      *
      * @param dx Distance in pixels that we want to scroll
      * @return Time in milliseconds
-     * @see #calculateSpeedPerPixel(android.util.DisplayMetrics)
+     * @see #calculateSpeedPerPixel(float)
      */
     protected int calculateTimeForScrolling(int dx) {
         // In a case where dx is very small, rounding may return 0 although dx > 0.
         // To avoid that issue, ceil the result so that if dx > 0, we'll always return positive
         // time.
-        return (int) Math.ceil(Math.abs(dx) * MILLISECONDS_PER_PX);
+        return (int) Math.ceil(Math.abs(dx) * msppx);
     }
 
     /**
@@ -201,9 +258,17 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      * @see #SNAP_TO_END
      * @see #SNAP_TO_ANY
      */
-    protected int getHorizontalSnapPreference() {
+    protected int getActualHorizontalSnapPreference() {
         return mTargetVector == null || mTargetVector.x == 0 ? SNAP_TO_ANY :
                 mTargetVector.x > 0 ? SNAP_TO_END : SNAP_TO_START;
+    }
+
+    protected int getFinalHorizontalSnapPreference() {
+        if(mHorizontalSnapPreference!=SNAP_AUTOMATIC) {
+            return mHorizontalSnapPreference;
+        } else {
+            return getActualHorizontalSnapPreference();
+        }
     }
 
     /**
@@ -215,9 +280,17 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
      * @see #SNAP_TO_END
      * @see #SNAP_TO_ANY
      */
-    protected int getVerticalSnapPreference() {
+    protected int getActualVerticalSnapPreference() {
         return mTargetVector == null || mTargetVector.y == 0 ? SNAP_TO_ANY :
                 mTargetVector.y > 0 ? SNAP_TO_END : SNAP_TO_START;
+    }
+
+    protected int getFinalVerticalSnapPreference() {
+        if(mVerticalSnapPreference!=SNAP_AUTOMATIC) {
+            return mVerticalSnapPreference;
+        } else {
+            return getActualVerticalSnapPreference();
+        }
     }
 
     /**
@@ -230,8 +303,8 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
         // find an interim target position
         PointF scrollVector = computeScrollVectorForPosition(getTargetPosition());
         if (scrollVector == null || (scrollVector.x == 0 && scrollVector.y == 0)) {
-            Log.e(TAG, "To support smooth scrolling, you should override \n"
-                    + "LayoutManager#computeScrollVectorForPosition.\n"
+            Log.e("To support smooth scrolling, you should override \n"
+                    + "BaseSmoothScroller#computeScrollVectorForPosition.\n"
                     + "Falling back to instant scroll");
             final int target = getTargetPosition();
             action.jumpTo(target);
@@ -249,7 +322,7 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
         // won't actually scroll more than what we need.
         action.update((int) (mInterimTargetDx * TARGET_SEEK_EXTRA_SCROLL_RATIO)
                 , (int) (mInterimTargetDy * TARGET_SEEK_EXTRA_SCROLL_RATIO)
-                , (int) (time * TARGET_SEEK_EXTRA_SCROLL_RATIO), mLinearInterpolator);
+                , (int) (time * TARGET_SEEK_EXTRA_SCROLL_RATIO), mSearchingTargetInterpolator);
     }
 
     private int clampApplyScroll(int tmpDt, int dt) {
@@ -268,6 +341,10 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
     public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int
             snapPreference) {
         switch (snapPreference) {
+            case SNAP_TO_CENTER:
+                int boxMid = boxStart + (boxEnd - boxStart) / 2;
+                int viewMid = viewStart + (viewEnd - viewStart) / 2;
+                return boxMid - viewMid;
             case SNAP_TO_START:
                 return boxStart - viewStart;
             case SNAP_TO_END:
