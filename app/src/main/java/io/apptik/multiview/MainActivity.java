@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 5:
                 mTitle = getString(R.string.title_section6);
+                break;
             case 6:
                 mTitle = getString(R.string.title_section7);
                 break;

@@ -146,7 +146,7 @@ public class ScrollersFragment extends Fragment {
 
         int targetPos;
         int pos = recyclerView.getChildAdapterPosition(recyclerView.getLayoutManager().getChildAt(0));
-        if (pos+50 >= 150) {
+        if (pos >= 150) {
             targetPos = 100;
         } else {
             targetPos = 200;
