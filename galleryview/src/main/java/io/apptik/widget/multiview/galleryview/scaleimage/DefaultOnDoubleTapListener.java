@@ -1,4 +1,4 @@
-package io.apptik.widget.multiview.scalablerecyclerview;
+package io.apptik.widget.multiview.galleryview.scaleimage;
 
 import android.graphics.RectF;
 import android.view.GestureDetector;

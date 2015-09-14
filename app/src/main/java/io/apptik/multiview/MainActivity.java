@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity
             case 2: fragToAdd = AnimatorsFragment.newInstance(); break;
             case 5: fragToAdd = ScrollersFragment.newInstance(); break;
             case 6: fragToAdd = ScalableRVFragment.newInstance(); break;
+            case 7: fragToAdd = GalleryViewFragment.newInstance(); break;
             default: fragToAdd = BlankFragment.newInstance(); break;
         }
         if(fragToAdd!=null) {
@@ -99,6 +100,8 @@ public class MainActivity extends AppCompatActivity
                 break;
             case 6:
                 mTitle = getString(R.string.title_section7);
+            case 7:
+                mTitle = getString(R.string.title_section8);
                 break;
         }
         if(toolbar!=null) {

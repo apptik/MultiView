@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.apptik.widget.multiview.scalablerecyclerview.gestures;
+package io.apptik.widget.multiview.galleryview.scaleimage.gestures;
 
-public interface OnGestureListener {
+import android.view.MotionEvent;
 
-    public void onDrag(float dx, float dy);
+public interface GestureDetector {
 
-    public void onFling(float startX, float startY, float velocityX,
-                        float velocityY);
+    public boolean onTouchEvent(MotionEvent ev);
 
-    public void onScale(float scaleFactor, float focusX, float focusY);
+    public boolean isScaling();
+
+    public boolean isDragging();
+
+    public void setOnGestureListener(OnGestureListener listener);
 
 }

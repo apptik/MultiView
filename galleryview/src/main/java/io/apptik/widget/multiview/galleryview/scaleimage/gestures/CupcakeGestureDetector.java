@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.apptik.widget.multiview.scalablerecyclerview.gestures;
+package io.apptik.widget.multiview.galleryview.scaleimage.gestures;
 
 import android.content.Context;
 import android.view.MotionEvent;

@@ -17,5 +17,21 @@
 package io.apptik.widget.multiview.galleryview;
 
 
-public class GalleryView {
+import android.content.Context;
+import android.util.AttributeSet;
+
+import io.apptik.widget.multiview.scalablerecyclerview.ScalableRecyclerGridView;
+
+public class SimpleGalleryView extends ScalableRecyclerGridView {
+    public SimpleGalleryView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public SimpleGalleryView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    public SimpleGalleryView(Context context, int intialSpan) {
+        super(context, intialSpan);
+    }
 }

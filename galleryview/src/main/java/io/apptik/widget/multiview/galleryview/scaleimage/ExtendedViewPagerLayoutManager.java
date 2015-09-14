@@ -1,10 +1,11 @@
-package io.apptik.widget.multiview.scalablerecyclerview;
+package io.apptik.widget.multiview.galleryview.scaleimage;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
 import io.apptik.widget.multiview.layoutmanagers.ViewPagerLayoutManager;
+import io.apptik.widget.multiview.scalablerecyclerview.ScalableRecyclerGridView;
 
 
 public class ExtendedViewPagerLayoutManager extends ViewPagerLayoutManager {

@@ -131,6 +131,58 @@ public class Providers {
         };
     }
 
+    public static AnimatorProvider teleportChangeOldViewAnimProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... ags) {
+                return Anims.teleportChangeOldViewAnim(viewHolder.itemView, (BaseItemAnimator.ChangeInfo) ags[0]);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                final BaseItemAnimator.ChangeInfo changeInfo =
+                        (BaseItemAnimator.ChangeInfo) args[0];
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setTranslationX(viewHolder.itemView, changeInfo.toX - changeInfo.fromX);
+                        ViewCompat.setTranslationY(viewHolder.itemView, changeInfo.toY - changeInfo.fromY);
+                    }
+                };
+            }
+        };
+    }
+
+    public static AnimatorProvider teleportChangeNewViewAnimProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... ags) {
+                return Anims.teleportChangeNewViewAnim(viewHolder.itemView, (BaseItemAnimator.ChangeInfo) ags[0]);
+            }
+
+            @Override
+            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+
+            @Override
+            public Runnable getAfterAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setTranslationX(viewHolder.itemView, 0);
+                        ViewCompat.setTranslationY(viewHolder.itemView, 0);
+                    }
+                };
+            }
+        };
+    }
+
 
     public static AnimatorProvider garageDoorAddProvider() {
         return new AnimatorProvider() {

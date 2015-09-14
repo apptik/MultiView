@@ -18,45 +18,24 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_adapter"
-        android:icon="@drawable/ic_action_toggle_adapter"
+        android:icon="@drawable/ic_action_animation"
         android:orderInCategory="1"
 
-        android:title="Adapter"
+        android:title="Scale Animation"
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/action_text_only"
+                android:id="@+id/action_scale_no_anim"
                 android:orderInCategory="1"
-                android:title="Text Only" />
+                android:title="No Animation" />
             <item
-                android:id="@+id/action_Image_text"
+                android:id="@+id/action_scale_default_anim"
                 android:orderInCategory="2"
-                android:title="Image+Text" />
+                android:title="Default Anim" />
             <item
-                android:id="@+id/action_image_only"
+                android:id="@+id/action_scale_custom_anim"
                 android:orderInCategory="3"
-                android:title="Image Only" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_layout"
-        android:icon="@drawable/ic_action_toggle_layout"
-        android:orderInCategory="2"
-        android:title="Layout"
-        app:showAsAction="always">
-        <menu>
-            <item
-                android:id="@+id/action_layout_linear"
-                android:orderInCategory="1"
-                android:title="Linear" />
-            <item
-                android:id="@+id/action_layout_grid"
-                android:orderInCategory="2"
-                android:title="Grid" />
-            <item
-                android:id="@+id/action_layout_staggered"
-                android:orderInCategory="3"
-                android:title="Staggered" />
+                android:title="Custom Anim" />
         </menu>
     </item>
 </menu>

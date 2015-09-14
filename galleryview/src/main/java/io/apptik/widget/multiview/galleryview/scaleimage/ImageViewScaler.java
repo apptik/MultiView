@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.apptik.widget.multiview.scalablerecyclerview;
+package io.apptik.widget.multiview.galleryview.scaleimage;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -36,9 +36,9 @@ import android.widget.ImageView.ScaleType;
 import java.lang.ref.WeakReference;
 
 import io.apptik.widget.multiview.common.Log;
-import io.apptik.widget.multiview.scalablerecyclerview.gestures.OnGestureListener;
-import io.apptik.widget.multiview.scalablerecyclerview.gestures.VersionedGestureDetector;
-import io.apptik.widget.multiview.scalablerecyclerview.scrollerproxy.ScrollerProxy;
+import io.apptik.widget.multiview.galleryview.scaleimage.gestures.OnGestureListener;
+import io.apptik.widget.multiview.galleryview.scaleimage.gestures.VersionedGestureDetector;
+import io.apptik.widget.multiview.galleryview.scaleimage.scrollerproxy.ScrollerProxy;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -118,7 +118,7 @@ public class ImageViewScaler implements ScaleImageView, View.OnTouchListener,
 
     // Gesture Detectors
     private GestureDetector mGestureDetector;
-    private io.apptik.widget.multiview.scalablerecyclerview.gestures.GestureDetector mScaleDragDetector;
+    private io.apptik.widget.multiview.galleryview.scaleimage.gestures.GestureDetector mScaleDragDetector;
 
     // These are set so we don't keep allocating them on the heap
     private final Matrix mBaseMatrix = new Matrix();

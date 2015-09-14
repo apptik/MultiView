@@ -41,19 +41,35 @@ public class Anims {
         return ViewCompat.animate(view).translationX(0).translationY(0);
     }
 
-    public static ViewPropertyAnimatorCompat defaultChangeOldViewAnim(View view, final BaseItemAnimator.ChangeInfo changeInfo) {
+    public static ViewPropertyAnimatorCompat defaultChangeOldViewAnim(
+            View view, final BaseItemAnimator.ChangeInfo changeInfo) {
+        return ViewCompat.animate(view)
+                .translationX(changeInfo.toX - changeInfo.fromX)
+                .translationY(changeInfo.toY - changeInfo.fromY)
+                .alpha(0);
+    }
+
+    public static ViewPropertyAnimatorCompat defaultChangeNewViewAnim(
+            View view, final BaseItemAnimator.ChangeInfo changeInfo) {
+        return ViewCompat.animate(view).translationX(0).translationY(0).alpha(1);
+    }
+
+    public static ViewPropertyAnimatorCompat teleportChangeOldViewAnim(
+            View view, final BaseItemAnimator.ChangeInfo changeInfo) {
         ViewPropertyAnimatorCompat oldViewAnim = ViewCompat.animate(view);
-        oldViewAnim.translationX(changeInfo.toX - changeInfo.fromX);
-        oldViewAnim.translationY(changeInfo.toY - changeInfo.fromY);
+        oldViewAnim.scaleX(0);
+        oldViewAnim.scaleY(0);
         oldViewAnim.alpha(0);
         return oldViewAnim;
     }
 
-    public static ViewPropertyAnimatorCompat defaultChangeNewViewAnim(View view, final BaseItemAnimator.ChangeInfo changeInfo) {
+    public static ViewPropertyAnimatorCompat teleportChangeNewViewAnim(
+            View view, final BaseItemAnimator.ChangeInfo changeInfo) {
         ViewPropertyAnimatorCompat newViewAnim = ViewCompat.animate(view);
-        newViewAnim.translationX(0).translationY(0).alpha(1);
+        newViewAnim.scaleX(1).scaleY(1).alpha(1);
         return newViewAnim;
     }
+
 
     public static ViewPropertyAnimatorCompat garageDoorClose(final View view) {
 

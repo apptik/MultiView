@@ -312,7 +312,7 @@ public class FlexiItemAnimator extends BaseItemAnimator {
                         }
                     }).start();
         } else {
-            dispatchChangeFinished(changeInfo.newHolder, false);
+//            dispatchChangeFinished(changeInfo.newHolder, false);
             dispatchFinishedWhenDone();
         }
     }

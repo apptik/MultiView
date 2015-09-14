@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package io.apptik.widget.multiview.scalablerecyclerview;
+package io.apptik.widget.multiview.galleryview.scaleimage;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;

@@ -19,6 +19,7 @@ package io.apptik.multiview;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,10 +27,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
+import io.apptik.widget.multiview.animators.FlexiItemAnimator;
+import io.apptik.widget.multiview.animators.Providers;
+import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
+import io.apptik.widget.multiview.scalablerecyclerview.ScalableRecyclerGridView;
 
 
 /**
@@ -42,6 +48,8 @@ public class ScalableRVFragment extends Fragment {
     BasicRecyclerAdapter recyclerAdapter;
 
     BasicMixedRecyclerAdapter recyclerMixedAdapter;
+    RecyclerView.ItemAnimator defaultAnimator;
+    FlexiItemAnimator customAnimator;
 
     public ScalableRVFragment() {
         // Required empty public constructor
@@ -58,13 +66,32 @@ public class ScalableRVFragment extends Fragment {
         // Inflate the layout for this fragment
         this.setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_scalablerv, container, false);
-         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
-
-        recyclerAdapter = new BasicRecyclerAdapter(MockData.getMockJsonArray(333, 500));
+         recyclerView = (ScalableRecyclerGridView) v.findViewById(R.id.recyclerView);
 
         recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
 
         recyclerView.setAdapter(recyclerMixedAdapter);
+        defaultAnimator = new DefaultItemAnimator();
+//                new FlexiItemAnimator(
+//                        Providers.defaultAddAnimProvider(),
+//                        Providers.defaultChangeOldViewAnimProvider(),
+//                        Providers.defaultChangeNewViewAnimProvider(),
+//                        Providers.defaultMoveAnimProvider(),
+//                        Providers.defaultRemoveAnimProvider()
+//                );
+        customAnimator =  new FlexiItemAnimator(
+                null,
+                Providers.teleportChangeOldViewAnimProvider(),
+                Providers.teleportChangeNewViewAnimProvider(),
+                null,
+                null
+        );
+
+        defaultAnimator.setChangeDuration(500);
+        customAnimator.setChangeDuration(500);
+        customAnimator.setIpChangeNew(new LinearInterpolator());
+        customAnimator.setIpChangeOld(new LinearInterpolator());
+
         return v;
     }
 
@@ -78,13 +105,21 @@ public class ScalableRVFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(recyclerView==null ) return false;
         switch (item.getItemId()) {
-            case R.id.action_text_only: recyclerView.setAdapter(recyclerAdapter); break;
-            case R.id.action_image_only: break;
-            case R.id.action_Image_text: recyclerView.setAdapter(recyclerMixedAdapter); break;
+            case R.id.action_scale_no_anim:
+                ((ScalableGridLayoutManager)recyclerView.getLayoutManager())
+                        .setAnimateItemChangedOnScaleChange(false);
+                break;
+            case R.id.action_scale_default_anim:
+                ((ScalableGridLayoutManager)recyclerView.getLayoutManager())
+                        .setAnimateItemChangedOnScaleChange(true);
+                recyclerView.setItemAnimator(defaultAnimator);
+                break;
+            case R.id.action_scale_custom_anim:
+                ((ScalableGridLayoutManager)recyclerView.getLayoutManager())
+                        .setAnimateItemChangedOnScaleChange(true);
+                recyclerView.setItemAnimator(customAnimator);
+                break;
 
-//            case R.id.action_layout_linear: recyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); break;
-//            case R.id.action_layout_grid: recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3)); break;
-//            case R.id.action_layout_staggered: recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)); break;
         }
         return true;
     }
