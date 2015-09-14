@@ -66,7 +66,7 @@ public class ScalableRVFragment extends Fragment {
         // Inflate the layout for this fragment
         this.setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_scalablerv, container, false);
-         recyclerView = (ScalableRecyclerGridView) v.findViewById(R.id.recyclerView);
+        recyclerView = (ScalableRecyclerGridView) v.findViewById(R.id.recyclerView);
 
         recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
 
@@ -79,14 +79,14 @@ public class ScalableRVFragment extends Fragment {
 //                        Providers.defaultMoveAnimProvider(),
 //                        Providers.defaultRemoveAnimProvider()
 //                );
-        customAnimator =  new FlexiItemAnimator(
-                null,
-                Providers.teleportChangeOldViewAnimProvider(),
-                Providers.teleportChangeNewViewAnimProvider(),
-                null,
-                null
-        );
-
+        customAnimator =
+                new FlexiItemAnimator(
+                        Providers.teleportAddNewViewAnimProvider(),
+                        Providers.teleportChangeOldViewAnimProvider(),
+                        Providers.teleportChangeNewViewAnimProvider(),
+                        null,
+                        null
+                );
         defaultAnimator.setChangeDuration(500);
         customAnimator.setChangeDuration(500);
         customAnimator.setIpChangeNew(new LinearInterpolator());
@@ -103,19 +103,19 @@ public class ScalableRVFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(recyclerView==null ) return false;
+        if (recyclerView == null) return false;
         switch (item.getItemId()) {
             case R.id.action_scale_no_anim:
-                ((ScalableGridLayoutManager)recyclerView.getLayoutManager())
+                ((ScalableGridLayoutManager) recyclerView.getLayoutManager())
                         .setAnimateItemChangedOnScaleChange(false);
                 break;
             case R.id.action_scale_default_anim:
-                ((ScalableGridLayoutManager)recyclerView.getLayoutManager())
+                ((ScalableGridLayoutManager) recyclerView.getLayoutManager())
                         .setAnimateItemChangedOnScaleChange(true);
                 recyclerView.setItemAnimator(defaultAnimator);
                 break;
             case R.id.action_scale_custom_anim:
-                ((ScalableGridLayoutManager)recyclerView.getLayoutManager())
+                ((ScalableGridLayoutManager) recyclerView.getLayoutManager())
                         .setAnimateItemChangedOnScaleChange(true);
                 recyclerView.setItemAnimator(customAnimator);
                 break;

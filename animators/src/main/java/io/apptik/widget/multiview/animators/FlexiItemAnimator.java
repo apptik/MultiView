@@ -149,6 +149,7 @@ public class FlexiItemAnimator extends BaseItemAnimator {
     @Override
     protected void animateAddImpl(final RecyclerView.ViewHolder holder) {
         if (vpaAdd == null) {
+            resetView(holder.itemView);
             dispatchAddFinished(holder);
             dispatchFinishedWhenDone();
             return;
@@ -267,7 +268,9 @@ public class FlexiItemAnimator extends BaseItemAnimator {
                 public void onAnimationEnd(View view) {
                     Log.v("end change old anim: " + view);
                     oldViewAnim.setListener(null);
+                    Log.v("end change old anim before: " + view);
                     resetView(view);
+                    Log.v("end change old anim after: " + view);
                     dispatchChangeFinished(changeInfo.oldHolder, true);
                     mChangeAnimations.remove(changeInfo.oldHolder);
                     dispatchFinishedWhenDone();

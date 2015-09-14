@@ -51,28 +51,30 @@ public class Anims {
 
     public static ViewPropertyAnimatorCompat defaultChangeNewViewAnim(
             View view, final BaseItemAnimator.ChangeInfo changeInfo) {
-        return ViewCompat.animate(view).translationX(0).translationY(0).alpha(1);
+        return ViewCompat.animate(view)
+                .translationX(0)
+                .translationY(0)
+                .alpha(1);
     }
 
     public static ViewPropertyAnimatorCompat teleportChangeOldViewAnim(
             View view, final BaseItemAnimator.ChangeInfo changeInfo) {
-        ViewPropertyAnimatorCompat oldViewAnim = ViewCompat.animate(view);
-        oldViewAnim.scaleX(0);
-        oldViewAnim.scaleY(0);
-        oldViewAnim.alpha(0);
-        return oldViewAnim;
+        return ViewCompat.animate(view)
+                .scaleX(0)
+                .scaleY(0)
+                .alpha(0);
     }
 
     public static ViewPropertyAnimatorCompat teleportChangeNewViewAnim(
             View view, final BaseItemAnimator.ChangeInfo changeInfo) {
-        ViewPropertyAnimatorCompat newViewAnim = ViewCompat.animate(view);
-        newViewAnim.scaleX(1).scaleY(1).alpha(1);
-        return newViewAnim;
+        return ViewCompat.animate(view)
+                .scaleX(1)
+                .scaleY(1)
+                .alpha(1);
     }
 
 
     public static ViewPropertyAnimatorCompat garageDoorClose(final View view) {
-
         return ViewCompat.animate(view)
                 .rotationX(0)
                 .translationY(0);

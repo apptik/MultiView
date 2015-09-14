@@ -283,7 +283,6 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
 //        ViewCompat.setAlpha(item.itemView, 1);
 //        ViewCompat.setTranslationX(item.itemView, 0);
 //        ViewCompat.setTranslationY(item.itemView, 0);
-        resetView(item.itemView);
         dispatchChangeFinished(item, oldItem);
         return true;
     }
@@ -293,13 +292,13 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         final View view = item.itemView;
         // this will trigger end callback which should set properties to their target values.
         ViewCompat.animate(view).cancel();
+        resetView(view);
         // TODO if some other animations are chained to end, how do we cancel them as well?
         for (int i = mPendingMoves.size() - 1; i >= 0; i--) {
             MoveInfo moveInfo = mPendingMoves.get(i);
             if (moveInfo.holder == item) {
 //                ViewCompat.setTranslationY(view, 0);
 //                ViewCompat.setTranslationX(view, 0);
-                resetView(view);
                 dispatchMoveFinished(item);
                 mPendingMoves.remove(i);
             }
@@ -307,12 +306,10 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         endChangeAnimation(mPendingChanges, item);
         if (mPendingRemovals.remove(item)) {
             //ViewCompat.setAlpha(view, 1);
-            resetView(view);
             dispatchRemoveFinished(item);
         }
         if (mPendingAdditions.remove(item)) {
             //ViewCompat.setAlpha(view, 1);
-            resetView(view);
             dispatchAddFinished(item);
         }
 
@@ -330,7 +327,6 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
                 if (moveInfo.holder == item) {
 //                    ViewCompat.setTranslationY(view, 0);
 //                    ViewCompat.setTranslationX(view, 0);
-                    resetView(view);
                     dispatchMoveFinished(item);
                     moves.remove(j);
                     if (moves.isEmpty()) {
@@ -344,7 +340,6 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
             ArrayList<ViewHolder> additions = mAdditionsList.get(i);
             if (additions.remove(item)) {
 //                ViewCompat.setAlpha(view, 1);
-                resetView(view);
                 dispatchAddFinished(item);
                 if (additions.isEmpty()) {
                     mAdditionsList.remove(i);
@@ -502,6 +497,7 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
     }
 
     protected void resetView(View view) {
+        Log.v("resetView: " + view);
         ViewCompat.setAlpha(view, 1);
         ViewCompat.setTranslationX(view, 0);
         ViewCompat.setTranslationY(view, 0);
@@ -518,7 +514,7 @@ public abstract class BaseItemAnimator extends RecyclerView.ItemAnimator {
         ViewCompat.animate(view).setInterpolator(null);
 
         //do we need it at all ?
-        view.invalidate();
+       // view.invalidate();
     }
 
     protected static class VoidVpaListener implements ViewPropertyAnimatorListener {

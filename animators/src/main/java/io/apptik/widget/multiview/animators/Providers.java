@@ -139,21 +139,13 @@ public class Providers {
             }
 
             @Override
-            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
                 return null;
             }
 
             @Override
             public Runnable getAfterAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
-                final BaseItemAnimator.ChangeInfo changeInfo =
-                        (BaseItemAnimator.ChangeInfo) args[0];
-                return new Runnable() {
-                    @Override
-                    public void run() {
-                        ViewCompat.setTranslationX(viewHolder.itemView, changeInfo.toX - changeInfo.fromX);
-                        ViewCompat.setTranslationY(viewHolder.itemView, changeInfo.toY - changeInfo.fromY);
-                    }
-                };
+                return null;
             }
         };
     }
@@ -166,19 +158,49 @@ public class Providers {
             }
 
             @Override
-            public Runnable getBeforeAction(RecyclerView.ViewHolder viewHolder, Object... args) {
-                return null;
-            }
-
-            @Override
-            public Runnable getAfterAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
                 return new Runnable() {
                     @Override
                     public void run() {
+                        ViewCompat.setScaleX(viewHolder.itemView, 0);
+                        ViewCompat.setScaleY(viewHolder.itemView, 0);
                         ViewCompat.setTranslationX(viewHolder.itemView, 0);
                         ViewCompat.setTranslationY(viewHolder.itemView, 0);
                     }
                 };
+            }
+
+            @Override
+            public Runnable getAfterAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
+            }
+        };
+    }
+
+    public static AnimatorProvider teleportAddNewViewAnimProvider() {
+        return new AnimatorProvider() {
+            @Override
+            public ViewPropertyAnimatorCompat getAnim(RecyclerView.ViewHolder viewHolder, Object... ags) {
+                return Anims.zoom2Normal(viewHolder.itemView).alpha(1);
+            }
+
+            @Override
+            public Runnable getBeforeAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        ViewCompat.setAlpha(viewHolder.itemView, 1);
+                        ViewCompat.setScaleX(viewHolder.itemView, 0);
+                        ViewCompat.setScaleY(viewHolder.itemView, 0);
+                        ViewCompat.setTranslationX(viewHolder.itemView, 0);
+                        ViewCompat.setTranslationY(viewHolder.itemView, 0);
+                    }
+                };
+            }
+
+            @Override
+            public Runnable getAfterAction(final RecyclerView.ViewHolder viewHolder, Object... args) {
+                return null;
             }
         };
     }
