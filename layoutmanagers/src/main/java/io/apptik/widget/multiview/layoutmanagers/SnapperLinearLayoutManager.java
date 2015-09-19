@@ -53,6 +53,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     private int mSmoothScrollTargetPosition = -1;
     private float mTriggerOffset = 0.05f;
     View prevView;
+    int prevPos=-1;
 
     public SnapperLinearLayoutManager(Context context) {
         super(context);
@@ -238,6 +239,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             //reset adjusted
             adjusted = false;
             prevView = getCenterItem();
+            prevPos = mRecyclerView.getChildAdapterPosition(prevView);
             //in case of trigger we need to know where we come from
             if (flingOneItemOnly) {
                 if (prevView != null) {
@@ -269,7 +271,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             return;
         }
         adjusted = true;
-        int prevPos = mRecyclerView.getChildAdapterPosition(prevView);
+        //prevPos = mRecyclerView.getChildAdapterPosition(prevView);
         Log.d("mPositionBeforeAdjust:" + prevPos);
 
 
