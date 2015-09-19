@@ -135,6 +135,7 @@ public class ScalableGridLayoutManager extends GridLayoutManager {
         return ((float)initSpanCount/(float)getSpanCount());
         //return 1f;
     }
+
     public static class LayoutParams extends GridLayoutManager.LayoutParams {
 
         private int origHeight = 0;

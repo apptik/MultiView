@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import io.apptik.multiview.adapter.BasicImageRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
@@ -41,6 +42,7 @@ public class BasicFragment extends Fragment {
 
     RecyclerView recyclerView = null;
     BasicRecyclerAdapter recyclerAdapter;
+    BasicImageRecyclerAdapter recyclerImageAdapter;
     BasicMixedRecyclerAdapter recyclerMixedAdapter;
 
     public BasicFragment() {
@@ -61,7 +63,8 @@ public class BasicFragment extends Fragment {
          recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
 
          recyclerAdapter = new BasicRecyclerAdapter(MockData.getMockJsonArray(333, 500));
-         recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
+        recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
+        recyclerImageAdapter = new BasicImageRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recyclerAdapter);
@@ -81,7 +84,7 @@ public class BasicFragment extends Fragment {
         if(recyclerView==null ) return false;
         switch (item.getItemId()) {
             case R.id.action_text_only: recyclerView.setAdapter(recyclerAdapter); break;
-            case R.id.action_image_only: break;
+            case R.id.action_image_only: recyclerView.setAdapter(recyclerImageAdapter); break;
             case R.id.action_Image_text: recyclerView.setAdapter(recyclerMixedAdapter); break;
 
             case R.id.action_layout_linear: recyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); break;

@@ -82,9 +82,6 @@ public class GalleryViewFragment extends Fragment {
             case R.id.action_image_only: break;
             case R.id.action_Image_text: recyclerView.setAdapter(recyclerMixedAdapter); break;
 
-//            case R.id.action_layout_linear: recyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); break;
-//            case R.id.action_layout_grid: recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3)); break;
-//            case R.id.action_layout_staggered: recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)); break;
         }
         return true;
     }

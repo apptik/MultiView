@@ -28,10 +28,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import io.apptik.multiview.adapter.BasicImageRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
 import io.apptik.widget.multiview.layoutmanagers.SnapperLinearLayoutManager;
+import io.apptik.widget.multiview.layoutmanagers.ViewPagerLayoutManager;
 
 
 /**
@@ -42,6 +44,7 @@ public class LayoutsFragment extends Fragment {
 
     RecyclerView recyclerView = null;
     BasicRecyclerAdapter recyclerAdapter;
+    BasicImageRecyclerAdapter recyclerImageAdapter;
     BasicMixedRecyclerAdapter recyclerMixedAdapter;
 
     public LayoutsFragment() {
@@ -60,8 +63,10 @@ public class LayoutsFragment extends Fragment {
         this.setHasOptionsMenu(true);
         View v = inflater.inflate(R.layout.fragment_recyclerview, container, false);
          recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
+       // recyclerView.setNestedScrollingEnabled(false);
 
          recyclerAdapter = new BasicRecyclerAdapter(MockData.getMockJsonArray(333, 500));
+        recyclerImageAdapter = new BasicImageRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
          recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
 
         recyclerView.setLayoutManager(new SnapperLinearLayoutManager(getActivity()));
@@ -80,7 +85,7 @@ public class LayoutsFragment extends Fragment {
         if(recyclerView==null ) return false;
         switch (item.getItemId()) {
             case R.id.action_text_only: recyclerView.setAdapter(recyclerAdapter); break;
-            case R.id.action_image_only: break;
+            case R.id.action_image_only: recyclerView.setAdapter(recyclerImageAdapter); break;
             case R.id.action_Image_text: recyclerView.setAdapter(recyclerMixedAdapter); break;
 
             case R.id.action_layout_snapper_basic:
@@ -90,12 +95,10 @@ public class LayoutsFragment extends Fragment {
                         .withShowOneItemOnly(true));
                break;
             case R.id.action_layout_snapper_pager_v:
-                recyclerView.setLayoutManager(new SnapperLinearLayoutManager(getActivity())
-                        .withFlingOneItemOnly(true));
+                recyclerView.setLayoutManager(new ViewPagerLayoutManager(getActivity()));
                 break;
             case R.id.action_layout_snapper_pager_h:
-                recyclerView.setLayoutManager(new SnapperLinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false)
-                        .withFlingOneItemOnly(true));
+                recyclerView.setLayoutManager(new ViewPagerLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
                 break;
         }
         return true;
