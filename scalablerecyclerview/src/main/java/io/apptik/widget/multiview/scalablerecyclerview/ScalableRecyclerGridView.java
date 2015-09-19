@@ -30,6 +30,8 @@ import android.view.View;
 
 import io.apptik.widget.multiview.common.Log;
 import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
+import io.apptik.widget.multiview.scrollers.BaseSmoothScroller;
+import io.apptik.widget.multiview.scrollers.FlexiSmoothScroller;
 
 
 /**
@@ -322,8 +324,8 @@ public class ScalableRecyclerGridView extends RecyclerView {
             int newSpanCount = ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount();
             if (
                     (initSpanCount == newSpanCount) &&
-                    ((currFactor > 1 && newSpanCount == scalableRecyclerGridView.getMinSpan())
-                            || (currFactor < 1 && currScale <= 1 && newSpanCount == scalableRecyclerGridView.getMaxSpan()))
+                            ((currFactor > 1 && newSpanCount == scalableRecyclerGridView.getMinSpan())
+                                    || (currFactor < 1 && currScale <= 1 && newSpanCount == scalableRecyclerGridView.getMaxSpan()))
                     ) {
                 factorOffset = 1 - detector.getScaleFactor();
                 return false;
@@ -349,8 +351,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
             } else if (currFactor < 0.95) {
                 //zoomout
                 newSpanCount = initSpanCount + 1;
-                Log.d("handleOnScaleGrid: zoomout " + newSpanCount);
-                // newScale = Math.max(currFactor,(float)initSpanCount/(float)(initSpanCount+1));
+                Log.d("onScale: zoomout " + newSpanCount);
                 newScale = 1f + currFactor - (float) initSpanCount / (float) newSpanCount;
                 newScale = Math.max(1f, newScale);
             } else {
@@ -361,21 +362,25 @@ public class ScalableRecyclerGridView extends RecyclerView {
                     newScale = Math.max(1f, newScale);
                 } else {
                     if (initSpanCount == 1) {
-                        //chnage to single LM here
-                        //setSingleMode();
-                        //newScale = 1;
+
                     } else {
                         newScale = Math.min(currFactor, (float) (initSpanCount) / (float) (initSpanCount - 1));
                     }
                 }
             }
 
-            if (newSpanCount != ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
+            if (newSpanCount != ((ScalableGridLayoutManager)
+                    scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
                 scalableRecyclerGridView.setSpanCount(newSpanCount);
-                if (initSpanCount != ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
-                    scalableRecyclerGridView.getLayoutManager().scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(currentView));
+                if (initSpanCount != ((ScalableGridLayoutManager)
+                        scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
+                    SmoothScroller scroller = new FlexiSmoothScroller(context)
+                            .setVerticalSnapPreference(BaseSmoothScroller.SNAP_TO_CENTER)
+                            .setHorizontalSnapPreference(BaseSmoothScroller.SNAP_TO_CENTER);
+                    scroller.setTargetPosition(
+                            scalableRecyclerGridView.getChildAdapterPosition(currentView));
+                    scalableRecyclerGridView.getLayoutManager().startSmoothScroll(scroller);
                 }
-                scalableRecyclerGridView.getLayoutManager().requestLayout();
             }
             currScale = newScale;
             scalableRecyclerGridView.invalidate();

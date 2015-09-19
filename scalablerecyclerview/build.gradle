@@ -44,6 +44,7 @@ dependencies {
     compile project(':layoutmanagers')
     compile project(':common')
     compile project(':extras')
+    compile project(':scrollers')
     compile rootProject.ext.supportRecyclerView
     compile rootProject.ext.supportAppCompat
     compile rootProject.ext.supportCardView
