@@ -1,28 +1,8 @@
-/*
- * Copyright (C) 2015 AppTik Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package io.apptik.widget.multiview.scalablerecyclerview;
 
-
 import android.content.Context;
-import android.graphics.Canvas;
 import android.os.Build;
 import android.support.v4.view.GestureDetectorCompat;
-import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -31,167 +11,16 @@ import android.view.View;
 import io.apptik.widget.multiview.common.Log;
 import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
 
+public abstract class BaseGridScaler implements GridScaler{
 
-/**
- * Scalable Recyclerview that accept only gridviewlayoutmanager
- */
-
-
-public class ScalableRecyclerGridView extends RecyclerView {
-
-    private int minSpan = 2;
-    private int maxSpan = 5;
-
-    InteractionListener interactionListener;
-
-    public static final int ZOOM_ANIMATION_DURATION_MS = 200;
-    public ScaleListener scaleListener;
-
-
-    public ScalableRecyclerGridView(Context context, int intialSpan) {
-        super(context);
-        init(context, intialSpan);
-    }
-
-    public ScalableRecyclerGridView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, 3);
-    }
-
-    public ScalableRecyclerGridView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        init(context, 3);
-    }
-
-    private void init(Context context, int initSpanCount) {
-        super.setLayoutManager(new ScalableGridLayoutManager(context, initSpanCount));
-        interactionListener = new InteractionListener(context, this);
-    }
-
-
-    public ScaleListener getScaleListener() {
-        return scaleListener;
-    }
-
-    public void setScaleListener(ScaleListener scaleListener) {
-        this.scaleListener = scaleListener;
-    }
-
-
-    public int getMaxSpan() {
-        return maxSpan;
-    }
-
-    public void setMaxSpan(int mMaxSpan) {
-        this.maxSpan = mMaxSpan;
-        if (((ScalableGridLayoutManager) getLayoutManager()) != null && ((ScalableGridLayoutManager) getLayoutManager()).getSpanCount() > mMaxSpan) {
-            ((ScalableGridLayoutManager) getLayoutManager()).setSpanCount(mMaxSpan);
-        }
-    }
-
-    public int getMinSpan() {
-        return minSpan;
-    }
-
-    public void setMinSpan(int mMinSpan) {
-        this.minSpan = mMinSpan;
-        if (((ScalableGridLayoutManager) getLayoutManager()) != null && ((ScalableGridLayoutManager) getLayoutManager()).getSpanCount() < mMinSpan) {
-            ((ScalableGridLayoutManager) getLayoutManager()).setSpanCount(mMinSpan);
-        }
-    }
-
-    public void setSpanCount(int spanCount) {
-        if (spanCount < minSpan) {
-            spanCount = minSpan;
-        }
-        if (spanCount > maxSpan) {
-            spanCount = maxSpan;
-        }
-        int oldSpanCount = ((ScalableGridLayoutManager) getLayoutManager()).getSpanCount();
-        if (oldSpanCount != spanCount) {
-            ((ScalableGridLayoutManager) getLayoutManager()).setSpanCount(spanCount);
-            if (scaleListener != null) {
-                scaleListener.onSpanChange(spanCount, oldSpanCount);
-            }
-        }
+    @Override
+    public int getInitialSpan() {
+        return 0;
     }
 
     @Override
-    public void setLayoutManager(LayoutManager layout) {
-        if (layout.getClass().isAssignableFrom(ScalableGridLayoutManager.class)) {
-            throw new IllegalStateException("LAyoutManager has to extend ScalableGridLayoutManager ");
-        }
-    }
+    public void scale(Float currScale, Integer currSpan, MotionEvent ev) {
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        boolean isGood = interactionListener.onTouchEvent(ev);
-
-        if (!isGood) {
-            return super.onTouchEvent(ev);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!isAttachedToWindow() || getAdapter() == null || getLayoutManager() == null
-            //||getScrollState() != SCROLL_STATE_IDLE
-                ) {
-            return super.onInterceptTouchEvent(ev);
-        } else {
-            onTouchEvent(ev);
-        }
-
-        return false;
-    }
-
-    @Override
-    public void onDraw(Canvas c) {
-        if (interactionListener.currentView != null && interactionListener.scaleGestureDetector.isInProgress()) {
-            float px;
-            float py;
-
-            //pivot for zooming depends on the ratio of the distance of left and
-            // right(top and bottom) of the child to left and right(top and bottom) of the RV
-            float dl = interactionListener.currentView.getX() - getX();
-            float dw = getWidth() - interactionListener.currentView.getWidth();
-            px = interactionListener.currentView.getX() + (dl / dw) * interactionListener.currentView.getWidth();
-            float dt = interactionListener.currentView.getY() - getY();
-            float dh = getHeight() - interactionListener.currentView.getHeight();
-            py = interactionListener.currentView.getY() + (dt / dh) * interactionListener.currentView.getHeight();
-            //however we also do not want to have half appearing views so we choose a side
-            float midX = getX() + getWidth() / 2;
-            float midY = getY() + getHeight() / 2;
-            if (getLayoutManager().canScrollHorizontally()) {
-                //fix py
-                if (py < midY) {
-                    py = 0;
-                } else {
-                    py = getY() + getHeight();
-                }
-            } else {
-                //fix px
-                if (px < midX) {
-                    px = 0;
-                } else {
-                    px = getX() + getWidth();
-                }
-            }
-
-            c.scale(getCurrScale(), getCurrScale(), px, py);
-        }
-        super.onDraw(c);
-    }
-
-    private float getCurrScale() {
-        return interactionListener.currScale;
-    }
-
-    @Override
-    public void scrollBy(int x, int y) {
-        super.scrollBy(x, y);
     }
 
     public static class InteractionListener implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
@@ -207,8 +36,8 @@ public class ScalableRecyclerGridView extends RecyclerView {
         //used to normalise the raw factor when scaling in not allowed direction
         volatile private float factorOffset;
 
-        public InteractionListener(Context context, ScalableRecyclerGridView scalableRecyclerGridView) {
-            this.context = context;
+        public InteractionListener(ScalableRecyclerGridView scalableRecyclerGridView) {
+            this.context = scalableRecyclerGridView.getContext();
             this.scalableRecyclerGridView = scalableRecyclerGridView;
             init();
         }
@@ -326,8 +155,8 @@ public class ScalableRecyclerGridView extends RecyclerView {
             int newSpanCount = ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount();
             if (
                     (initSpanCount == newSpanCount) &&
-                    ((currFactor > 1 && newSpanCount == scalableRecyclerGridView.getMinSpan())
-                            || (currFactor < 1 && currScale <= 1 && newSpanCount == scalableRecyclerGridView.getMaxSpan()))
+                            ((currFactor > 1 && newSpanCount == scalableRecyclerGridView.getMinSpan())
+                                    || (currFactor < 1 && currScale <= 1 && newSpanCount == scalableRecyclerGridView.getMaxSpan()))
                     ) {
                 factorOffset = 1 - detector.getScaleFactor();
                 return false;
@@ -409,7 +238,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
             float currFactor = detector.getScaleFactor() + factorOffset;
 
             if (currFactor > 1f + (1f / (float) (initSpanCount - 1)) / 2f) {
-                if (initSpanCount == scalableRecyclerGridView.minSpan) {
+                if (initSpanCount == scalableRecyclerGridView.getMinSpan()) {
                     //do nothing we reached our max span
                 } else {
                     scalableRecyclerGridView.setSpanCount(initSpanCount - 1);
@@ -435,43 +264,5 @@ public class ScalableRecyclerGridView extends RecyclerView {
         }
 
     }
-
-    public interface ScaleListener {
-        void onScaleBegin(ScaleGestureDetector detector);
-
-        void onScaleEnd(ScaleGestureDetector detector);
-
-        void onScale(ScaleGestureDetector detector);
-
-        void onSpanChange(int newSpan, int oldSpan);
-    }
-
-    public static class VoidScaleListener implements ScaleListener {
-
-        @Override
-        public void onScaleBegin(ScaleGestureDetector detector) {
-
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-
-        }
-
-        @Override
-        public void onScale(ScaleGestureDetector detector) {
-
-        }
-
-        @Override
-        public void onSpanChange(int newSpan, int oldSpan) {
-
-        }
-
-    }
-
-
-
-
 
 }

@@ -18,7 +18,10 @@ package io.apptik.widget.multiview.layoutmanagers;
 
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
@@ -47,12 +50,18 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
 
     @Override
     public SnapperLinearLayoutManager withFlingOneItemOnly(boolean flingOneItemOnly) {
-        throw new IllegalStateException("ViewPagerLayoutManager can show and fling only one item");
+        if(!flingOneItemOnly) {
+            throw new IllegalStateException("ViewPagerLayoutManager can show and fling only one item");
+        }
+        return this;
     }
 
     @Override
     public SnapperLinearLayoutManager withShowOneItemOnly(boolean showOneItemOnly) {
-        throw new IllegalStateException("ViewPagerLayoutManager can show and fling only one item");
+        if(!showOneItemOnly) {
+            throw new IllegalStateException("ViewPagerLayoutManager can show and fling only one item");
+        }
+        return this;
     }
 
     public void goToNext() {
@@ -80,7 +89,7 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
         if(pageChangeListener!=null) {
             pageChangeListener.onPageChanging(currPos, newPos);
         }
-        super.onPositionChanged(currPos, newPos);
+        super.onPositionChanging(currPos, newPos);
     }
 
     @Override
@@ -91,9 +100,77 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
         super.onPositionChanged(prevPos, newPos);
     }
 
+    @Override
+    public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        final int layoutDirection = dx > 0 ? 1 : -1;
+        View currView = getCurrentPageView();
+        if(mRecyclerView != null && currView != null && currView.canScrollHorizontally(layoutDirection)
+                && currView.getLeft() == 0 && currView.getRight() == currView.getWidth()
+                ) {
+            if(lastTouchEvent!=null) {
+                currView.dispatchTouchEvent(lastTouchEvent);
+                lastTouchEvent=null;
+            }
+            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_NEVER);
+            return 0;
+        } else {
+            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_ALWAYS);
+            return super.scrollHorizontallyBy(dx, recycler, state);
+        }
+    }
+
+    @Override
+    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
+        final int layoutDirection = dy > 0 ? 1 : -1;
+        View currView = getCurrentPageView();
+        if(mRecyclerView != null && currView != null && currView.canScrollVertically(layoutDirection)) {
+            if(lastTouchEvent != null) {
+               currView.dispatchTouchEvent(lastTouchEvent);
+                lastTouchEvent=null;
+            }
+            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_NEVER);
+            return 0;
+        } else {
+            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_ALWAYS);
+            return super.scrollVerticallyBy(dy, recycler, state);
+        }
+
+    }
+
+    private volatile MotionEvent lastTouchEvent;
+
+    @Override
+    public void onAttachedToWindow(RecyclerView view) {
+        super.onAttachedToWindow(view);
+        view.addOnItemTouchListener(touchSaver);
+    }
+
+    @Override
+    public void onDetachedFromWindow(RecyclerView view, RecyclerView.Recycler recycler) {
+        view.removeOnItemTouchListener(touchSaver);
+        super.onDetachedFromWindow(view, recycler);
+    }
+
+    private RecyclerView.OnItemTouchListener touchSaver = new RecyclerView.OnItemTouchListener() {
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+            lastTouchEvent = e;
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+        }
+
+        @Override
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+        }
+    };
+
     public interface PageChangeListener {
         void onPageChanging(int currPage, int newPage);
         void onPageChanged(int prevPage, int newPage);
     }
-
 }

@@ -14,26 +14,39 @@
  * limitations under the License.
  */
 
-package io.apptik.widget.multiview.galleryview;
+package io.apptik.widget.multiview.extras;
 
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
-import io.apptik.widget.multiview.scalablerecyclerview.ScalableRecyclerGridView;
-
-public class SimpleGalleryView extends ScalableRecyclerGridView {
-    public SimpleGalleryView(Context context, AttributeSet attrs) {
+public class ExtendedRecyclerView extends RecyclerView {
+    public ExtendedRecyclerView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SimpleGalleryView(Context context, AttributeSet attrs, int defStyle) {
+    public ExtendedRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    public SimpleGalleryView(Context context, int intialSpan) {
-        super(context, intialSpan);
+    public ExtendedRecyclerView(Context context) {
+        super(context);
     }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent e) {
+        return super.onInterceptTouchEvent(e);
+    }
 
+    @Override
+    public void scrollBy(int x, int y) {
+        super.scrollBy(x, y);
+    }
+
+    @Override
+    public boolean fling(int velocityX, int velocityY) {
+        return super.fling(velocityX, velocityY);
+    }
 }
