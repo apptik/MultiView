@@ -3,30 +3,64 @@ package io.apptik.widget.multiview.scalablerecyclerview;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import io.apptik.widget.multiview.common.Log;
-import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
 
-public abstract class BaseGridScaler implements GridScaler{
+public abstract class BaseGridScaler implements GridScaler {
+
+    private final RecyclerView mRecyclerView;
+    private final InteractionListener mInteractionListener;
+    private int minSpan = 2;
+    private int maxSpan = 5;
+
+
+    public BaseGridScaler(RecyclerView recyclerView) {
+        mRecyclerView = recyclerView;
+        mInteractionListener = new InteractionListener(recyclerView);
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mInteractionListener.onTouchEvent(event);
+                return mInteractionListener.scaleGestureDetector.isInProgress();
+            }
+        });
+    }
+
+    public RecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
+
+    public int getMaxSpan() {
+        return maxSpan;
+    }
+
+    public void setMaxSpan(int maxSpan) {
+        this.maxSpan = maxSpan;
+    }
+
+    public int getMinSpan() {
+        return minSpan;
+    }
+
+    public void setMinSpan(int minSpan) {
+        this.minSpan = minSpan;
+    }
 
     @Override
     public int getInitialSpan() {
         return 0;
     }
 
-    @Override
-    public void scale(Float currScale, Integer currSpan, MotionEvent ev) {
-
-    }
-
-    public static class InteractionListener implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
+    private class InteractionListener implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener {
 
         private Context context;
-        private ScalableRecyclerGridView scalableRecyclerGridView;
+        private RecyclerView recyclerView;
         private GestureDetectorCompat gestureDetector;
         private ScaleGestureDetector scaleGestureDetector;
         private float currScale = 1f;
@@ -36,9 +70,9 @@ public abstract class BaseGridScaler implements GridScaler{
         //used to normalise the raw factor when scaling in not allowed direction
         volatile private float factorOffset;
 
-        public InteractionListener(ScalableRecyclerGridView scalableRecyclerGridView) {
-            this.context = scalableRecyclerGridView.getContext();
-            this.scalableRecyclerGridView = scalableRecyclerGridView;
+        public InteractionListener(RecyclerView recyclerView) {
+            this.recyclerView = recyclerView;
+            this.context = this.recyclerView.getContext();
             init();
         }
 
@@ -77,18 +111,18 @@ public abstract class BaseGridScaler implements GridScaler{
             if (scaleGestureDetector.isInProgress()) return false;
             //toggle min/max col span for grid mode
 
-            View tmpView = scalableRecyclerGridView.findChildViewUnder(e.getX(), e.getY());
+            View tmpView = recyclerView.findChildViewUnder(e.getX(), e.getY());
 
-            if (((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount() >
-                    scalableRecyclerGridView.getMinSpan()) {
-                scalableRecyclerGridView.setSpanCount(scalableRecyclerGridView.getMinSpan());
+            if (((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() >
+                    minSpan) {
+                scale(1f, minSpan, e);
             } else {
-                scalableRecyclerGridView.setSpanCount(scalableRecyclerGridView.getMaxSpan());
+                scale(1f, maxSpan, e);
             }
             if (tmpView != null) {
-                scalableRecyclerGridView.scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(tmpView));
+                recyclerView.scrollToPosition(recyclerView.getChildAdapterPosition(tmpView));
             }
-            scalableRecyclerGridView.requestLayout();
+            recyclerView.requestLayout();
 
 
             return true;
@@ -152,11 +186,11 @@ public abstract class BaseGridScaler implements GridScaler{
 
             float currFactor = detector.getScaleFactor() + factorOffset;
 
-            int newSpanCount = ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount();
+            int newSpanCount = ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
             if (
                     (initSpanCount == newSpanCount) &&
-                            ((currFactor > 1 && newSpanCount == scalableRecyclerGridView.getMinSpan())
-                                    || (currFactor < 1 && currScale <= 1 && newSpanCount == scalableRecyclerGridView.getMaxSpan()))
+                            ((currFactor > 1 && newSpanCount == minSpan)
+                                    || (currFactor < 1 && currScale <= 1 && newSpanCount == maxSpan))
                     ) {
                 factorOffset = 1 - detector.getScaleFactor();
                 return false;
@@ -203,16 +237,9 @@ public abstract class BaseGridScaler implements GridScaler{
                 }
             }
 
-            if (newSpanCount != ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
-                scalableRecyclerGridView.setSpanCount(newSpanCount);
-                if (initSpanCount != ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
-                    scalableRecyclerGridView.getLayoutManager().scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(currentView));
-                }
-                scalableRecyclerGridView.getLayoutManager().requestLayout();
-            }
             currScale = newScale;
-            scalableRecyclerGridView.invalidate();
 
+            scale(currScale, newSpanCount, null);
 
             return false;
         }
@@ -222,8 +249,8 @@ public abstract class BaseGridScaler implements GridScaler{
             Log.d("onScaleBegin: " + detector.getFocusX() + "/" + detector.getFocusY()
                     + " : " + detector.getCurrentSpan() + "/" + detector.getScaleFactor()
                     + " : " + detector.getEventTime());
-            currentView = scalableRecyclerGridView.findChildViewUnder(detector.getFocusX(), detector.getFocusY());
-            initSpanCount = ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount();
+            currentView = recyclerView.findChildViewUnder(detector.getFocusX(), detector.getFocusY());
+            initSpanCount = ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
             factorOffset = 0f;
             return true;
         }
@@ -238,31 +265,32 @@ public abstract class BaseGridScaler implements GridScaler{
             float currFactor = detector.getScaleFactor() + factorOffset;
 
             if (currFactor > 1f + (1f / (float) (initSpanCount - 1)) / 2f) {
-                if (initSpanCount == scalableRecyclerGridView.getMinSpan()) {
+                if (initSpanCount == minSpan) {
                     //do nothing we reached our max span
                 } else {
-                    scalableRecyclerGridView.setSpanCount(initSpanCount - 1);
+                    scale(1f, initSpanCount - 1, null);
                 }
             } else if (currFactor < 1f - (1f / (float) (initSpanCount + 1)) / 2f) {
-                scalableRecyclerGridView.setSpanCount(initSpanCount + 1);
+                scale(1f, initSpanCount + 1, null);
             } else {
-                if (((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount() != initSpanCount) {
-                    scalableRecyclerGridView.setSpanCount(initSpanCount);
+                if (((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount() != initSpanCount) {
+                    scale(1f, initSpanCount, null);
                 }
             }
 
 
-            if (initSpanCount != ((ScalableGridLayoutManager) scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
-                scalableRecyclerGridView.getLayoutManager().scrollToPosition(scalableRecyclerGridView.getChildAdapterPosition(currentView));
+            if (initSpanCount != ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount()) {
+                //recyclerView.getLayoutManager().scrollToPosition(recyclerView.getChildAdapterPosition(currentView));
             }
             currScale = 1f;
             initSpanCount = 0;
-            scalableRecyclerGridView.getLayoutManager().requestLayout();
-            scalableRecyclerGridView.invalidate();
+//            recyclerView.getLayoutManager().requestLayout();
+//            recyclerView.invalidate();
 
             currentView = null;
         }
 
     }
+
 
 }

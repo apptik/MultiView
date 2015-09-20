@@ -372,10 +372,11 @@ public class ScalableRecyclerGridView extends RecyclerView {
                     }
                 }
             }
-
             if (newSpanCount != ((ScalableGridLayoutManager)
                     scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
+                Log.d("onScale: will set " + newSpanCount);
                 scalableRecyclerGridView.setSpanCount(newSpanCount);
+                scalableRecyclerGridView.getLayoutManager().requestLayout();
                 if (initSpanCount != ((ScalableGridLayoutManager)
                         scalableRecyclerGridView.getLayoutManager()).getSpanCount()) {
                     SmoothScroller scroller = new FlexiSmoothScroller(context)

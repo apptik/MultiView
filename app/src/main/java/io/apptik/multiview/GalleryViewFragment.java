@@ -19,6 +19,7 @@ package io.apptik.multiview;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
+import io.apptik.widget.multiview.scalablerecyclerview.SharpGridScaler;
 
 
 /**
@@ -57,14 +59,23 @@ public class GalleryViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         this.setHasOptionsMenu(true);
-        View v = inflater.inflate(R.layout.fragment_galleryview, container, false);
+        View v = inflater.inflate(R.layout.fragment_recyclerview, container, false);
          recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);
 
         recyclerAdapter = new BasicRecyclerAdapter(MockData.getMockJsonArray(333, 500));
 
         recyclerMixedAdapter = new BasicMixedRecyclerAdapter(MockData.getMockJsonArray(333, 500), getActivity().getApplicationContext());
 
+        GridLayoutManager gridLayoutManager =  new GridLayoutManager(getContext(), 3);
+
         recyclerView.setAdapter(recyclerMixedAdapter);
+
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        SharpGridScaler sharpGridScaler = new SharpGridScaler(recyclerView);
+
+
+
         return v;
     }
 
@@ -78,9 +89,9 @@ public class GalleryViewFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(recyclerView==null ) return false;
         switch (item.getItemId()) {
-            case R.id.action_text_only: recyclerView.setAdapter(recyclerAdapter); break;
+            case R.id.action_text_only:  break;
             case R.id.action_image_only: break;
-            case R.id.action_Image_text: recyclerView.setAdapter(recyclerMixedAdapter); break;
+            case R.id.action_Image_text: break;
 
         }
         return true;
