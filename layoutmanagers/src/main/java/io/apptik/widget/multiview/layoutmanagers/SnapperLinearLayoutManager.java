@@ -48,7 +48,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     private boolean showOneItemOnly = false;
     private int snapMethod = SNAP_CENTER;
 
-    boolean adjusted = false;
+    volatile boolean adjusted = false;
    // int mLeft;
    // int mTop;
     private int mSmoothScrollTargetPosition = -1;
@@ -153,7 +153,6 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
                 };
     }
-
 
     public boolean isShowOneItemOnly() {
         return showOneItemOnly;
@@ -278,10 +277,11 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
         //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the top in case of SNAP_START
         int targetPosition = getCenterItemPosition();
+        targetPosition = prevPos;
+        View currView = findViewByPosition(prevPos);
+        //todo clean cuurView usage
+        if (prevRect != null && flingOneItemOnly && currView !=null) {
 
-        if (prevRect != null && flingOneItemOnly) {
-            targetPosition = prevPos;
-            View currView = findViewByPosition(prevPos);
             Log.d("adjust has mCurrView " + currView);
             if (canScrollHorizontally()) {
                 int spanX = currView.getLeft() - prevRect.left;
@@ -307,6 +307,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         if (mSmoothScrollTargetPosition != prevPos && prevPos > -1) {
             onPositionChanging(prevPos, mSmoothScrollTargetPosition);
         }
+
         smoothAdjustTo(mSmoothScrollTargetPosition);
 
         if (mSmoothScrollTargetPosition != prevPos  && prevPos > -1) {
@@ -315,7 +316,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     }
 
 
-    protected synchronized void smoothAdjustTo(int targetPosition) {
+    public void smoothAdjustTo(int targetPosition) {
         Log.d("smoothAdjustTo position: " + targetPosition);
         int safeTargetPosition = safeTargetPosition(targetPosition, getItemCount());
         Log.d("smoothAdjustTo safe position: " + safeTargetPosition);
@@ -343,6 +344,11 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             return count - 1;
         }
         return position;
+    }
+
+    @Override
+    public void scrollToPosition(int position) {
+        super.scrollToPosition(position);
     }
 
     protected void onPositionChanging(int currPos, int newPos) {

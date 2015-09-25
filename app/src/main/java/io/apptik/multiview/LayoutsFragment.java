@@ -34,6 +34,7 @@ import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
 import io.apptik.widget.multiview.layoutmanagers.SnapperLinearLayoutManager;
 import io.apptik.widget.multiview.layoutmanagers.ViewPagerLayoutManager;
+import io.apptik.widget.multiview.layoutmanagers.TouchChildPagerLayoutManager;
 
 
 /**
@@ -98,7 +99,7 @@ public class LayoutsFragment extends Fragment {
                 recyclerView.setLayoutManager(new ViewPagerLayoutManager(getActivity()));
                 break;
             case R.id.action_layout_snapper_pager_h:
-                recyclerView.setLayoutManager(new ViewPagerLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+                recyclerView.setLayoutManager(new TouchChildPagerLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
                 break;
         }
         return true;
