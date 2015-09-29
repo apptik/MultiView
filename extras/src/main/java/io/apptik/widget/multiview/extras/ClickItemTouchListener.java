@@ -26,6 +26,8 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 
+import io.apptik.widget.multiview.common.Log;
+
 abstract class ClickItemTouchListener implements OnItemTouchListener {
     private static final String LOGTAG = "ClickItemTouchListener";
 
@@ -53,23 +55,21 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
         if (!isAttachedToWindow(recyclerView) || !hasAdapter(recyclerView)) {
             return false;
         }
-
         mGestureDetector.onTouchEvent(event);
         return false;
     }
 
     @Override
     public void onTouchEvent(RecyclerView recyclerView, MotionEvent event) {
-        // We can silently track tap and and long presses by silently
-        // intercepting touch events in the host RecyclerView.
     }
 
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        //we cannot do much about it
+        Log.d("onRequestDisallowInterceptTouchEvent: " + disallowIntercept);
     }
 
     abstract boolean performItemClick(RecyclerView parent, View view, int position, long id);
+
     abstract boolean performItemLongClick(RecyclerView parent, View view, int position, long id);
 
     private class ItemClickGestureDetector extends GestureDetectorCompat {
@@ -134,7 +134,7 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
             if (mTargetChild != null) {
                 mTargetChild.setPressed(false);
 
-                final int position = mHostView.getChildPosition(mTargetChild);
+                final int position = mHostView.getChildLayoutPosition(mTargetChild);
                 final long id = mHostView.getAdapter().getItemId(position);
                 handled = performItemClick(mHostView, mTargetChild, position, id);
 
@@ -162,7 +162,7 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
                 return;
             }
 
-            final int position = mHostView.getChildPosition(mTargetChild);
+            final int position = mHostView.getChildLayoutPosition(mTargetChild);
             final long id = mHostView.getAdapter().getItemId(position);
             final boolean handled = performItemLongClick(mHostView, mTargetChild, position, id);
 
