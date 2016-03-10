@@ -16,9 +16,13 @@
 
 package io.apptik.multiview;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,13 +45,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-         toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("MultiView");
         setSupportActionBar(toolbar);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
-       mTitle = getTitle();
+        mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -57,19 +61,34 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+        if(!checkForPermissions()) return;
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragToAdd =  null;
-        switch(position) {
-            case 0: fragToAdd =  BasicFragment.newInstance(); break;
-            case 1: fragToAdd = LayoutsFragment.newInstance(); break;
-            case 2: fragToAdd = AnimatorsFragment.newInstance(); break;
-            case 5: fragToAdd = ScrollersFragment.newInstance(); break;
-            case 6: fragToAdd = ScalableRVFragment.newInstance(); break;
-            case 7: fragToAdd = GalleryViewFragment.newInstance(); break;
-            default: fragToAdd = BlankFragment.newInstance(); break;
+        Fragment fragToAdd = null;
+        switch (position) {
+            case 0:
+                fragToAdd = BasicFragment.newInstance();
+                break;
+            case 1:
+                fragToAdd = LayoutsFragment.newInstance();
+                break;
+            case 2:
+                fragToAdd = AnimatorsFragment.newInstance();
+                break;
+            case 5:
+                fragToAdd = ScrollersFragment.newInstance();
+                break;
+            case 6:
+                fragToAdd = ScalableRVFragment.newInstance();
+                break;
+            case 7:
+                fragToAdd = GalleryViewFragment.newInstance();
+                break;
+            default:
+                fragToAdd = BlankFragment.newInstance();
+                break;
         }
-        if(fragToAdd!=null) {
+        if (fragToAdd != null) {
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragToAdd)
                     .commit();
@@ -104,7 +123,7 @@ public class MainActivity extends AppCompatActivity
                 mTitle = getString(R.string.title_section8);
                 break;
         }
-        if(toolbar!=null) {
+        if (toolbar != null) {
             toolbar.setTitle(mTitle);
         }
         //getSupportActionBar().setTitle(mTitle);
@@ -134,6 +153,32 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
+    private boolean checkForPermissions() {
+        int canI = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (canI != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        33);
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+            return false;
+        }
+        return true;
+    }
 
 }
