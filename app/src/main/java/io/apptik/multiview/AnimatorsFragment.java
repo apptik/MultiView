@@ -33,9 +33,9 @@ import android.view.ViewGroup;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
-import io.apptik.widget.multiview.animators.AnimatorProvider;
-import io.apptik.widget.multiview.animators.FlexiItemAnimator;
-import io.apptik.widget.multiview.animators.Providers;
+import io.apptik.multiview.animators.AnimatorProvider;
+import io.apptik.multiview.animators.FlexiItemAnimator;
+import io.apptik.multiview.animators.Providers;
 
 
 public class AnimatorsFragment extends Fragment {
@@ -376,7 +376,7 @@ public class AnimatorsFragment extends Fragment {
         itemAnimator.setRemoveDuration(1000);
         itemAnimator.setChangeDuration(1000);
         itemAnimator.setAddDuration(1000);
-        itemAnimator.setSupportsChangeAnimations(true);
+        //itemAnimator.setSupportsChangeAnimations(true);
         recyclerView.setItemAnimator(itemAnimator);
     }
 }

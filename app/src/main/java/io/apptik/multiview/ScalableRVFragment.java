@@ -32,10 +32,10 @@ import android.view.animation.LinearInterpolator;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
-import io.apptik.widget.multiview.animators.FlexiItemAnimator;
-import io.apptik.widget.multiview.animators.Providers;
-import io.apptik.widget.multiview.layoutmanagers.ScalableGridLayoutManager;
-import io.apptik.widget.multiview.scalablerecyclerview.ScalableRecyclerGridView;
+import io.apptik.multiview.animators.FlexiItemAnimator;
+import io.apptik.multiview.animators.Providers;
+import io.apptik.multiview.layoutmanagers.ScalableGridLayoutManager;
+import io.apptik.multiview.scalablerecyclerview.ScalableRecyclerGridView;
 
 
 /**

@@ -35,9 +35,9 @@ import android.view.animation.OvershootInterpolator;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
-import io.apptik.widget.multiview.common.Log;
-import io.apptik.widget.multiview.scrollers.BaseSmoothScroller;
-import io.apptik.widget.multiview.scrollers.FlexiSmoothScroller;
+import io.apptik.multiview.common.Log;
+import io.apptik.multiview.scrollers.BaseSmoothScroller;
+import io.apptik.multiview.scrollers.FlexiSmoothScroller;
 
 
 public class ScrollersFragment extends Fragment {

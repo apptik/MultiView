@@ -46,3 +46,5 @@ dependencies {
     compile rootProject.ext.supportRecyclerView
     compile project(':common')
 }
+
+apply from: 'https://raw.githubusercontent.com/djodjoni/gradle-mvn-push/master/gradle-mvn-push-android.gradle'

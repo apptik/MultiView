@@ -14,4 +14,13 @@
  * limitations under the License.
  */
 
-include ':app', ':layoutmanagers', ':adapters', ':animators', ':scrollers', ':decorations', ':galleryview', ':scalablerecyclerview', ':common', ':extras'
+include ':app',
+        ':layoutmanagers',
+        ':adapters',
+        ':animators',
+        ':scrollers',
+        ':decorations',
+        ':galleryview',
+        ':scalablerecyclerview',
+        ':common',
+        ':extras'

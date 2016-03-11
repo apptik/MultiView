@@ -31,7 +31,7 @@ import android.view.ViewGroup;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
-import io.apptik.widget.multiview.scalablerecyclerview.SharpGridScaler;
+import io.apptik.multiview.scalablerecyclerview.SharpGridScaler;
 
 
 /**

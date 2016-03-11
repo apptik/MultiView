@@ -21,12 +21,12 @@
              tools:context="io.apptik.multiview.BlankFragment">
 
 
-    <io.apptik.widget.multiview.scalablerecyclerview.ScalableRecyclerGridView
+    <io.apptik.multiview.scalablerecyclerview.ScalableRecyclerGridView
 
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-    </io.apptik.widget.multiview.scalablerecyclerview.ScalableRecyclerGridView>
+    </io.apptik.multiview.scalablerecyclerview.ScalableRecyclerGridView>
 </FrameLayout>

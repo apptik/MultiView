@@ -15,7 +15,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="io.apptik.widget.multiview.extras">
+          package="io.apptik.multiview.extras">
 
     <application/>
 

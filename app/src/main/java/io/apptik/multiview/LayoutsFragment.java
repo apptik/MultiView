@@ -32,9 +32,9 @@ import io.apptik.multiview.adapter.BasicImageRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
 import io.apptik.multiview.mock.MockData;
-import io.apptik.widget.multiview.layoutmanagers.SnapperLinearLayoutManager;
-import io.apptik.widget.multiview.layoutmanagers.ViewPagerLayoutManager;
-import io.apptik.widget.multiview.layoutmanagers.TouchChildPagerLayoutManager;
+import io.apptik.multiview.layoutmanagers.SnapperLinearLayoutManager;
+import io.apptik.multiview.layoutmanagers.ViewPagerLayoutManager;
+import io.apptik.multiview.layoutmanagers.TouchChildPagerLayoutManager;
 
 
 /**

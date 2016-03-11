@@ -21,12 +21,12 @@
              tools:context="io.apptik.multiview.BlankFragment">
 
 
-    <io.apptik.widget.multiview.galleryview.SimpleGalleryView
+    <io.apptik.multiview.galleryview.SimpleGalleryView
 
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
-    </io.apptik.widget.multiview.galleryview.SimpleGalleryView>
+    </io.apptik.multiview.galleryview.SimpleGalleryView>
 </FrameLayout>
