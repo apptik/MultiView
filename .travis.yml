@@ -1,0 +1,35 @@
+language: android
+
+jdk:
+  - oraclejdk8
+
+android:
+  components:
+    - tools
+    - build-tools-23.0.2
+    - android-23
+    - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-23
+
+script:
+  - ./gradlew ":$MODULE:build" ":$MODULE:uploadArchives"
+
+env:
+   matrix:
+     - MODULE=adapters
+     - MODULE=animators
+     - MODULE=decorations
+     - MODULE=extras
+     - MODULE=galleryview
+     - MODULE=layoutmanagers
+     - MODULE=scalablerecyclerview
+     - MODULE=scrollers
+
+notifications:
+  email: true
+
+sudo: false
+
+cache:
+   directories:
+        - $HOME/.gradle
