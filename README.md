@@ -1,5 +1,7 @@
 # MultiView
 
+[![Join the chat at https://gitter.im/apptik/MultiView](https://badges.gitter.im/apptik/MultiView.svg)](https://gitter.im/apptik/MultiView?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/apptik/MultiView.svg?branch=master)](https://travis-ci.org/apptik/MultiView)
 [![Join the chat at https://gitter.im/apptik/MultiView](https://badges.gitter.im/apptik/MultiView.svg)](https://gitter.im/apptik/MultiView?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
