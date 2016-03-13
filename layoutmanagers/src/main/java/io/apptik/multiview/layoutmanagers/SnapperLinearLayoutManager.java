@@ -252,6 +252,14 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             Log.d("onScrollStateChanged SETTLING");
             //check if we need to settle
             if (flingOneItemOnly && !adjusted) {
+                //Sometimes Dragging state can be skipped...
+                if(prevPos<0) {
+                    View prevView = getCenterItem();
+                    if (prevView != null) {
+                        prevView.getDrawingRect(prevRect);
+                        prevPos = mRecyclerView.getChildAdapterPosition(prevView);
+                    }
+                }
                 //we need to stop here
                 adjust();
             }
@@ -260,8 +268,6 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             //check if we still need to settle
             if (!adjusted) {
                 adjust();
-                prevPos = -1;
-                prevRect = new Rect();
             }
 
         }
@@ -276,12 +282,11 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
 
         //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the top in case of SNAP_START
-        int targetPosition = getCenterItemPosition();
+        int targetPosition ;
         targetPosition = prevPos;
         View currView = findViewByPosition(prevPos);
         //todo clean cuurView usage
         if (prevRect != null && flingOneItemOnly && currView !=null) {
-
             Log.d("adjust has mCurrView " + currView);
             if (canScrollHorizontally()) {
                 int spanX = currView.getLeft() - prevRect.left;
@@ -300,6 +305,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             }
         } else {
             Log.d("adjust no mCurrView just centering...");
+            targetPosition = getCenterItemPosition();
         }
 
         mSmoothScrollTargetPosition = targetPosition;
@@ -313,6 +319,9 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         if (mSmoothScrollTargetPosition != prevPos  && prevPos > -1) {
             onPositionChanged(prevPos, mSmoothScrollTargetPosition);
         }
+
+        prevPos = -1;
+        prevRect = new Rect();
     }
 
 

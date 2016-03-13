@@ -24,8 +24,11 @@ Downloads of the released versions are available in [Sonatype's `releases` repos
 
 Snapshots of the development versions are available in [Sonatype's `snapshots` repository][snap].
 
-Jus requires at minimum Java 7 or Android SDK 15.
+MultiView requires at minimum Java 7 or Android SDK 15.
 
+## Questions
+
+[StackOverflow with tag 'multiview-apptik' or 'apptik'](http://stackoverflow.com/questions/ask)
 
 ## Modules
 * [adapters][adapters] - Adapters for RecyclerView
