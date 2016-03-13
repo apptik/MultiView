@@ -24,6 +24,7 @@ env:
      - MODULE=layoutmanagers
      - MODULE=scalablerecyclerview
      - MODULE=scrollers
+     - MODULE=common
 
 notifications:
   email: true
