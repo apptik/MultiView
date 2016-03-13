@@ -18,6 +18,7 @@ package io.apptik.multiview.extras;
 
 import android.os.Build;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnItemTouchListener;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -34,9 +35,9 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
     ClickItemTouchListener(RecyclerView hostView) {
         mGestureDetector =
                 //new ItemClickGestureDetector(
-        new GestureDetectorCompat(
-                hostView.getContext(),
-                new ItemClickGestureListener(hostView));
+                new GestureDetectorCompat(
+                        hostView.getContext(),
+                        new ItemClickGestureListener(hostView));
     }
 
     private boolean isAttachedToWindow(RecyclerView hostView) {
@@ -73,27 +74,6 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
 
     abstract boolean performItemLongClick(RecyclerView parent, View view, int position, long id);
 
-//    private class ItemClickGestureDetector extends GestureDetectorCompat {
-//        private final ItemClickGestureListener mGestureListener;
-//
-//        public ItemClickGestureDetector(Context context, ItemClickGestureListener listener) {
-//            super(context, listener);
-//            mGestureListener = listener;
-//        }
-//
-//        @Override
-//        public boolean onTouchEvent(MotionEvent event) {
-//            final boolean handled = super.onTouchEvent(event);
-//
-//            final int action = event.getAction() & MotionEventCompat.ACTION_MASK;
-//            if (action == MotionEvent.ACTION_UP) {
-//                mGestureListener.dispatchSingleTapUpIfNeeded(event);
-//            }
-//
-//            return handled;
-//        }
-//    }
-
     private class ItemClickGestureListener extends SimpleOnGestureListener {
         private final RecyclerView mHostView;
         private View mTargetChild;
@@ -102,14 +82,15 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
             mHostView = hostView;
         }
 
-        public void dispatchSingleTapUpIfNeeded(MotionEvent event) {
+        public boolean dispatchSingleTapUpIfNeeded(MotionEvent event) {
             // When the long press hook is called but the long press listener
             // returns false, the target child will be left around to be
             // handled later. In this case, we should still treat the gesture
             // as potential item click.
             if (mTargetChild != null) {
-                onSingleTapConfirmed(event);
+                return onSingleTapConfirmed(event);
             }
+            return false;
         }
 
         @Override
@@ -122,9 +103,9 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
                 final int position = mHostView.getChildLayoutPosition(mTargetChild);
                 final long id = mHostView.getAdapter().getItemId(position);
                 handled = performItemClick(mHostView, mTargetChild, position, id);
-
-                mTargetChild = null;
             }
+
+            mTargetChild = null;
 
             return handled;
         }
@@ -171,7 +152,16 @@ abstract class ClickItemTouchListener implements OnItemTouchListener {
                 mTargetChild.setPressed(false);
                 mTargetChild = null;
             } else {
-                dispatchSingleTapUpIfNeeded(event);
+                mTargetChild.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        final int action = event.getAction() & MotionEventCompat.ACTION_MASK;
+                        if (action == MotionEvent.ACTION_UP) {
+                            return dispatchSingleTapUpIfNeeded(event);
+                        }
+                        return false;
+                    }
+                });
             }
         }
     }
