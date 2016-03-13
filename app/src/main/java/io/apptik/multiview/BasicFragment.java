@@ -33,6 +33,8 @@ import android.view.ViewGroup;
 import io.apptik.multiview.adapter.BasicImageRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicMixedRecyclerAdapter;
 import io.apptik.multiview.adapter.BasicRecyclerAdapter;
+import io.apptik.multiview.common.Log;
+import io.apptik.multiview.extras.ItemClickSupport;
 import io.apptik.multiview.mock.MockData;
 
 
@@ -68,6 +70,23 @@ public class BasicFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recyclerAdapter);
+
+        ItemClickSupport itemClickSupport = ItemClickSupport.addTo(recyclerView);
+        itemClickSupport.setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecyclerView parent, View view, int position, long id) {
+                Log.d("Item Clicked: " + position + " :: " + id);
+            }
+        });
+        itemClickSupport.setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(RecyclerView parent, View view, int position, long id) {
+                Log.d("Item Long Clicked: " + position + " :: " + id);
+                return false;
+            }
+        });
+
+
         //recyclerView.setAdapter(recyclerMixedAdapter);
         return v;
     }
