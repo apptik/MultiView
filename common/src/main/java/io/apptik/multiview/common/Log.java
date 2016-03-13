@@ -24,7 +24,14 @@ public class Log {
 
     private static final int CALL_STACK_INDEX = 5;
     private static final Pattern ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$");
-    private static final boolean DEBUG = true;
+    private static boolean DEBUG = false;
+
+    private static void on() {
+        DEBUG = true;
+    }
+    private static void off() {
+        DEBUG = false;
+    }
     public static void v(String msg) {
         if(DEBUG) {
             android.util.Log.v(getTag(), msg);
