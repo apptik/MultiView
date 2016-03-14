@@ -18,7 +18,6 @@ package io.apptik.multiview.layoutmanagers;
 
 import android.content.Context;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
@@ -42,18 +41,13 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
     protected RecyclerView mRecyclerView = null;
 
-    private RecyclerView.SmoothScroller smoothScroller = null;
-    private boolean flingOneItemOnly = false;
+    protected RecyclerView.SmoothScroller smoothScroller = null;
 
     private boolean showOneItemOnly = false;
     private int snapMethod = SNAP_CENTER;
 
     volatile boolean adjusted = false;
-   // int mLeft;
-   // int mTop;
-    private int mSmoothScrollTargetPosition = -1;
-    private float mTriggerOffset = 0.05f;
-    Rect prevRect = new Rect();
+
     int prevPos=-1;
 
     public SnapperLinearLayoutManager(Context context) {
@@ -163,16 +157,6 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         return this;
     }
 
-    public boolean isFlingOneItemOnly() {
-        return flingOneItemOnly;
-    }
-
-    public SnapperLinearLayoutManager withFlingOneItemOnly(boolean flingOneItemOnly) {
-        this.flingOneItemOnly = flingOneItemOnly;
-        if (flingOneItemOnly) this.showOneItemOnly = true;
-        return this;
-    }
-
     @Override
     public void onAttachedToWindow(RecyclerView view) {
         super.onAttachedToWindow(view);
@@ -231,38 +215,16 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     }
 
 
+
     @Override
     public void onScrollStateChanged(int newState) {
-        super.onScrollStateChanged(newState);
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
             Log.d("onScrollStateChanged DRAGGING");
             //reset adjusted
             adjusted = false;
-            View prevView = getCenterItem();
-            prevPos = mRecyclerView.getChildAdapterPosition(prevView);
-
-            //in case of trigger we need to know where we come from
-            if (flingOneItemOnly) {
-                if (prevView != null) {
-                    prevView.getDrawingRect(prevRect);
-                }
-            }
-
+            prevPos = getCenterItemPosition();
         } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
             Log.d("onScrollStateChanged SETTLING");
-            //check if we need to settle
-            if (flingOneItemOnly && !adjusted) {
-                //Sometimes Dragging state can be skipped...
-                if(prevPos<0) {
-                    View prevView = getCenterItem();
-                    if (prevView != null) {
-                        prevView.getDrawingRect(prevRect);
-                        prevPos = mRecyclerView.getChildAdapterPosition(prevView);
-                    }
-                }
-                //we need to stop here
-                adjust();
-            }
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
             Log.d("onScrollStateChanged IDLE");
             //check if we still need to settle
@@ -273,55 +235,29 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         }
     }
 
-    protected synchronized void adjust() {
-        if (smoothScroller != null && (smoothScroller.isRunning()) || isSmoothScrolling()) {
+    protected void adjust() {
+        if (adjusted || (smoothScroller != null && (smoothScroller.isRunning())) ||
+                isSmoothScrolling()) {
             return;
         }
         adjusted = true;
         Log.d("mPositionBeforeAdjust:" + prevPos);
 
-
+        Log.d("adjust just centering...");
         //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the top in case of SNAP_START
-        int targetPosition ;
-        targetPosition = prevPos;
-        View currView = findViewByPosition(prevPos);
-        //todo clean cuurView usage
-        if (prevRect != null && flingOneItemOnly && currView !=null) {
-            Log.d("adjust has mCurrView " + currView);
-            if (canScrollHorizontally()) {
-                int spanX = currView.getLeft() - prevRect.left;
-                if (spanX > currView.getWidth() * mTriggerOffset) {
-                    targetPosition--;
-                } else if (spanX <= currView.getWidth() * -mTriggerOffset) {
-                    targetPosition++;
-                }
-            } else {
-                int spanY = currView.getTop() - prevRect.top;
-                if (spanY > currView.getHeight() * mTriggerOffset) {
-                    targetPosition--;
-                } else if (spanY <= currView.getHeight() * -mTriggerOffset) {
-                    targetPosition++;
-                }
-            }
-        } else {
-            Log.d("adjust no mCurrView just centering...");
-            targetPosition = getCenterItemPosition();
+        int smoothScrollTargetPosition = getCenterItemPosition();
+
+        if (smoothScrollTargetPosition != prevPos && prevPos > -1) {
+            onPositionChanging(prevPos, smoothScrollTargetPosition);
         }
 
-        mSmoothScrollTargetPosition = targetPosition;
+        smoothAdjustTo(smoothScrollTargetPosition);
 
-        if (mSmoothScrollTargetPosition != prevPos && prevPos > -1) {
-            onPositionChanging(prevPos, mSmoothScrollTargetPosition);
-        }
-
-        smoothAdjustTo(mSmoothScrollTargetPosition);
-
-        if (mSmoothScrollTargetPosition != prevPos  && prevPos > -1) {
-            onPositionChanged(prevPos, mSmoothScrollTargetPosition);
+        if (smoothScrollTargetPosition != prevPos  && prevPos > -1) {
+            onPositionChanged(prevPos, smoothScrollTargetPosition);
         }
 
         prevPos = -1;
-        prevRect = new Rect();
     }
 
 

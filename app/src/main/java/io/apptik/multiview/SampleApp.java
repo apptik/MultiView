@@ -19,6 +19,7 @@ package io.apptik.multiview;
 import android.app.Application;
 
 import io.apptik.multiview.common.BitmapLruCache;
+import io.apptik.multiview.common.Log;
 
 
 public class SampleApp extends Application {
@@ -27,6 +28,7 @@ public class SampleApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.on();
 
     }
 

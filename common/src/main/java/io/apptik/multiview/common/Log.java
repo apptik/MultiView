@@ -26,10 +26,10 @@ public class Log {
     private static final Pattern ANONYMOUS_CLASS = Pattern.compile("(\\$\\d+)+$");
     private static boolean DEBUG = false;
 
-    private static void on() {
+    public static void on() {
         DEBUG = true;
     }
-    private static void off() {
+    public static void off() {
         DEBUG = false;
     }
     public static void v(String msg) {
