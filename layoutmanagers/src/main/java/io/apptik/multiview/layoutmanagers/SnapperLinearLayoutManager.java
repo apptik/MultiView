@@ -42,6 +42,7 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
     protected RecyclerView mRecyclerView = null;
 
     protected RecyclerView.SmoothScroller smoothScroller = null;
+    protected SmoothScrollerFactory smoothScrollerFactory = new DefaultSmoothScrollerFactory();
 
     private boolean showOneItemOnly = false;
     private int snapMethod = SNAP_CENTER;
@@ -90,69 +91,15 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         return nlp;
     }
 
-    private SnapperLinearLayoutManager withAdjustSmoothScroller(RecyclerView.SmoothScroller
-                                                                        smoothScroller) {
-        this.smoothScroller = smoothScroller;
+    private SnapperLinearLayoutManager withAdjustSmoothScrollerFactory(
+            SmoothScrollerFactory smoothScrollerFactory) {
+        this.smoothScrollerFactory = smoothScrollerFactory;
         return this;
     }
 
     private SnapperLinearLayoutManager withAdjustScrollSpeed(float millisecondsPerInch) {
         this.millisecondsPerInch = millisecondsPerInch;
         return this;
-    }
-
-    private void setDefaultSmoothScroller() {
-        smoothScroller =
-                new LinearSmoothScroller(mRecyclerView.getContext()) {
-                    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                        return millisecondsPerInch / displayMetrics.densityDpi;
-                    }
-
-                    @Override
-                    public PointF computeScrollVectorForPosition(int targetPosition) {
-                        return SnapperLinearLayoutManager.this
-                                .computeScrollVectorForPosition(targetPosition);
-                    }
-
-                    @Override
-                    public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int
-                            boxEnd, int
-                                                        snapPreference) {
-                        Log.d("calculateDtToFit " + viewStart + " : " + viewEnd + " : " +
-                                boxStart + " : " + boxEnd + " : ");
-                        switch (snapMethod) {
-                            case SNAP_START:
-                                return boxStart - viewStart;
-                            case SNAP_END:
-                                return boxEnd - viewEnd;
-                            case SNAP_CENTER:
-                                int boxMid = boxStart + (boxEnd - boxStart) / 2;
-                                int viewMid = viewStart + (viewEnd - viewStart) / 2;
-                                final int dt1 = boxMid - viewMid;
-                                Log.d("calculateDtToFit2 " + boxMid + " : " + viewMid + " : " +
-                                        dt1);
-                                return dt1;
-
-                            case SNAP_NONE:
-                                final int dtStart = boxStart - viewStart;
-                                if (dtStart > 0) {
-                                    return dtStart;
-                                }
-                                final int dtEnd = boxEnd - viewEnd;
-                                if (dtEnd < 0) {
-                                    return dtEnd;
-                                }
-                                break;
-                            default:
-                                throw new IllegalArgumentException("snap preference should be one" +
-                                        " of the"
-                                        + " constants defined in SnapperLinearLayoutManager, " +
-                                        "starting with SNAP_");
-                        }
-                        return 0;
-                    }
-
-                };
     }
 
     public boolean isShowOneItemOnly() {
@@ -164,11 +111,19 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         return this;
     }
 
+    public int getSnapMethod() {
+        return snapMethod;
+    }
+
+    public SnapperLinearLayoutManager withSnapMethod(int snapMethod) {
+        this.snapMethod = snapMethod;
+        return this;
+    }
+
     @Override
     public void onAttachedToWindow(RecyclerView view) {
         super.onAttachedToWindow(view);
         mRecyclerView = view;
-        setDefaultSmoothScroller();
     }
 
     @Override
@@ -282,20 +237,17 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         Log.d("smoothAdjustTo position: " + targetPosition);
         int safeTargetPosition = safeTargetPosition(targetPosition, getItemCount());
         Log.d("smoothAdjustTo safe position: " + safeTargetPosition);
-        if ((smoothScroller != null && smoothScroller.isRunning()) || isSmoothScrolling()) return;
-        if (smoothScroller == null) {
+        if ((smoothScroller != null && smoothScroller.isRunning() && smoothScroller
+                .getTargetPosition() != safeTargetPosition) || isSmoothScrolling())
+            return;
+        if (smoothScrollerFactory == null) {
             Log.d("smoothAdjustTo smoothScroller is null so we use default smooth scrolling");
             smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), safeTargetPosition);
         } else {
-            if (smoothScroller.getTargetPosition() != safeTargetPosition) {
-                Log.d("smoothAdjustTo smoothScroller will start: " + smoothScroller);
-                setDefaultSmoothScroller();
-                smoothScroller.setTargetPosition(safeTargetPosition);
-                startSmoothScroll(smoothScroller);
-            } else {
-                Log.d("smoothAdjustTo smoothScroller already targeting position: " +
-                        safeTargetPosition);
-            }
+            smoothScroller = smoothScrollerFactory.getSmoothScroller();
+            Log.d("smoothAdjustTo smoothScroller will start: " + smoothScroller);
+            smoothScroller.setTargetPosition(safeTargetPosition);
+            startSmoothScroll(smoothScroller);
         }
     }
 
@@ -370,6 +322,66 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
         public int getOrigWidth() {
             return origWidth;
+        }
+    }
+
+    public interface SmoothScrollerFactory {
+        RecyclerView.SmoothScroller getSmoothScroller();
+    }
+
+    private class DefaultSmoothScrollerFactory implements SmoothScrollerFactory {
+        @Override
+        public RecyclerView.SmoothScroller getSmoothScroller() {
+            return new LinearSmoothScroller(mRecyclerView.getContext()) {
+                protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                    return millisecondsPerInch / displayMetrics.densityDpi;
+                }
+
+                @Override
+                public PointF computeScrollVectorForPosition(int targetPosition) {
+                    return SnapperLinearLayoutManager.this
+                            .computeScrollVectorForPosition(targetPosition);
+                }
+
+                @Override
+                public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int
+                        boxEnd, int
+                                                    snapPreference) {
+                    Log.d("calculateDtToFit " + viewStart + " : " + viewEnd + " : " +
+                            boxStart + " : " + boxEnd + " : ");
+                    switch (snapMethod) {
+                        case SNAP_START:
+                            return boxStart - viewStart;
+                        case SNAP_END:
+                            return boxEnd - viewEnd;
+                        case SNAP_CENTER:
+                            int boxMid = boxStart + (boxEnd - boxStart) / 2;
+                            int viewMid = viewStart + (viewEnd - viewStart) / 2;
+                            final int dt1 = boxMid - viewMid;
+                            Log.d("calculateDtToFit2 " + boxMid + " : " + viewMid + " : " +
+                                    dt1);
+                            return dt1;
+
+                        case SNAP_NONE:
+                            final int dtStart = boxStart - viewStart;
+                            if (dtStart > 0) {
+                                return dtStart;
+                            }
+                            final int dtEnd = boxEnd - viewEnd;
+                            if (dtEnd < 0) {
+                                return dtEnd;
+                            }
+                            break;
+                        default:
+                            throw new IllegalArgumentException("snap preference should be one" +
+                                    " of the"
+                                    + " constants defined in SnapperLinearLayoutManager, " +
+                                    "starting with SNAP_");
+                    }
+                    return 0;
+                }
+
+            };
         }
     }
 }
