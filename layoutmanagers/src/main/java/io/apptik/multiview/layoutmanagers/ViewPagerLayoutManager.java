@@ -195,15 +195,7 @@ public class ViewPagerLayoutManager extends SnapperLinearLayoutManager {
 
         int smoothScrollTargetPosition = targetPosition;
 
-        if (smoothScrollTargetPosition != prevPos && prevPos > -1) {
-            onPositionChanging(prevPos, smoothScrollTargetPosition);
-        }
-
-        smoothAdjustTo(smoothScrollTargetPosition);
-
-        if (smoothScrollTargetPosition != prevPos && prevPos > -1) {
-            onPositionChanged(prevPos, smoothScrollTargetPosition);
-        }
+        doScroll(prevPos, smoothScrollTargetPosition);
 
         prevPos = -1;
     }

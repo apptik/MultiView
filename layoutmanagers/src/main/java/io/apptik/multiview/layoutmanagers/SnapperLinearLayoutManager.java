@@ -48,14 +48,15 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
     volatile boolean adjusted = false;
 
-    int prevPos=-1;
+    int prevPos = -1;
 
     public SnapperLinearLayoutManager(Context context) {
         super(context);
 
     }
 
-    public SnapperLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public SnapperLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int
+            defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
     }
@@ -89,7 +90,8 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         return nlp;
     }
 
-    private SnapperLinearLayoutManager withAdjustSmoothScroller(RecyclerView.SmoothScroller smoothScroller) {
+    private SnapperLinearLayoutManager withAdjustSmoothScroller(RecyclerView.SmoothScroller
+                                                                        smoothScroller) {
         this.smoothScroller = smoothScroller;
         return this;
     }
@@ -113,9 +115,11 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                     }
 
                     @Override
-                    public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int
-                            snapPreference) {
-                        Log.d("calculateDtToFit " + viewStart + " : " + viewEnd + " : " + boxStart + " : " + boxEnd + " : ");
+                    public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int
+                            boxEnd, int
+                                                        snapPreference) {
+                        Log.d("calculateDtToFit " + viewStart + " : " + viewEnd + " : " +
+                                boxStart + " : " + boxEnd + " : ");
                         switch (snapMethod) {
                             case SNAP_START:
                                 return boxStart - viewStart;
@@ -125,7 +129,8 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                                 int boxMid = boxStart + (boxEnd - boxStart) / 2;
                                 int viewMid = viewStart + (viewEnd - viewStart) / 2;
                                 final int dt1 = boxMid - viewMid;
-                                Log.d("calculateDtToFit2 " + boxMid + " : " + viewMid + " : " + dt1);
+                                Log.d("calculateDtToFit2 " + boxMid + " : " + viewMid + " : " +
+                                        dt1);
                                 return dt1;
 
                             case SNAP_NONE:
@@ -139,8 +144,10 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
                                 }
                                 break;
                             default:
-                                throw new IllegalArgumentException("snap preference should be one of the"
-                                        + " constants defined in SnapperLinearLayoutManager, starting with SNAP_");
+                                throw new IllegalArgumentException("snap preference should be one" +
+                                        " of the"
+                                        + " constants defined in SnapperLinearLayoutManager, " +
+                                        "starting with SNAP_");
                         }
                         return 0;
                     }
@@ -176,12 +183,12 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         if (showOneItemOnly) {
             if (canScrollHorizontally()) {
                 lp.width = getWidth();
-                if(lp.height>0) {
+                if (lp.height > 0) {
                     lp.height = getHeight();
                 }
             } else {
                 lp.height = getHeight();
-                if(lp.width>0) {
+                if (lp.width > 0) {
                     lp.width = getWidth();
                 }
             }
@@ -202,8 +209,10 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
 
 
     public View getCenterItem() {
-        int middleX = (int) (mRecyclerView.getX() + (mRecyclerView.getWidth() * mRecyclerView.getScaleX()) / 2);
-        int middleY = (int) (mRecyclerView.getY() + (mRecyclerView.getHeight() * mRecyclerView.getScaleY()) / 2);
+        int middleX = (int) (mRecyclerView.getX() + (mRecyclerView.getWidth() * mRecyclerView
+                .getScaleX()) / 2);
+        int middleY = (int) (mRecyclerView.getY() + (mRecyclerView.getHeight() * mRecyclerView
+                .getScaleY()) / 2);
         View v = mRecyclerView.findChildViewUnder(middleX, middleY);
         return v;
     }
@@ -213,7 +222,6 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         int curPosition = mRecyclerView.getChildAdapterPosition(v);
         return curPosition;
     }
-
 
 
     @Override
@@ -244,20 +252,29 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
         Log.d("mPositionBeforeAdjust:" + prevPos);
 
         Log.d("adjust just centering...");
-        //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the top in case of SNAP_START
+        //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the
+        // top in case of SNAP_START
         int smoothScrollTargetPosition = getCenterItemPosition();
 
-        if (smoothScrollTargetPosition != prevPos && prevPos > -1) {
-            onPositionChanging(prevPos, smoothScrollTargetPosition);
-        }
-
-        smoothAdjustTo(smoothScrollTargetPosition);
-
-        if (smoothScrollTargetPosition != prevPos  && prevPos > -1) {
-            onPositionChanged(prevPos, smoothScrollTargetPosition);
-        }
+        doScroll(prevPos, smoothScrollTargetPosition);
 
         prevPos = -1;
+    }
+
+    protected void doScroll(int prevPos, int targetPos) {
+        if (targetPos != prevPos && prevPos > -1) {
+            onPositionChanging(prevPos, targetPos);
+        }
+        //we still may need to move even if the position has not change as there could be small
+        // displacement
+        // within the threshold
+        if (prevPos > -1) {
+            smoothAdjustTo(targetPos);
+        }
+
+        if (targetPos != prevPos && prevPos > -1) {
+            onPositionChanged(prevPos, targetPos);
+        }
     }
 
 
@@ -270,13 +287,14 @@ public class SnapperLinearLayoutManager extends LinearLayoutManager {
             Log.d("smoothAdjustTo smoothScroller is null so we use default smooth scrolling");
             smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), safeTargetPosition);
         } else {
-            if(smoothScroller.getTargetPosition() != safeTargetPosition) {
+            if (smoothScroller.getTargetPosition() != safeTargetPosition) {
                 Log.d("smoothAdjustTo smoothScroller will start: " + smoothScroller);
                 setDefaultSmoothScroller();
                 smoothScroller.setTargetPosition(safeTargetPosition);
                 startSmoothScroll(smoothScroller);
             } else {
-                Log.d("smoothAdjustTo smoothScroller already targeting position: " + safeTargetPosition);
+                Log.d("smoothAdjustTo smoothScroller already targeting position: " +
+                        safeTargetPosition);
             }
         }
     }
