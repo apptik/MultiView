@@ -154,6 +154,5 @@ public class ScrollersFragment extends Fragment {
         Log.d("scrolling from/to: " + pos + "/" + targetPos);
         smoothScroller.setTargetPosition(targetPos);
         recyclerView.getLayoutManager().startSmoothScroll(smoothScroller);
-
     }
 }
