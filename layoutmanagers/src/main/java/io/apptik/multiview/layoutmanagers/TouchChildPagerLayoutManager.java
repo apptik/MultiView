@@ -5,14 +5,16 @@ import android.content.Context;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
     private volatile MotionEvent lastTouchEvent;
     private int dOffset = 0;
-    private static final int TRIGG = 10;
+    private static final float TRIGG = 0.2f;
 
+    private float trigg = TRIGG;
 
     public TouchChildPagerLayoutManager(Context context) {
         super(context);
@@ -26,10 +28,27 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
         super(context, orientation, reverseLayout);
     }
 
+    /**
+     * @return the trigger offset in inches needed to initiate movement.
+     * Used to give priority to other touch events.
+     */
+    public float getInitTriggerOffset() {
+        return trigg;
+    }
+
+    /**
+     * @param triggerOffset the trigger offset in inches needed to initiate movement.
+     * Used to give priority to other touch events.
+     */
+    public TouchChildPagerLayoutManager withInitTriggerOffset(float triggerOffset) {
+        this.trigg = triggerOffset;
+        return this;
+    }
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-
+        DisplayMetrics dm = mRecyclerView.getResources().getDisplayMetrics();
+        int triggPx = Math.round(dm.xdpi*trigg);
         final int layoutDirection = dx > 0 ? 1 : -1;
         View currView = getCurrentPageView();
         //check if we need to work with the child view
@@ -48,7 +67,7 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
                 adjust();
             }
             return 0;
-        } else if (Math.abs(dOffset + dx) < TRIGG &&
+        } else if (Math.abs(dOffset + dx) < triggPx &&
                 mRecyclerView != null && currView != null &&
                 currView.getLeft() == 0 && currView.getRight() == currView.getWidth()
                 ) {
@@ -69,6 +88,8 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         final int layoutDirection = dy > 0 ? 1 : -1;
+        DisplayMetrics dm = mRecyclerView.getResources().getDisplayMetrics();
+        int triggPx = Math.round(dm.ydpi*trigg);
         View currView = getCurrentPageView();
         //check if we need to work with the child view
         if (mRecyclerView != null && currView != null && currView.canScrollVertically(layoutDirection)
@@ -86,7 +107,7 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
                 adjust();
             }
             return 0;
-        } else if (Math.abs(dOffset + dy) < TRIGG &&
+        } else if (Math.abs(dOffset + dy) < triggPx &&
                 mRecyclerView != null && currView != null &&
                 currView.getTop() == 0 && currView.getBottom() == currView.getHeight()
                 ) {
