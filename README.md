@@ -12,12 +12,12 @@ Find [the latest JARs][mvn] or grab via Maven:
 <dependency>
   <groupId>io.apptik.multiview</groupId>
   <artifactId>XXX</artifactId>
-  <version>x.x.x</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.multiview:XXX:x.x.x'
+compile 'io.apptik.multiview:XXX:0.0.3'
 ```
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
