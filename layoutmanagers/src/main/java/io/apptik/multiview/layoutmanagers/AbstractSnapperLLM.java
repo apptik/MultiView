@@ -13,7 +13,8 @@ import android.view.ViewGroup;
 
 import io.apptik.multiview.common.Log;
 
-public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extends LinearLayoutManager {
+public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extends
+        LinearLayoutManager {
 
     public static final int SNAP_START = 1;
     public static final int SNAP_END = 2;
@@ -23,7 +24,7 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
 
     private float millisecondsPerInch = DEFAULT_MILLISECONDS_PER_INCH;
 
-    protected RecyclerView mRecyclerView = null;
+    protected RecyclerView recyclerView = null;
 
     protected RecyclerView.SmoothScroller smoothScroller = null;
     protected SmoothScrollerFactory smoothScrollerFactory = new DefaultSmoothScrollerFactory();
@@ -34,19 +35,26 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
     volatile boolean adjusted = false;
 
     int prevPos = -1;
+    int lastPos = 0;
+    private Context ctx;
 
 
     public AbstractSnapperLLM(Context context) {
         super(context);
+        ctx = context;
     }
 
-    public AbstractSnapperLLM(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AbstractSnapperLLM(Context context, AttributeSet attrs, int defStyleAttr, int
+            defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        ctx = context;
     }
 
     public AbstractSnapperLLM(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
+        ctx = context;
     }
+
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         LayoutParams nlp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -103,13 +111,13 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
     @Override
     public void onAttachedToWindow(RecyclerView view) {
         super.onAttachedToWindow(view);
-        mRecyclerView = view;
+        recyclerView = view;
     }
 
     @Override
     public void onDetachedFromWindow(RecyclerView view, RecyclerView.Recycler recycler) {
         super.onDetachedFromWindow(view, recycler);
-        mRecyclerView = null;
+        recyclerView = null;
     }
 
     @Override
@@ -144,17 +152,23 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
 
 
     public View getCenterItem() {
-        int middleX = (int) (mRecyclerView.getX() + (mRecyclerView.getWidth() * mRecyclerView
-                .getScaleX()) / 2);
-        int middleY = (int) (mRecyclerView.getY() + (mRecyclerView.getHeight() * mRecyclerView
-                .getScaleY()) / 2);
-        View v = mRecyclerView.findChildViewUnder(middleX, middleY);
+        View v = null;
+        if (recyclerView != null) {
+            int middleX = (int) (recyclerView.getX() + (recyclerView.getWidth() * recyclerView
+                    .getScaleX()) / 2);
+            int middleY = (int) (recyclerView.getY() + (recyclerView.getHeight() * recyclerView
+                    .getScaleY()) / 2);
+            v = recyclerView.findChildViewUnder(middleX, middleY);
+        }
         return v;
     }
 
     public int getCenterItemPosition() {
+        int curPosition = -1;
         View v = getCenterItem();
-        int curPosition = mRecyclerView.getChildAdapterPosition(v);
+        if (recyclerView != null && v != null) {
+            curPosition = recyclerView.getChildAdapterPosition(v);
+        }
         return curPosition;
     }
 
@@ -179,10 +193,16 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
     }
 
     protected void adjust() {
-        if (adjusted || (smoothScroller != null && (smoothScroller.isRunning())) ||
-                isSmoothScrolling()) {
+        if (adjusted) {
+            Log.d("already adjusted");
             return;
         }
+
+        if ((smoothScroller != null && (smoothScroller.isRunning())) || isSmoothScrolling()) {
+            Log.d("already scrolling");
+            return;
+        }
+
         adjusted = true;
         Log.d("mPositionBeforeAdjust:" + prevPos);
 
@@ -222,12 +242,16 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
             return;
         if (smoothScrollerFactory == null) {
             Log.d("smoothAdjustTo smoothScroller is null so we use default smooth scrolling");
-            smoothScrollToPosition(mRecyclerView, new RecyclerView.State(), safeTargetPosition);
+            if(recyclerView!=null) {
+                smoothScrollToPosition(recyclerView, new RecyclerView.State(), safeTargetPosition);
+                lastPos = safeTargetPosition;
+            }
         } else {
             smoothScroller = smoothScrollerFactory.getSmoothScroller();
             Log.d("smoothAdjustTo smoothScroller will start: " + smoothScroller);
             smoothScroller.setTargetPosition(safeTargetPosition);
             startSmoothScroll(smoothScroller);
+            lastPos = safeTargetPosition;
         }
     }
 
@@ -244,6 +268,7 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
     @Override
     public void scrollToPosition(int position) {
         super.scrollToPosition(position);
+        lastPos = position;
     }
 
     protected void onPositionChanging(int currPos, int newPos) {
@@ -312,7 +337,8 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
     private class DefaultSmoothScrollerFactory implements SmoothScrollerFactory {
         @Override
         public RecyclerView.SmoothScroller getSmoothScroller() {
-            return new LinearSmoothScroller(mRecyclerView.getContext()) {
+
+            return new LinearSmoothScroller(ctx) {
                 protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
                     return millisecondsPerInch / displayMetrics.densityDpi;
                 }

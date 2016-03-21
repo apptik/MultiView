@@ -89,15 +89,23 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
 
 
     public void goToNext() {
-        smoothAdjustTo(getCenterItemPosition() + 1);
+        if(recyclerView!=null) {
+            smoothAdjustTo(getCurrentPage() + 1);
+        }
     }
 
     public void goToPrev() {
-        smoothAdjustTo(getCenterItemPosition() - 1);
+        if(recyclerView!=null) {
+            smoothAdjustTo(getCurrentPage() - 1);
+        }
     }
 
     public int getCurrentPage() {
-        return getCenterItemPosition();
+        int pos = getCenterItemPosition();
+        if(pos<0) {
+            return lastPos;
+        }
+        return pos;
     }
 
     public View getCurrentPageView() {
@@ -134,7 +142,7 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
             adjusted = false;
             //just in case
             adjustOnScroll = false;
-            prevPos = getCenterItemPosition();
+            prevPos = getCurrentPage();
             View currView = findViewByPosition(prevPos);
             if (currView != null) {
                 vx = currView.getWidth();
@@ -151,9 +159,13 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
 
     @Override
     protected void adjust() {
-        if (adjusted || (smoothScroller != null && (smoothScroller.isRunning())) ||
-                isSmoothScrolling()
-                ) {
+        if (adjusted) {
+            Log.d("already adjusted");
+            return;
+        }
+
+        if ((smoothScroller != null && (smoothScroller.isRunning())) || isSmoothScrolling()) {
+            Log.d("already scrolling");
             return;
         }
 

@@ -14,18 +14,27 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
     private int dOffset = 0;
     private static final float TRIGG = 0.2f;
 
-    private float trigg = TRIGG;
+    private float trigg;
+    int triggPx;
+    int triggPy;
+    private Context ctx;
 
     public TouchChildPagerLayoutManager(Context context) {
         super(context);
+        ctx = context;
+        withInitTriggerOffset(TRIGG);
     }
 
     public TouchChildPagerLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        ctx = context;
+        withInitTriggerOffset(TRIGG);
     }
 
     public TouchChildPagerLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
+        ctx = context;
+        withInitTriggerOffset(TRIGG);
     }
 
     /**
@@ -42,17 +51,18 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
      */
     public TouchChildPagerLayoutManager withInitTriggerOffset(float triggerOffset) {
         this.trigg = triggerOffset;
+        DisplayMetrics dm = ctx.getResources().getDisplayMetrics();
+        triggPx = Math.round(dm.xdpi*trigg);
+        triggPy = Math.round(dm.ydpi*trigg);
         return this;
     }
 
     @Override
     public int scrollHorizontallyBy(int dx, RecyclerView.Recycler recycler, RecyclerView.State state) {
-        DisplayMetrics dm = mRecyclerView.getResources().getDisplayMetrics();
-        int triggPx = Math.round(dm.xdpi*trigg);
         final int layoutDirection = dx > 0 ? 1 : -1;
         View currView = getCurrentPageView();
         //check if we need to work with the child view
-        if (mRecyclerView != null && currView != null && currView.canScrollHorizontally(layoutDirection)
+        if (recyclerView != null && currView != null && currView.canScrollHorizontally(layoutDirection)
                 && ((layoutDirection == 1 && currView.getLeft() <= 0) ||
                 (layoutDirection == -1 && currView.getRight() >= currView.getWidth()))
                 ) {
@@ -61,14 +71,14 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
                 currView.dispatchTouchEvent(lastTouchEvent);
                 lastTouchEvent = null;
             }
-            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_NEVER);
+            ViewCompat.setOverScrollMode(recyclerView, ViewCompat.OVER_SCROLL_NEVER);
 
             if ((layoutDirection == 1 && currView.getLeft() < 0) || (layoutDirection == -1 && currView.getRight() > currView.getWidth())) {
                 adjust();
             }
             return 0;
         } else if (Math.abs(dOffset + dx) < triggPx &&
-                mRecyclerView != null && currView != null &&
+                recyclerView != null && currView != null &&
                 currView.getLeft() == 0 && currView.getRight() == currView.getWidth()
                 ) {
             dOffset += dx;
@@ -76,11 +86,11 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
                 currView.dispatchTouchEvent(lastTouchEvent);
                 lastTouchEvent = null;
             }
-            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_NEVER);
+            ViewCompat.setOverScrollMode(recyclerView, ViewCompat.OVER_SCROLL_NEVER);
             return 0;
         } else {
             dOffset = 0;
-            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_ALWAYS);
+            ViewCompat.setOverScrollMode(recyclerView, ViewCompat.OVER_SCROLL_ALWAYS);
             return super.scrollHorizontallyBy(dx, recycler, state);
         }
     }
@@ -88,11 +98,9 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
     @Override
     public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
         final int layoutDirection = dy > 0 ? 1 : -1;
-        DisplayMetrics dm = mRecyclerView.getResources().getDisplayMetrics();
-        int triggPx = Math.round(dm.ydpi*trigg);
         View currView = getCurrentPageView();
         //check if we need to work with the child view
-        if (mRecyclerView != null && currView != null && currView.canScrollVertically(layoutDirection)
+        if (recyclerView != null && currView != null && currView.canScrollVertically(layoutDirection)
                 && ((layoutDirection == 1 && currView.getTop() <= 0) ||
                 (layoutDirection == -1 && currView.getBottom() >= currView.getHeight()))
                 ) {
@@ -101,14 +109,14 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
                 currView.dispatchTouchEvent(lastTouchEvent);
                 lastTouchEvent = null;
             }
-            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_NEVER);
+            ViewCompat.setOverScrollMode(recyclerView, ViewCompat.OVER_SCROLL_NEVER);
             if ((layoutDirection == 1 && currView.getTop() < 0) ||
                     (layoutDirection == -1 && currView.getBottom() > currView.getHeight())) {
                 adjust();
             }
             return 0;
-        } else if (Math.abs(dOffset + dy) < triggPx &&
-                mRecyclerView != null && currView != null &&
+        } else if (Math.abs(dOffset + dy) < triggPy &&
+                recyclerView != null && currView != null &&
                 currView.getTop() == 0 && currView.getBottom() == currView.getHeight()
                 ) {
             dOffset += dy;
@@ -116,11 +124,11 @@ public class TouchChildPagerLayoutManager extends ViewPagerLayoutManager {
                 currView.dispatchTouchEvent(lastTouchEvent);
                 lastTouchEvent = null;
             }
-            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_NEVER);
+            ViewCompat.setOverScrollMode(recyclerView, ViewCompat.OVER_SCROLL_NEVER);
             return 0;
         } else {
             dOffset = 0;
-            ViewCompat.setOverScrollMode(mRecyclerView, ViewCompat.OVER_SCROLL_ALWAYS);
+            ViewCompat.setOverScrollMode(recyclerView, ViewCompat.OVER_SCROLL_ALWAYS);
             return super.scrollVerticallyBy(dy, recycler, state);
         }
     }

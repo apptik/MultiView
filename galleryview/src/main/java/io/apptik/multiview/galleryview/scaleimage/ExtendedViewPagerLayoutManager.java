@@ -26,8 +26,8 @@ public class ExtendedViewPagerLayoutManager extends ViewPagerLayoutManager {
 
         final int layoutDirection = dx > 0 ? 1 : -1;
 
-        if(mRecyclerView != null && mRecyclerView.getScrollState() != RecyclerView.SCROLL_STATE_SETTLING && mRecyclerView instanceof ScalableRecyclerGridView){
-           if(!(mRecyclerView.canScrollHorizontally(layoutDirection))) {
+        if(recyclerView != null && recyclerView.getScrollState() != RecyclerView.SCROLL_STATE_SETTLING && recyclerView instanceof ScalableRecyclerGridView){
+           if(!(recyclerView.canScrollHorizontally(layoutDirection))) {
               // adjust();
                return 0;
            }
