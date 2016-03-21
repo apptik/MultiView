@@ -17,6 +17,7 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
     volatile int vx = 0;
     volatile int vy = 0;
     volatile boolean adjustOnScroll = false;
+    volatile boolean isIdle = true;
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -135,6 +136,7 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
     @Override
     public void onScrollStateChanged(int newState) {
         if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+            isIdle = false;
             Log.d("onScrollStateChanged DRAGGING");
             //reset adjusted
             gdx = 0;
@@ -149,9 +151,11 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
                 vy = currView.getHeight();
             }
         } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
+            isIdle = false;
             Log.d("onScrollStateChanged SETTLING");
             adjust();
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            isIdle = true;
             Log.d("onScrollStateChanged IDLE");
             adjust();
         }
@@ -171,13 +175,15 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
 
         //When we scroll too fast in the DRAG state we will not have any movement
         //so we need to check on the next scroll if were fine
-        if ((gdx == 0 && gdy == 0)) {
+        if (!isIdle && gdx == 0 && gdy == 0) {
             adjustOnScroll = true;
+            Log.d("adjustOnScroll active");
             return;
         }
         adjusted = true;
         adjustOnScroll = false;
-        Log.d("mPositionBeforeAdjust:" + prevPos);
+        verifyPrevPos();
+        Log.d("positionBeforeAdjust:" + prevPos);
 
 
         int targetPosition;

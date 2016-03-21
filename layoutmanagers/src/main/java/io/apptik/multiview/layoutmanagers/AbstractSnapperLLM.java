@@ -179,7 +179,8 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
             Log.d("onScrollStateChanged DRAGGING");
             //reset adjusted
             adjusted = false;
-            prevPos = getCenterItemPosition();
+            prevPos = lastPos;
+            // prevPos = getCenterItemPosition();
         } else if (newState == RecyclerView.SCROLL_STATE_SETTLING) {
             Log.d("onScrollStateChanged SETTLING");
         } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -204,7 +205,8 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
         }
 
         adjusted = true;
-        Log.d("mPositionBeforeAdjust:" + prevPos);
+        verifyPrevPos();
+        Log.d("positionBeforeAdjust:" + prevPos);
 
         Log.d("adjust just centering...");
         //TODO take care of SNAP_METHOD as we dont want the centered view to be snapped to the
@@ -214,6 +216,14 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
         doScroll(prevPos, smoothScrollTargetPosition);
 
         prevPos = -1;
+    }
+
+    //todo clean this prevPos up its a leftover before the split
+    protected final void verifyPrevPos() {
+        if (prevPos < 0) {
+            Log.e("verifyPrevPos: " + prevPos);
+            prevPos = lastPos;
+        }
     }
 
     protected void doScroll(int prevPos, int targetPos) {
@@ -242,7 +252,7 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
             return;
         if (smoothScrollerFactory == null) {
             Log.d("smoothAdjustTo smoothScroller is null so we use default smooth scrolling");
-            if(recyclerView!=null) {
+            if (recyclerView != null) {
                 smoothScrollToPosition(recyclerView, new RecyclerView.State(), safeTargetPosition);
                 lastPos = safeTargetPosition;
             }
