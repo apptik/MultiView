@@ -7,12 +7,12 @@ Download [the latest JAR][mvn] or grab via Maven:
 <dependency>
   <groupId>io.apptik.multiview</groupId>
   <artifactId>adapters</artifactId>
-  <version>0.0.2</version>
+  <version>0.0.3</version>
 </dependency>
 ```
 or Gradle:
 ```groovy
-compile 'io.apptik.multiview:adapters:0.0.2'
+compile 'io.apptik.multiview:adapters:0.0.3'
 ```
 
 Downloads of the released versions are available in [Sonatype's `releases` repository][release].
