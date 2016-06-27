@@ -134,7 +134,7 @@ public class ViewUtils {
     }
 
     public static int getCenterItemPosition(RecyclerView recyclerView, boolean horisontal) {
-        int curPosition = -1;
+        int curPosition;
         if (horisontal) {
             curPosition = ViewUtils.getCenterXChildPosition(recyclerView);
         } else {

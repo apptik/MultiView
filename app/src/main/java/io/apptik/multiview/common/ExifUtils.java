@@ -46,7 +46,7 @@ public class ExifUtils {
 	 */
 	public static int getExifOrientation( final String filepath ) {
 		if ( null == filepath ) return 0;
-		ExifInterface exif = null;
+		ExifInterface exif;
 		try {
 			exif = new ExifInterface( filepath );
 		} catch ( IOException e ) {
@@ -161,7 +161,7 @@ public class ExifUtils {
 
 		final String scheme = uri.getScheme();
 
-		ContentProviderClient provider = null;
+		ContentProviderClient provider;
 		if ( scheme == null || ContentResolver.SCHEME_FILE.equals( scheme ) ) {
 			return getExifOrientation( uri.getPath() );
 		} else if ( scheme.equals( ContentResolver.SCHEME_CONTENT ) ) {

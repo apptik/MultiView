@@ -75,7 +75,7 @@ public class DecodeUtils {
 			int orientation, int pass ) {
 
 		Bitmap bitmap = null;
-		Bitmap newBitmap = null;
+		Bitmap newBitmap;
 
 
 		if ( pass > 20 ) {

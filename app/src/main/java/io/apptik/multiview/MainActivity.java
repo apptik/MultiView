@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         if(!checkForPermissions()) return;
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragToAdd = null;
+        Fragment fragToAdd;
         switch (position) {
             case 0:
                 fragToAdd = BasicFragment.newInstance();
