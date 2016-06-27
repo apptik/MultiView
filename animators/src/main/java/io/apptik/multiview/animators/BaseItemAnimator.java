@@ -264,10 +264,9 @@ public abstract class BaseItemAnimator extends SimpleItemAnimator {
     private void endChangeAnimation(List<ChangeInfo> infoList, ViewHolder item) {
         for (int i = infoList.size() - 1; i >= 0; i--) {
             ChangeInfo changeInfo = infoList.get(i);
-            if (endChangeAnimationIfNecessary(changeInfo, item)) {
-                if (changeInfo.oldHolder == null && changeInfo.newHolder == null) {
-                    infoList.remove(changeInfo);
-                }
+            if (endChangeAnimationIfNecessary(changeInfo, item) 
+                    && changeInfo.oldHolder == null && changeInfo.newHolder == null) {
+                infoList.remove(changeInfo);
             }
         }
     }

@@ -1296,10 +1296,10 @@ public class FilmstripView extends ViewGroup
     }
     private void updateInsertion(int dataID) {
         int insertedItemId = findItemByDataID(dataID);
-        if (insertedItemId == -1) {
+        if (insertedItemId == -1 && dataID == mDataAdapter.getTotalNumber() - 1) {
             // Not in the current item buffers. Check if it's inserted
             // at the end.
-            if (dataID == mDataAdapter.getTotalNumber() - 1) {
+            if () {
                 int prev = findItemByDataID(dataID - 1);
                 if (prev >= 0 && prev < BUFFER_SIZE - 1) {
                     // The previous data is in the buffer and we still
