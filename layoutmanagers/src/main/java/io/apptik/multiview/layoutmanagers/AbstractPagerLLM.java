@@ -168,7 +168,7 @@ public class AbstractPagerLLM<T extends AbstractPagerLLM<T>> extends AbstractSna
             return;
         }
 
-        if ((smoothScroller != null && (smoothScroller.isRunning())) || isSmoothScrolling()) {
+        if ((smoothScroller != null && smoothScroller.isRunning()) || isSmoothScrolling()) {
             Log.d("already scrolling");
             return;
         }
