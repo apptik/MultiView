@@ -18,11 +18,9 @@ package io.apptik.multiview.decorations;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ItemDecoration;
-import android.util.AttributeSet;
 
 
 public class GridSpacingDecoration extends ItemDecoration {
