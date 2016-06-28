@@ -24,6 +24,9 @@ import android.view.View;
 public class ViewUtils {
 
 
+    private ViewUtils() {
+    }
+
     /**
      * Get center child in X Axes
      */
