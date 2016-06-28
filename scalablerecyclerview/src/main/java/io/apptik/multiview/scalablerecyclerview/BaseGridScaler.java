@@ -68,7 +68,7 @@ public abstract class BaseGridScaler implements GridScaler {
         volatile int initSpanCount = 0;
         volatile View currentView;
         //used to normalise the raw factor when scaling in not allowed direction
-        volatile private float factorOffset;
+        private volatile float factorOffset;
 
         public InteractionListener(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;

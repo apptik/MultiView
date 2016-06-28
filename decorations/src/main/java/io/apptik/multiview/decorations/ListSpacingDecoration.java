@@ -26,7 +26,7 @@ import android.view.View;
 
 
 public class ListSpacingDecoration extends RecyclerView.ItemDecoration {
-    public final static int DEFAULT_PADDING = 8;
+    public static final int DEFAULT_PADDING = 8;
     private int mPaddingPx = 8;
     private int mPaddingEdgesPx = 16;
 

@@ -207,7 +207,7 @@ public class ScalableRecyclerGridView extends RecyclerView {
         volatile int initSpanCount = 0;
         volatile View currentView;
         //used to normalise the raw factor when scaling in not allowed direction
-        volatile private float factorOffset;
+        private volatile float factorOffset;
 
         public InteractionListener(Context context, ScalableRecyclerGridView scalableRecyclerGridView) {
             this.context = context;
