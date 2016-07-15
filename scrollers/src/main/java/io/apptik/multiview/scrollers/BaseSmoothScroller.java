@@ -477,5 +477,5 @@ public abstract class BaseSmoothScroller extends RecyclerView.SmoothScroller {
         return calculateDtToFit(left, right, start, end, snapPreference);
     }
 
-    abstract public PointF computeScrollVectorForPosition(int targetPosition);
+    public abstract PointF computeScrollVectorForPosition(int targetPosition);
 }

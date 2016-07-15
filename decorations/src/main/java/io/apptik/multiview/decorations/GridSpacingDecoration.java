@@ -26,7 +26,7 @@ import android.util.AttributeSet;
 
 
 public class GridSpacingDecoration extends ItemDecoration {
-    public final static int DEFAULT_PADDING = 8;
+    public static final int DEFAULT_PADDING = 8;
     private int mPaddingPx = 8;
     private int mPaddingEdgesPx = 16;
 
