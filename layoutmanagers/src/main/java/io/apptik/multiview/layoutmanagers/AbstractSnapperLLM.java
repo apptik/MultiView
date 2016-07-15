@@ -199,7 +199,7 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
             return;
         }
 
-        if ((smoothScroller != null && (smoothScroller.isRunning())) || isSmoothScrolling()) {
+        if ((smoothScroller != null && smoothScroller.isRunning()) || isSmoothScrolling()) {
             Log.d("already scrolling");
             return;
         }

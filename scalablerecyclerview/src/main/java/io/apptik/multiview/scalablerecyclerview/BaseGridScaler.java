@@ -100,14 +100,14 @@ public abstract class BaseGridScaler implements GridScaler {
 
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
-            Log.d("onSingleTapConfirmed: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
+            Log.d("onSingleTapConfirmed: " + (e == null ? "e==null" : e.getX() + "/" + e.getY()));
             if (scaleGestureDetector.isInProgress()) return true;
             return false;
         }
 
         @Override
         public boolean onDoubleTap(MotionEvent e) {
-            Log.d("onDoubleTap: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()) + " v: " + currentView);
+            Log.d("onDoubleTap: " + (e == null ? "e==null" : e.getX() + "/" + e.getY()) + " v: " + currentView);
             if (scaleGestureDetector.isInProgress()) return false;
             //toggle min/max col span for grid mode
 
@@ -130,7 +130,7 @@ public abstract class BaseGridScaler implements GridScaler {
 
         @Override
         public boolean onDoubleTapEvent(MotionEvent e) {
-            Log.d("onDoubleTapEvent: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
+            Log.d("onDoubleTapEvent: " + (e == null ? "e==null" : e.getX() + "/" + e.getY()));
             if (scaleGestureDetector.isInProgress()) return false;
             //TODO do we ?
             //not in use now but we have to return true
@@ -139,33 +139,33 @@ public abstract class BaseGridScaler implements GridScaler {
 
         @Override
         public boolean onDown(MotionEvent e) {
-            Log.d("onDown: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
+            Log.d("onDown: " + (e == null ? "e==null" : e.getX() + "/" + e.getY()));
             return false;
         }
 
         @Override
         public void onShowPress(MotionEvent e) {
-            Log.d("onShowPress: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
+            Log.d("onShowPress: " + (e == null ? "e==null" : e.getX() + "/" + e.getY()));
             //just ignore
         }
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            Log.d("onSingleTapUp: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
+            Log.d("onSingleTapUp: " + (e == null ? "e==null" : e.getX() + "/" + e.getY()));
             if (scaleGestureDetector.isInProgress()) return true;
             return false;
         }
 
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d("onScroll: " + ((e1 == null) ? "e1==null" : e1.getX() + "/" + e1.getY()) + " - " + ((e2 == null) ? "e2==null" : e2.getX() + "/" + e2.getY()) + " :: " + distanceX + "/" + distanceY);
+            Log.d("onScroll: " + (e1 == null ? "e1==null" : e1.getX() + "/" + e1.getY()) + " - " + (e2 == null ? "e2==null" : e2.getX() + "/" + e2.getY()) + " :: " + distanceX + "/" + distanceY);
             if (scaleGestureDetector.isInProgress()) return true;
             return false;
         }
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            Log.d("onFling: " + ((e1 == null) ? "e1==null" : e1.getX() + "/" + e1.getY()) + " - " + ((e2 == null) ? "e2==null" : e2.getX() + "/" + e2.getY()) + " :: " + velocityX + "/" + velocityY);
+            Log.d("onFling: " + (e1 == null ? "e1==null" : e1.getX() + "/" + e1.getY()) + " - " + (e2 == null ? "e2==null" : e2.getX() + "/" + e2.getY()) + " :: " + velocityX + "/" + velocityY);
             if (scaleGestureDetector.isInProgress()) return true;
             return false;
         }
@@ -173,7 +173,7 @@ public abstract class BaseGridScaler implements GridScaler {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            Log.d("onLongPress: " + ((e == null) ? "e==null" : e.getX() + "/" + e.getY()));
+            Log.d("onLongPress: " + (e == null ? "e==null" : e.getX() + "/" + e.getY()));
             //maybe menu
         }
 
