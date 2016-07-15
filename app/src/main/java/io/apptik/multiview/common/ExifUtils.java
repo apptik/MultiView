@@ -37,6 +37,9 @@ public class ExifUtils {
 		ExifInterface.TAG_IMAGE_WIDTH, "ISOSpeedRatings", ExifInterface.TAG_MAKE, ExifInterface.TAG_MODEL,
 		ExifInterface.TAG_WHITE_BALANCE, };
 
+	private ExifUtils() {
+	}
+
 	/**
 	 * Return the rotation of the passed image file
 	 * 

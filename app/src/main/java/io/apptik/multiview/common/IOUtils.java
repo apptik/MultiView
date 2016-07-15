@@ -33,6 +33,9 @@ import java.io.Closeable;
  */
 public class IOUtils {
 
+	private IOUtils() {
+	}
+
 	/**
 	 * Close a {@link Closeable} stream without throwing any exception
 	 * 

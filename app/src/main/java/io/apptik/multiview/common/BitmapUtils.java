@@ -27,6 +27,9 @@ import android.graphics.Matrix;
  */
 public class BitmapUtils {
 
+	private BitmapUtils() {
+	}
+
 	/**
 	 * Resize a bitmap
 	 * 

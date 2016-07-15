@@ -32,6 +32,9 @@ import java.net.MalformedURLException;
 
 public class DecodeUtils {
 
+	private DecodeUtils() {
+	}
+
 	/**
 	 * Try to load a {@link Bitmap} from the passed {@link Uri} ( a file, a content or an url )
 	 * 
