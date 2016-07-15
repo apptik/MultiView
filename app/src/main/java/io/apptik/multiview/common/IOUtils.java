@@ -58,7 +58,7 @@ public class IOUtils {
 	public static void closeSilently( Cursor cursor ) {
 		if ( cursor == null ) return;
 		try {
-			if ( cursor != null ) cursor.close();
+			cursor.close();
 		} catch ( Throwable t ) {}
 	}
 
