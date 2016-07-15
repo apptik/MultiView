@@ -93,14 +93,12 @@ public class DecodeUtils {
 			bitmap = BitmapFactory.decodeStream(stream, null, options);
 			IOUtils.closeSilently( stream );
 
-			if ( bitmap != null ) {
-				if( maxW > 0 && maxH > 0 ) {
-					newBitmap = BitmapUtils.resizeBitmap( bitmap, maxW, maxH, orientation );
-					if ( bitmap != newBitmap ) {
-						bitmap.recycle();
-					}
-					bitmap = newBitmap;
+			if ( bitmap != null && maxW > 0 && maxH > 0 ) {
+				newBitmap = BitmapUtils.resizeBitmap( bitmap, maxW, maxH, orientation );
+				if ( bitmap != newBitmap ) {
+					bitmap.recycle();
 				}
+				bitmap = newBitmap;
 			}
 
 		} catch ( OutOfMemoryError error ) {
