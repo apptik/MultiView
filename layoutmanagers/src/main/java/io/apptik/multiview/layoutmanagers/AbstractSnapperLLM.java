@@ -126,17 +126,15 @@ public abstract class AbstractSnapperLLM<T extends AbstractSnapperLLM<T>> extend
         if (showOneItemOnly) {
             if (canScrollHorizontally()) {
                 lp.width = getWidth();
-                if (lp.height > 0) {
+                if (lp.height != -2) {
                     lp.height = getHeight();
                 }
             } else {
                 lp.height = getHeight();
-                if (lp.width > 0) {
+                if (lp.width != -2) {
                     lp.width = getWidth();
                 }
             }
-
-
         } else {
             if (lp instanceof LayoutParams) {
                 lp.width = ((LayoutParams) lp).origWidth;
