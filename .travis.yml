@@ -6,13 +6,17 @@ jdk:
 android:
   components:
     - tools
-    - build-tools-23.0.2
-    - android-23
+    - build-tools-25.0.2
+    - android-25
     - extra-android-m2repository
     - sys-img-armeabi-v7a-android-23
 
 script:
-  - ./gradlew ":$MODULE:build" ":$MODULE:uploadArchives"
+  - ./gradlew ":$MODULE:build"
+
+after_success:
+  - .buildscript/deploy_snapshot.sh
+
 
 env:
    matrix:
