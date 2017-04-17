@@ -1,6 +1,6 @@
-#Galleryview based on RecyclerView
+# Galleryview based on RecyclerView
 
-##Download
+## Download
 
 Download [the latest JAR][mvn] or grab via Maven:
 ```xml

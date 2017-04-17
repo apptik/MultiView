@@ -1,6 +1,6 @@
-#Scalablerecyclerview based on RecyclerView
+# Scalablerecyclerview based on RecyclerView
 
-##Download
+## Download
 
 Download [the latest JAR][mvn] or grab via Maven:
 ```xml
