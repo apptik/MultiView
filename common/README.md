@@ -1,6 +1,6 @@
-#Common tools for RecyclerView
+# Common tools for RecyclerView
 
-##Download
+## Download
 
 Download [the latest JAR][mvn] or grab via Maven:
 ```xml

@@ -1,6 +1,6 @@
-#Extra hooks for RecyclerView
+# Extra hooks for RecyclerView
 
-##Download
+## Download
 
 Download [the latest JAR][mvn] or grab via Maven:
 ```xml

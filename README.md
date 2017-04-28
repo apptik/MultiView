@@ -5,7 +5,7 @@
 
 Multi-purpose Android UI components based on RecyclerView
 
-##Download
+## Download
 
 Find [the latest JARs][mvn] or grab via Maven:
 ```xml

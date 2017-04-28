@@ -1,6 +1,6 @@
-#Scrollers for RecyclerView
+# Scrollers for RecyclerView
 
-##Download
+## Download
 
 Download [the latest JAR][mvn] or grab via Maven:
 ```xml

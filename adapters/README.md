@@ -1,6 +1,6 @@
-#Adapters for RecyclerView
+# Adapters for RecyclerView
 
-##Download
+## Download
 
 Download [the latest JAR][mvn] or grab via Maven:
 ```xml
